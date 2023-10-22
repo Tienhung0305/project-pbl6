@@ -1,0 +1,38 @@
+package com.example.sportstore06.dao.request;
+
+import com.example.sportstore06.model.Image;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductRequest {
+    private int id;
+    @NotBlank(message = "name must not be blank")
+    @Size(min = 1, max = 100, message = "name must be between 1 and 100 characters")
+    private String name;
+    @Positive(message = "id must be a positive number")
+    @Min(value = 0, message = "price must be greater 0")
+    private Double price;
+    @NotNull(message = "id must not be null")
+    @Positive(message = "id must be a positive number")
+    private Integer id_business;
+    private Integer id_sale;
+    private Integer id_category;
+    private Timestamp created_at;
+    private Timestamp updated_at;
+    @NotNull(message = "state must not be null")
+    @Min(value = 0, message = "state must is (0,1,2)")
+    @Max(value = 3, message = "state must is (0,1,2)")
+    private Integer state;
+    private Set<Image> imageSet = new HashSet<>();
+}
