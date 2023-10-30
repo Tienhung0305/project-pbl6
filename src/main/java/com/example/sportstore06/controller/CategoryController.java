@@ -100,7 +100,7 @@ public class CategoryController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
             } else {
                 boolean checkDelete = categoryService.deleteById(id);
-                if (checkDelete) {
+                if (!checkDelete) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't delete");
                 }
                 return ResponseEntity.accepted().build();

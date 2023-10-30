@@ -90,7 +90,7 @@ public class ProductController {
         }
     }
 
-    @PutMapping ("/save/{id}")
+    @PutMapping("/save/{id}")
     private ResponseEntity<?> changeProduct(@Valid @RequestBody ProductRequest request,
                                             @PathVariable("id") Integer id) {
         try {
@@ -142,7 +142,7 @@ public class ProductController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
             } else {
                 boolean checkDelete = productService.deleteById(id);
-                if (checkDelete) {
+                if (!checkDelete) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't delete");
                 }
                 return ResponseEntity.accepted().build();
@@ -151,7 +151,6 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
 
 
 }

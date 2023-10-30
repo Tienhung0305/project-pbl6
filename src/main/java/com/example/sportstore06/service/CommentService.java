@@ -56,7 +56,7 @@ public class CommentService {
                 product(productRepository.findById(request.getId_product()).get()).
                 content(request.getContent()).
                 report(request.getReport()).
-                reply(request.getReply()).
+                reply(request.getReply() == null ? null : request.getReply()).
                 user(userRepository.findById(request.getId_user()).get()).
                 created_at(created_at).
                 updated_at(updated_at).

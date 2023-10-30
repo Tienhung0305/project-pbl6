@@ -62,8 +62,8 @@ public class ProductService {
                 price(request.getPrice()).
                 quantity(request.getQuantity()).
                 business(businessRepository.findById(request.getId_business()).get()).
-                sale(saleRepository.findById(request.getId_sale()).orElse(null)).
-                category(categoryRepository.findById(request.getId_category()).orElse(null)).
+                sale(request.getId_category() == null ? null : saleRepository.findById(request.getId_sale()).get()).
+                category(request.getId_category() == null ? null : categoryRepository.findById(request.getId_category()).get()).
                 created_at(created_at).
                 updated_at(updated_at).
                 state(request.getState()).

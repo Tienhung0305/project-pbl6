@@ -23,6 +23,5 @@ public class CategoryRequest {
     private Timestamp created_at;
     private Timestamp updated_at;
     @NotNull(message = "id image must not be null")
-    @Positive(message = "id image must be a positive number")
     private Integer id_image;
 }

@@ -72,7 +72,7 @@ public class CommentController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found ");
             } else if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
-            } else if (commentService.findById(request.getReply()).isEmpty()) {
+            } else if (request.getReply() != null && commentService.findById(request.getReply()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id reply not found");
             } else {
                 commentService.save(0, request);
@@ -96,7 +96,7 @@ public class CommentController {
             if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
             }
-            if (commentService.findById(request.getReply()).isEmpty()) {
+            if (request.getReply() != null && commentService.findById(request.getReply()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id reply not found");
             }
             commentService.save(id, request);
@@ -113,7 +113,7 @@ public class CommentController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id comment not found");
             } else {
                 boolean checkDelete = commentService.deleteById(id);
-                if (checkDelete) {
+                if (!checkDelete) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't delete");
                 }
                 return ResponseEntity.accepted().build();

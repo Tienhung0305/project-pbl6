@@ -29,8 +29,8 @@ public class Comment {
     @NotBlank
     @Length(min = 1, max = 200)
     private String content;
-    private Boolean report;
     @NotNull
+    private Boolean report;
     private Integer reply;
     //private int id_user;
     private Timestamp created_at;

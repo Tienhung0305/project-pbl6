@@ -23,8 +23,7 @@ public class ProductRequest {
     private Double price;
     @Min(value = 0, message = "quantity must be greater 0")
     private Integer quantity;
-    @NotNull(message = "id must not be null")
-    @Positive(message = "id must be a positive number")
+    @NotNull(message = "id business must not be null")
     private Integer id_business;
     private Integer id_sale;
     private Integer id_category;

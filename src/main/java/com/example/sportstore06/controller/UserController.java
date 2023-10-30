@@ -173,7 +173,7 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
             } else {
                 boolean checkDelete = userService.deleteById(id);
-                if (checkDelete) {
+                if (!checkDelete) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't delete");
                 }
                 return ResponseEntity.accepted().build();

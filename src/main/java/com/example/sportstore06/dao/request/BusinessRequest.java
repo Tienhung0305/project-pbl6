@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class BusinessRequest {
     @NotNull(message = "id must not be null")
-    @Positive(message = "id must be a positive number")
     private Integer id_user;
     @NotBlank(message = "name must not be blank")
     @Size(min = 1, max = 50, message = "name must be between 1 and 50 characters")
@@ -28,7 +27,6 @@ public class BusinessRequest {
     @Max(value = 3, message = "state must is (0,1,2)")
     private Integer state;
     @NotNull(message = "id image must not be null")
-    @Positive(message = "id image must be a positive number")
     private Integer id_image;
     private Timestamp created_at;
     private Timestamp updated_at;

@@ -133,7 +133,7 @@ public class BusinessController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             } else {
                 boolean checkDelete = businessService.deleteById(id);
-                if (checkDelete) {
+                if (!checkDelete) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't delete");
                 }
                 return ResponseEntity.accepted().build();

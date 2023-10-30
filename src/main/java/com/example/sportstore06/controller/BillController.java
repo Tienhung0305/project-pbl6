@@ -113,7 +113,7 @@ public class BillController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
             } else {
                 boolean checkDelete = billService.deleteById(id);
-                if (checkDelete) {
+                if (!checkDelete) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't delete");
                 }
                 return ResponseEntity.accepted().build();
