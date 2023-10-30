@@ -41,7 +41,7 @@ public class Business {
     @JsonBackReference
     private User user;
 
-    @OneToOne(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Image image;
 }

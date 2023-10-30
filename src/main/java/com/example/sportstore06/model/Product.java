@@ -21,21 +21,21 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotBlank(message = "name must not be blank")
-    @Size(min = 1, max = 100, message = "name must be between 1 and 100 characters")
+    @NotBlank
+    @Size(min = 1, max = 100)
     private String name;
-    @Positive(message = "id must be a positive number")
-    @Min(value = 0, message = "price must be greater 0")
+    @Min(value = 0)
     private Double price;
+    @Min(value = 0)
+    private Integer quantity;
     //private int id_business;
     //private int id_sale;
     //private int id_category;
-    @Column(nullable = true)
     private Timestamp created_at;
     private Timestamp updated_at;
-    @NotNull(message = "state must not be null")
-    @Min(value = 0, message = "state must is (0,1,2)")
-    @Max(value = 3, message = "state must is (0,1,2)")
+    @NotNull
+    @Min(value = 0)
+    @Max(value = 3)
     private Integer state;
 
     @ManyToOne(fetch = FetchType.EAGER)

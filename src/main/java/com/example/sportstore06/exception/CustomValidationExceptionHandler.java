@@ -1,4 +1,4 @@
-package com.example.sportstore06.config;
+package com.example.sportstore06.exception;
 
 import com.example.sportstore06.dao.response.FieldErrorResponse;
 import org.springframework.http.HttpStatus;

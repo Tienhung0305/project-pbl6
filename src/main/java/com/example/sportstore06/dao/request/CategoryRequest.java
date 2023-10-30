@@ -2,6 +2,8 @@ package com.example.sportstore06.dao.request;
 
 import com.example.sportstore06.model.Image;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +17,12 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryRequest {
-    private int id;
     @NotBlank(message = "name must not be blank")
     @Size(min = 1, max = 100, message = "name must be between 1 and 100 characters")
     private String name;
     private Timestamp created_at;
     private Timestamp updated_at;
+    @NotNull(message = "id image must not be null")
+    @Positive(message = "id image must be a positive number")
     private Integer id_image;
 }

@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentRequest {
-    private int id;
     private Integer id_product;
     private String content;
     private Boolean report;

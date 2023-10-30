@@ -1,14 +1,17 @@
 package com.example.sportstore06.controller;
 
+
+import com.example.sportstore06.dao.request.BillDetailRequest;
 import com.example.sportstore06.dao.request.BillRequest;
-import com.example.sportstore06.dao.request.ProductRequest;
 import com.example.sportstore06.dao.response.BillResponse;
 import com.example.sportstore06.model.Bill;
 import com.example.sportstore06.service.BillService;
+import com.example.sportstore06.service.ProductService;
+import com.example.sportstore06.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.sqm.InterpretationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,21 +26,26 @@ import java.util.Optional;
 @RequestMapping("api/v1/bill")
 @RequiredArgsConstructor
 public class BillController {
-    @Value("${page-number}")
-    private Integer page_number;
+    @Value("${page_size_default}")
+    private Integer page_size_default;
     private final BillService billService;
-
-    @GetMapping("/findById")
-    public ResponseEntity<?> findById(@RequestParam(value = "id") Integer id) {
-        return billService.findById(id);
+    private final UserService userService;
+    private final ProductService productService;
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
+        try {
+            if (billService.findById(id).isPresent()) {
+                BillResponse b = new BillResponse(billService.findById(id).get());
+                return ResponseEntity.status(HttpStatus.OK).body(b);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
-    @GetMapping("/findAll")
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok(billService.findAll().stream().map(bill -> new BillResponse(bill)));
-    }
-
-    @GetMapping("/findByPage")
+    @GetMapping()
     public ResponseEntity<?> findByPage(@RequestParam(value = "page", required = false) Optional<Integer> page,
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
@@ -45,26 +53,73 @@ public class BillController {
         try {
             Pageable pageable;
             if (sort != null) {
-                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_number),
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
                         desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
             } else {
-                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_number));
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            return billService.findByPage(pageable);
-        } catch (InterpretationException exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed not found");
+            Page<Bill> byPage = billService.findByPage(pageable);
+            Page<BillResponse> responses = byPage.map(bill -> new BillResponse(bill));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
+    @PostMapping("/save")
+    private ResponseEntity<?> addBill(@Valid @RequestBody BillRequest request) {
+        try {
+            if (userService.findById(request.getId_user()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
+            }
+            for (BillDetailRequest b : request.getBill_detailSet()) {
+                if (productService.findById(b.getId_product()).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found ");
+                }
+            }
+            billService.save(0, request);
+            return ResponseEntity.accepted().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @PostMapping("/save")
-    private ResponseEntity<?> save(@Valid @RequestBody BillRequest billRequest) {
-        return billService.save(billRequest);
+
+    @PutMapping("/save/{id}")
+    private ResponseEntity<?> addBill(@Valid @RequestBody BillRequest request,
+                                      @PathVariable("id") Integer id) {
+        try {
+            if (billService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found ");
+            }
+            if (userService.findById(request.getId_user()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
+            }
+            for (BillDetailRequest b : request.getBill_detailSet()) {
+                if (productService.findById(b.getId_product()).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found ");
+                }
+            }
+            billService.save(id, request);
+            return ResponseEntity.accepted().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
-    @PostMapping("/changeState")
-    private ResponseEntity<?> changeState(@RequestParam(value = "id", required = true) Integer id,
-                                          @RequestParam(value = "state_null", required = true) Boolean state_null) {
-        return billService.changeState(id,state_null);
+    @DeleteMapping("/delete/{id}")
+    private ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
+        try {
+            if (billService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+            } else {
+                boolean checkDelete = billService.deleteById(id);
+                if (checkDelete) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't delete");
+                }
+                return ResponseEntity.accepted().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

@@ -3,6 +3,8 @@ package com.example.sportstore06.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -21,13 +23,16 @@ public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(nullable = false)
+    @NotNull
+    private Integer id_business;
+    @NotNull
     private Timestamp started_at;
-    @Column(nullable = false)
+    @NotNull
     private Timestamp ended_at;
-    @Column(nullable = false)
+    @NotBlank
     private String name;
     private String content;
+
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Product> productSet = new HashSet<>();

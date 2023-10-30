@@ -19,6 +19,7 @@ public class ProductResponse {
     private int id;
     private String name;
     private Double price;
+    private Integer quantity;
     private Integer id_business;
     private Integer id_sale;
     private Integer id_category;

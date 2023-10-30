@@ -16,13 +16,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRequest {
-    private int id;
     @NotBlank(message = "name must not be blank")
     @Size(min = 1, max = 100, message = "name must be between 1 and 100 characters")
     private String name;
-    @Positive(message = "id must be a positive number")
     @Min(value = 0, message = "price must be greater 0")
     private Double price;
+    @Min(value = 0, message = "quantity must be greater 0")
+    private Integer quantity;
     @NotNull(message = "id must not be null")
     @Positive(message = "id must be a positive number")
     private Integer id_business;
@@ -34,5 +34,6 @@ public class ProductRequest {
     @Min(value = 0, message = "state must is (0,1,2)")
     @Max(value = 3, message = "state must is (0,1,2)")
     private Integer state;
-    private Set<Image> imageSet = new HashSet<>();
+
+    private Set<Integer> id_imageSet = new HashSet<>();
 }

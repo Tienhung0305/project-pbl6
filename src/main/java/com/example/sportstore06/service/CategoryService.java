@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,59 +29,41 @@ public class CategoryService {
     private final ICategoryRepository categoryRepository;
     private final IImageRepository imageRepository;
 
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public Optional<Category> findById(int id) {
+        return categoryRepository.findById(id);
     }
 
-    public ResponseEntity<?> findByPage(Pageable pageable) {
-        Page<Category> byPage = categoryRepository.findByPage(pageable);
-        Page<CategoryResponse> responses = byPage.map(category -> new CategoryResponse(category));
-        return ResponseEntity.ok().body(responses);
+    public Page<Category> findByPage(Pageable pageable) {
+        return categoryRepository.findByPage(pageable);
     }
 
-    public ResponseEntity<?> findById(int id) {
-        if (categoryRepository.findById(id).isPresent()) {
-            return ResponseEntity.ok(categoryRepository.findById(id).get());
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
-    }
-
-    public ResponseEntity<?> save(CategoryRequest request) {
-        if (imageRepository.findById(request.getId_image()).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found ");
-        } else {
-            Timestamp created_at;
-            Timestamp updated_at;
-            if (categoryRepository.findById(request.getId()).isPresent()) {
-                created_at = categoryRepository.findById(request.getId()).get().getCreated_at();
-                updated_at = new Timestamp(new Date().getTime());
-            } else {
-                created_at = new Timestamp(new Date().getTime());
-                updated_at = created_at;
-            }
-
-            var c = Category.builder().
-                    id(request.getId()).
-                    name(request.getName()).
-                    created_at(created_at).
-                    updated_at(updated_at).
-                    image(imageRepository.findById(request.getId_image()).get()).
-                    build();
-            categoryRepository.save(c);
-            return ResponseEntity.accepted().build();
-        }
-    }
-
-    public ResponseEntity<?> deleteById(int id) {
+    public boolean deleteById(int id) {
         try {
-            if (categoryRepository.findById(id).isPresent()) {
-                categoryRepository.deleteById(id);
-                return ResponseEntity.accepted().build();
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
-            }
-        } catch (Exception exception) {
-            return ResponseEntity.badRequest().body(exception.getMessage());
+            categoryRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
+    }
+
+    public void save(int id, CategoryRequest request) {
+        Timestamp created_at;
+        Timestamp updated_at;
+        if (categoryRepository.findById(id).isPresent()) {
+            created_at = categoryRepository.findById(id).get().getCreated_at();
+            updated_at = new Timestamp(new Date().getTime());
+        } else {
+            created_at = new Timestamp(new Date().getTime());
+            updated_at = created_at;
+        }
+
+        var c = Category.builder().
+                id(id).
+                name(request.getName()).
+                created_at(created_at).
+                updated_at(updated_at).
+                image(imageRepository.findById(request.getId_image()).get()).
+                build();
+        categoryRepository.save(c);
     }
 }

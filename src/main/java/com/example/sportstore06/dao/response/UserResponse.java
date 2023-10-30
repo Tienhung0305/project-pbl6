@@ -2,6 +2,7 @@ package com.example.sportstore06.dao.response;
 
 import com.example.sportstore06.model.Image;
 import com.example.sportstore06.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import jakarta.validation.constraints.NotBlank;
@@ -20,9 +21,11 @@ public class UserResponse {
     private int id;
     private String name;
     private String email;
+    private Timestamp dob;
+    private String phone;
+    private String cic;
+    private String address;
     private String username;
-    private String password;
-    private String remember_token;
     private Set<String> roles;
     private Image image;
     private Timestamp created_at;
@@ -33,10 +36,12 @@ public class UserResponse {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.dob = user.getDob();
+        this.phone = user.getPhone();
+        this.cic = user.getCic();
+        this.address = user.getAddress();
         this.username = user.getUsername();
-        this.password = user.getPassword();
         this.state = user.getState();
-        this.remember_token = user.getRemember_token();
         this.created_at = user.getCreated_at();
         this.updated_at = user.getUpdated_at();
         this.image = user.getImage();

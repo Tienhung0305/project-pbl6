@@ -15,17 +15,21 @@ import java.sql.Timestamp;
 public class BusinessResponse {
     private Integer id;
     private String name;
-    private Timestamp created_at;
-    private Timestamp updated_at;
+    private String about;
+    private Integer tax;
     private Integer state;
     private Integer id_image;
+    private Timestamp created_at;
+    private Timestamp updated_at;
 
     public BusinessResponse(Business business) {
         this.id = business.getId();
         this.name = business.getName();
-        this.created_at = business.getCreated_at();
-        this.updated_at = business.getUpdated_at();
+        this.about = business.getAbout();
+        this.tax = business.getTax();
         this.state = business.getState();
         this.id_image = business.getImage() != null ? business.getImage().getId() : null;
+        this.created_at = business.getCreated_at();
+        this.updated_at = business.getUpdated_at();
     }
 }

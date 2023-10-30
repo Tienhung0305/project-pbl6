@@ -15,9 +15,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BillDetailRequest {
     @NotNull(message = "id product must not be null")
-    @Positive(message = "id product must be a positive number")
     private Integer id_product;
-    @Positive(message = "quantity must be a positive number")
     @Min(value = 0, message = "quantity must be greater 0")
     private Integer quantity;
+    @Min(value = 0, message = "price must be greater 0")
+    private Double price;
 }

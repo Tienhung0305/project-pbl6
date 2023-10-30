@@ -1,17 +1,14 @@
 package com.example.sportstore06.controller;
 
+
 import com.example.sportstore06.dao.request.ProductRequest;
-import com.example.sportstore06.dao.request.UserRequest;
 import com.example.sportstore06.dao.response.ProductResponse;
-import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.model.Product;
-import com.example.sportstore06.model.User;
-import com.example.sportstore06.service.ProductService;
-import com.example.sportstore06.service.UserService;
+import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.sqm.InterpretationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,21 +23,29 @@ import java.util.Optional;
 @RequestMapping("api/v1/product")
 @RequiredArgsConstructor
 public class ProductController {
-    @Value("${page-number}")
-    private Integer page_number;
+    @Value("${page_size_default}")
+    private Integer page_size_default;
     private final ProductService productService;
+    private final ImageService imageService;
+    private final BusinessService businessService;
+    private final SaleService saleService;
+    private final CategoryService categoryService;
 
-    @GetMapping("/findById")
-    public ResponseEntity<?> findById(@RequestParam(value = "id", required = true) Integer id) {
-        return productService.findById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
+        try {
+            if (productService.findById(id).isPresent()) {
+                ProductResponse p = new ProductResponse(productService.findById(id).get());
+                return ResponseEntity.status(HttpStatus.OK).body(p);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
-    @GetMapping("/findAll")
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok(productService.findAll().stream().map(product -> new ProductResponse(product)));
-    }
-
-    @GetMapping("/findByPage")
+    @GetMapping()
     public ResponseEntity<?> findByPage(@RequestParam(value = "page", required = false) Optional<Integer> page,
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
@@ -48,32 +53,105 @@ public class ProductController {
         try {
             Pageable pageable;
             if (sort != null) {
-                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_number),
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
                         desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
             } else {
-                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_number));
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            return productService.findByPage(pageable);
-        } catch (InterpretationException exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed not found");
+            Page<Product> byPage = productService.findByPage(pageable);
+            Page<ProductResponse> responses = byPage.map(product -> new ProductResponse(product));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
+    @PostMapping("/save")
+    private ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequest request) {
+        try {
+            for (int id_image : request.getId_imageSet()) {
+                if (imageService.findById(id_image).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+                }
+            }
+            if (businessService.findById(request.getId_business()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
+            }
+            if (request.getId_sale() != null && saleService.findById(request.getId_business()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
+            }
+            if (request.getId_category() != null && categoryService.findById(request.getId_category()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
+            }
+            productService.save(0, request);
+            return ResponseEntity.accepted().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @PostMapping("/save")
-    private ResponseEntity<?> save(@Valid @RequestBody ProductRequest productRequest) {
-        return productService.save(productRequest);
+    @PutMapping ("/save/{id}")
+    private ResponseEntity<?> changeProduct(@Valid @RequestBody ProductRequest request,
+                                            @PathVariable("id") Integer id) {
+        try {
+            if (productService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
+            }
+            for (int id_image : request.getId_imageSet()) {
+                if (imageService.findById(id_image).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+                }
+            }
+            if (businessService.findById(request.getId_business()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
+            }
+            if (request.getId_sale() != null && saleService.findById(request.getId_business()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
+            }
+            if (request.getId_category() != null && categoryService.findById(request.getId_category()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
+            }
+            productService.save(id, request);
+            return ResponseEntity.accepted().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
-    @PostMapping("/changeState")
-    private ResponseEntity<?> changeState(@RequestParam(value = "id", required = true) Integer id,
+    @PutMapping("/change-state/{id}")
+    private ResponseEntity<?> changeState(@PathVariable("id") Integer id,
                                           @RequestParam(value = "state", required = true) Integer state) {
-        return productService.changeState(id, state);
+        try {
+            if (productService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
+            } else if (state < 0 || state > 3) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("state not found");
+            } else {
+                productService.changeState(id, state);
+                return ResponseEntity.accepted().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
-    @DeleteMapping("/deleteById/{id}")
+    @DeleteMapping("/delete/{id}")
     private ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
-        return productService.deleteById(id);
+        try {
+            if (productService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
+            } else {
+                boolean checkDelete = productService.deleteById(id);
+                if (checkDelete) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't delete");
+                }
+                return ResponseEntity.accepted().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
+
+
+
 }

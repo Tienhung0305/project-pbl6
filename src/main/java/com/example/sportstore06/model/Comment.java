@@ -5,8 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Reference;
 
 import java.sql.Timestamp;
@@ -23,9 +26,11 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     //private int id_product;
+    @NotBlank
+    @Length(min = 1, max = 200)
     private String content;
     private Boolean report;
-    @Column(nullable = true)
+    @NotNull
     private Integer reply;
     //private int id_user;
     private Timestamp created_at;
