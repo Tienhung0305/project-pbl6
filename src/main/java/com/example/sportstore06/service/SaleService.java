@@ -1,6 +1,7 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.CommentRequest;
+import com.example.sportstore06.dao.request.SaleRequest;
 import com.example.sportstore06.model.Product;
 import com.example.sportstore06.model.Sale;
 import com.example.sportstore06.repository.*;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SaleService {
     private final ISaleRepository saleRepository;
+    private final IImageRepository iImageRepository;
     public Optional<Sale> findById(int id) {
         return saleRepository.findById(id);
     }
@@ -29,7 +31,7 @@ public class SaleService {
             return false;
         }
     }
-    public void save(int id, Sale request) {
+    public void save(int id, SaleRequest request) {
         var s = Sale.builder().
                 id(id).
                 id_business(request.getId_business()).
@@ -37,6 +39,7 @@ public class SaleService {
                 ended_at(request.getEnded_at()).
                 name(request.getName()).
                 content(request.getContent()).
+                image(iImageRepository.findById(request.getId_image()).get()).
                 build();
         saleRepository.save(s);
     }

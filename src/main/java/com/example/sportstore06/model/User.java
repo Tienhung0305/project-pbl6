@@ -30,6 +30,7 @@ public class User implements UserDetails {
     @NotBlank
     @Size(min = 1, max = 50)
     private String name;
+    @Column(unique=true)
     @NotBlank
     @Size(min = 5, max = 50)
     @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
@@ -37,13 +38,16 @@ public class User implements UserDetails {
     private Timestamp dob;
     @NotBlank
     @Size(min = 7, max = 11)
+    @Column(unique=true)
     private String phone;
+    @Column(unique=true)
     @NotBlank
     @Size(min = 10, max = 12)
     private String cic;
     @NotBlank
     @Size(min = 5, max = 50)
     private String address;
+    @Column(unique=true)
     @NotBlank
     @Size(min = 1, max = 50)
     private String username;

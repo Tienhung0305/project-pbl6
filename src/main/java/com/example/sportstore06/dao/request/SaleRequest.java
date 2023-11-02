@@ -1,5 +1,6 @@
 package com.example.sportstore06.dao.request;
 
+import com.example.sportstore06.model.Image;
 import com.example.sportstore06.model.Product;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
@@ -29,4 +30,6 @@ public class SaleRequest {
     @NotNull(message = "name must not be null")
     private String name;
     private String content;
+    @NotNull(message = "id_image must not be null")
+    private Integer id_image;
 }

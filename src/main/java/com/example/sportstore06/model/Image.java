@@ -54,4 +54,10 @@ public class Image {
     @JoinColumn(name = "id_comment", referencedColumnName = "id")
     @JsonBackReference
     private Comment comment;
+
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sale", referencedColumnName = "id", unique = true)
+    @JsonBackReference
+    private Sale sale;
 }
