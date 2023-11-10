@@ -2,6 +2,7 @@ package com.example.sportstore06.service;
 
 
 import com.example.sportstore06.dao.request.BusinessRequest;
+import com.example.sportstore06.model.Bill;
 import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Product;
 import com.example.sportstore06.repository.IBusinessRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -25,6 +27,10 @@ public class BusinessService {
     private final IImageRepository iImageRepository;
     public Optional<Business> findById(int id) {
         return businessRepository.findById(id);
+    }
+
+    public List<Business> findByName(String name) {
+        return businessRepository.findByName(name);
     }
 
     public Page<Business> findByPage(Pageable pageable) {

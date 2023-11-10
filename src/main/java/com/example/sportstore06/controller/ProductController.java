@@ -3,7 +3,9 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.ProductRequest;
 import com.example.sportstore06.dao.response.ProductResponse;
+import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.model.Product;
+import com.example.sportstore06.model.User;
 import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +19,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/v1/product")
+@RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
 public class ProductController {
     @Value("${page_size_default}")
@@ -40,6 +44,17 @@ public class ProductController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam("name") String name) {
+        try {
+            List<Product> list = productService.findByName(name);
+            List<ProductResponse> response = list.stream().map(product -> new ProductResponse(product)).collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

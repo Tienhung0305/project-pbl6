@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaleResponse {
+    private int id;
     private Integer id_business;
     private Timestamp started_at;
     private Timestamp ended_at;
@@ -22,6 +23,7 @@ public class SaleResponse {
     private Integer id_image;
 
     public SaleResponse(Sale sale) {
+        this.id = sale.getId();
         this.id_business = sale.getId_business();
         this.started_at = sale.getStarted_at();
         this.ended_at = sale.getEnded_at();

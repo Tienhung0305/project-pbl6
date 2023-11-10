@@ -2,7 +2,9 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.SaleRequest;
 import com.example.sportstore06.dao.response.SaleResponse;
+import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.model.Sale;
+import com.example.sportstore06.model.User;
 import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/sale")
@@ -37,6 +41,17 @@ public class SaleController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam("name") String name) {
+        try {
+            List<Sale> list = saleService.findByName(name);
+            List<SaleResponse> response = list.stream().map(sale -> new SaleResponse(sale)).collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -80,7 +95,7 @@ public class SaleController {
         }
     }
 
-    @PutMapping("/save")
+    @PutMapping("/save/{id}")
     private ResponseEntity<?> changeSale(@Valid @RequestBody SaleRequest request,
                                          @PathVariable("id") Integer id) {
         try {

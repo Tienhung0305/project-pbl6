@@ -4,7 +4,10 @@ package com.example.sportstore06.controller;
 import com.example.sportstore06.dao.request.BillDetailRequest;
 import com.example.sportstore06.dao.request.BillRequest;
 import com.example.sportstore06.dao.response.BillResponse;
+import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.model.Bill;
+import com.example.sportstore06.model.Business;
+import com.example.sportstore06.model.User;
 import com.example.sportstore06.service.BillService;
 import com.example.sportstore06.service.ProductService;
 import com.example.sportstore06.service.UserService;
@@ -20,10 +23,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/v1/bill")
+@RequestMapping("/api/v1/bill")
 @RequiredArgsConstructor
 public class BillController {
     @Value("${page_size_default}")
@@ -40,6 +45,17 @@ public class BillController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam("name") String name) {
+        try {
+            List<Bill> list = billService.findByName(name);
+            List<BillResponse> response = list.stream().map(bill -> new BillResponse(bill)).collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

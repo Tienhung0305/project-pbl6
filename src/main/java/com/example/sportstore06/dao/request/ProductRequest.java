@@ -19,8 +19,11 @@ public class ProductRequest {
     @NotBlank(message = "name must not be blank")
     @Size(min = 1, max = 100, message = "name must be between 1 and 100 characters")
     private String name;
+    private String detail;
     @Min(value = 0, message = "price must be greater 0")
     private Double price;
+    private String attribute;
+    private String brand;
     @Min(value = 0, message = "quantity must be greater 0")
     private Integer quantity;
     @NotNull(message = "id business must not be null")

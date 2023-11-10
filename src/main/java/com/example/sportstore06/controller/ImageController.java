@@ -4,8 +4,10 @@ import com.example.sportstore06.dao.request.CommentRequest;
 import com.example.sportstore06.dao.request.ImageRequest;
 import com.example.sportstore06.dao.response.CommentResponse;
 import com.example.sportstore06.dao.response.ImageResponse;
+import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.model.Comment;
 import com.example.sportstore06.model.Image;
+import com.example.sportstore06.model.User;
 import com.example.sportstore06.service.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +21,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/v1/image")
+@RequestMapping("/api/v1/image")
 @RequiredArgsConstructor
 public class ImageController {
     @Value("${page_size_default}")
@@ -38,6 +42,17 @@ public class ImageController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam("name") String name) {
+        try {
+            List<Image> list = imageService.findByName(name);
+            List<ImageResponse> response = list.stream().map(image -> new ImageResponse(image)).collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -79,7 +94,26 @@ public class ImageController {
     private ResponseEntity<?> changeImage(@Valid @RequestBody ImageRequest request,
                                           @PathVariable("id") Integer id) {
         try {
+            if (imageService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+            }
             imageService.save(id, request);
+            return ResponseEntity.accepted().build();
+        } catch (
+                Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/change-url/{id}")
+    private ResponseEntity<?> changeImageUrl(@Valid @RequestBody ImageRequest request,
+                                             @PathVariable("id") Integer id,
+                                             @RequestParam("url") String url) {
+        try {
+            if (imageService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+            }
+            imageService.change_url(id, url);
             return ResponseEntity.accepted().build();
         } catch (
                 Exception e) {

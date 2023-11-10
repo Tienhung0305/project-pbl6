@@ -1,10 +1,7 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.ProductRequest;
-import com.example.sportstore06.model.Comment;
-import com.example.sportstore06.model.Image;
-import com.example.sportstore06.model.Product;
-import com.example.sportstore06.model.User;
+import com.example.sportstore06.model.*;
 import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +23,9 @@ public class ProductService {
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
-
+    public List<Product> findByName(String name) {
+        return productRepository.findByName(name);
+    }
     public Page<Product> findByPage(Pageable pageable) {
         return productRepository.findByPage(pageable);
     }
@@ -58,7 +57,10 @@ public class ProductService {
         var u = Product.builder().
                 id(id).
                 name(request.getName()).
+                detail(request.getDetail()).
                 price(request.getPrice()).
+                attribute(request.getAttribute()).
+                brand(request.getBrand()).
                 quantity(request.getQuantity()).
                 business(businessRepository.findById(request.getId_business()).get()).
                 sale(request.getId_category() == null ? null : saleRepository.findById(request.getId_sale()).get()).

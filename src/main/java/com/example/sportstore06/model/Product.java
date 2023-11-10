@@ -24,8 +24,11 @@ public class Product {
     @NotBlank
     @Size(min = 1, max = 100)
     private String name;
+    private String detail;
     @Min(value = 0)
     private Double price;
+    private String attribute;
+    private String brand;
     @Min(value = 0)
     private Integer quantity;
     //private int id_business;

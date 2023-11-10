@@ -15,6 +15,5 @@ import java.util.Optional;
 public interface ICommentRepository extends JpaRepository<Comment,Integer> {
     @Query("SELECT i FROM Comment i")
     Page<Comment> findByPage(Pageable pageable);
-
     Optional<Comment> findByReply(Integer reply);
 }

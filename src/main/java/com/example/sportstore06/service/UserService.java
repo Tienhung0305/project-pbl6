@@ -2,6 +2,7 @@ package com.example.sportstore06.service;
 
 
 import com.example.sportstore06.dao.request.UserRequest;
+import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Image;
 import com.example.sportstore06.model.Role;
 import com.example.sportstore06.model.User;
@@ -25,6 +26,9 @@ public class UserService {
 
     public Optional<User> findById(int id) {
         return userRepository.findById(id);
+    }
+    public List<User> findByName(String name) {
+        return userRepository.findByName(name);
     }
     public Page<User> findByPage(Pageable pageable) {
         return userRepository.findByPage(pageable);

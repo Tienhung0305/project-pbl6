@@ -6,6 +6,7 @@ import com.example.sportstore06.dao.request.ProductRequest;
 import com.example.sportstore06.dao.response.CategoryResponse;
 import com.example.sportstore06.dao.response.ProductResponse;
 import com.example.sportstore06.model.Bill;
+import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Category;
 import com.example.sportstore06.model.Product;
 import com.example.sportstore06.repository.ICategoryRepository;
@@ -31,6 +32,10 @@ public class CategoryService {
 
     public Optional<Category> findById(int id) {
         return categoryRepository.findById(id);
+    }
+
+    public List<Category> findByName(String name) {
+        return categoryRepository.findByName(name);
     }
 
     public Page<Category> findByPage(Pageable pageable) {

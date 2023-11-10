@@ -18,7 +18,10 @@ import java.util.Set;
 public class ProductResponse {
     private int id;
     private String name;
+    private String detail;
     private Double price;
+    private String attribute;
+    private String brand;
     private Integer quantity;
     private Integer id_business;
     private Integer id_sale;
@@ -31,7 +34,10 @@ public class ProductResponse {
     {
         this.id = product.getId();
         this.name = product.getName();
+        this.detail = product.getDetail();
         this.price = product.getPrice();
+        this.attribute = product.getAttribute();
+        this.brand = product.getBrand();
         this.id_business = product.getBusiness() != null ? product.getBusiness().getId() : null;
         this.id_sale = product.getSale() != null ? product.getSale().getId() : null;
         this.id_category = product.getCategory() != null ? product.getCategory().getId() : null;

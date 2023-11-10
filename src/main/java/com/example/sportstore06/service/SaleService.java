@@ -2,6 +2,7 @@ package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.CommentRequest;
 import com.example.sportstore06.dao.request.SaleRequest;
+import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Product;
 import com.example.sportstore06.model.Sale;
 import com.example.sportstore06.repository.*;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +21,9 @@ public class SaleService {
     private final IImageRepository iImageRepository;
     public Optional<Sale> findById(int id) {
         return saleRepository.findById(id);
+    }
+    public List<Sale> findByName(String name) {
+        return saleRepository.findByName(name);
     }
     public Page<Sale> findByPage(Pageable pageable) {
         return saleRepository.findByPage(pageable);

@@ -29,6 +29,10 @@ public class BillService {
         return billRepository.findById(id);
     }
 
+    public List<Bill> findByName(String name) {
+        return billRepository.findByName(name);
+    }
+
     public Page<Bill> findByPage(Pageable pageable) {
         return billRepository.findByPage(pageable);
     }

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -45,6 +46,17 @@ public class UserController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam("name") String name) {
+        try {
+            List<User> list = userService.findByName(name);
+            List<UserResponse> response = list.stream().map(user -> new UserResponse(user)).collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

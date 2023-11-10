@@ -9,8 +9,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface IBillRepository extends JpaRepository<Bill, Integer> {
     @Query("SELECT i FROM Bill i")
     Page<Bill> findByPage(Pageable pageable);
+
+    List<Bill> findByName(String Name);
 }

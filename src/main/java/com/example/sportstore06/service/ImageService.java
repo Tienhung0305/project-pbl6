@@ -2,6 +2,7 @@ package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.ImageRequest;
 import com.example.sportstore06.dao.request.ProductRequest;
+import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Image;
 import com.example.sportstore06.model.Product;
 import com.example.sportstore06.repository.ICategoryRepository;
@@ -13,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +23,12 @@ public class ImageService {
     public Optional<Image> findById(int id) {
         return iImageRepository.findById(id);
     }
-
+    public List<Image> findByName(String name) {
+        return iImageRepository.findByName(name);
+    }
     public Page<Image> findByPage(Pageable pageable) {
         return iImageRepository.findByPage(pageable);
     }
-
     public boolean deleteById(int id) {
         try {
             iImageRepository.deleteById(id);
@@ -59,4 +58,13 @@ public class ImageService {
         iImageRepository.save(u);
     }
 
+    public void change_url(int id, String url)
+    {
+        if(iImageRepository.findById(id).isPresent())
+        {
+            Image image = iImageRepository.findById(id).get();
+            image.setUrl(url);
+            iImageRepository.save(image);
+        }
+    }
 }

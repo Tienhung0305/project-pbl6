@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/v1/comment")
+@RequestMapping("/api/v1/comment")
 @RequiredArgsConstructor
 public class CommentController {
     @Value("${page_size_default}")
