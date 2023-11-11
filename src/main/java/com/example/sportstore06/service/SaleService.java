@@ -39,6 +39,7 @@ public class SaleService {
     public void save(int id, SaleRequest request) {
         var s = Sale.builder().
                 id(id).
+                discount(request.getDiscount()).
                 id_business(request.getId_business()).
                 started_at(request.getStarted_at()).
                 ended_at(request.getEnded_at()).

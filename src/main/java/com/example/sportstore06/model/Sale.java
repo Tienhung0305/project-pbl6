@@ -23,6 +23,7 @@ public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private Double discount;
     @NotNull
     private Integer id_business;
     @NotNull

@@ -27,7 +27,7 @@ public class UserRequest {
     @Size(min = 10, max = 12, message = "citizen identification card must be between 10 and 12 characters")
     private String cic;
     @NotBlank(message = "address must not be blank")
-    @Size(min = 5, max = 200, message = "address must be between 5 and 200 characters")
+    @Size(min = 5, max = 300, message = "address must be between 5 and 300 characters")
     private String address;
     @NotBlank(message = "username must not be blank")
     @Size(min = 1, max = 50, message = "username must be between 1 and 50 characters")

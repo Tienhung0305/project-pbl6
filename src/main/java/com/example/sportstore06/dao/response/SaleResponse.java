@@ -2,6 +2,7 @@ package com.example.sportstore06.dao.response;
 
 import com.example.sportstore06.model.Sale;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.sql.Timestamp;
 public class SaleResponse {
     private int id;
     private Integer id_business;
+    private Double discount;
     private Timestamp started_at;
     private Timestamp ended_at;
     private String name;
@@ -24,6 +26,7 @@ public class SaleResponse {
 
     public SaleResponse(Sale sale) {
         this.id = sale.getId();
+        this.discount = sale.getDiscount();
         this.id_business = sale.getId_business();
         this.started_at = sale.getStarted_at();
         this.ended_at = sale.getEnded_at();

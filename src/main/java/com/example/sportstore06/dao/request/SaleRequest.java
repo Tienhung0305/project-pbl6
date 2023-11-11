@@ -5,6 +5,7 @@ import com.example.sportstore06.model.Product;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,8 @@ import java.util.Set;
 public class SaleRequest {
     @NotNull(message = "id business must not be null")
     private Integer id_business;
+    @Min(value = 0, message = "discount must be greater 0")
+    private Double discount;
     @NotNull(message = "time start must not be null")
     private Timestamp started_at;
     @NotNull(message = "time end must not be null")
