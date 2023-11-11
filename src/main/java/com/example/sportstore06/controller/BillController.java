@@ -53,7 +53,7 @@ public class BillController {
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam("name") String name) {
         try {
-            List<Bill> list = billService.findByName(name);
+            List<Bill> list = billService.SearchByName(name);
             List<BillResponse> response = list.stream().map(bill -> new BillResponse(bill)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {

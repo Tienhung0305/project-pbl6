@@ -22,8 +22,8 @@ public class SaleService {
     public Optional<Sale> findById(int id) {
         return saleRepository.findById(id);
     }
-    public List<Sale> findByName(String name) {
-        return saleRepository.findByName(name);
+    public List<Sale> SearchByName(String name) {
+        return saleRepository.SearchByName(name);
     }
     public Page<Sale> findByPage(Pageable pageable) {
         return saleRepository.findByPage(pageable);

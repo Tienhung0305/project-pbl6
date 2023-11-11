@@ -17,5 +17,7 @@ public interface IBusinessRepository extends JpaRepository<Business, Integer> {
     @Query("SELECT i FROM Business i")
     Page<Business> findByPage(Pageable pageable);
 
-    List<Business> findByName(String Name);
+    @Query("SELECT i FROM Business i WHERE i.name LIKE %:Name%")
+    List<Business> SearchByName (String Name);
+    Optional<Business>  findByName (String Name);
 }

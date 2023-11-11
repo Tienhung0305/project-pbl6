@@ -49,7 +49,7 @@ public class CategoryController {
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam("name") String name) {
         try {
-            List<Category> list = categoryService.findByName(name);
+            List<Category> list = categoryService.SearchByName(name);
             List<CategoryResponse> response = list.stream().map(category -> new CategoryResponse(category)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {

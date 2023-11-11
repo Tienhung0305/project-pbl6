@@ -27,8 +27,8 @@ public class UserService {
     public Optional<User> findById(int id) {
         return userRepository.findById(id);
     }
-    public List<User> findByName(String name) {
-        return userRepository.findByName(name);
+    public List<User> SearchByName(String name) {
+        return userRepository.SearchByName(name);
     }
     public Page<User> findByPage(Pageable pageable) {
         return userRepository.findByPage(pageable);

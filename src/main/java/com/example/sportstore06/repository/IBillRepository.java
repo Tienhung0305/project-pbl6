@@ -17,5 +17,6 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     @Query("SELECT i FROM Bill i")
     Page<Bill> findByPage(Pageable pageable);
 
-    List<Bill> findByName(String Name);
+    @Query("SELECT i FROM Bill i WHERE i.name LIKE %:Name%")
+    List<Bill> SearchByName(String Name);
 }

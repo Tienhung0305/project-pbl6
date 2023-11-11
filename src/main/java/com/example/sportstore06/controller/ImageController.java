@@ -50,7 +50,7 @@ public class ImageController {
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam("name") String name) {
         try {
-            List<Image> list = imageService.findByName(name);
+            List<Image> list = imageService.SearchByName(name);
             List<ImageResponse> response = list.stream().map(image -> new ImageResponse(image)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {

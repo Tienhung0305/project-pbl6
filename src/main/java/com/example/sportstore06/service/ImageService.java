@@ -23,8 +23,8 @@ public class ImageService {
     public Optional<Image> findById(int id) {
         return iImageRepository.findById(id);
     }
-    public List<Image> findByName(String name) {
-        return iImageRepository.findByName(name);
+    public List<Image> SearchByName(String name) {
+        return iImageRepository.SearchByName(name);
     }
     public Page<Image> findByPage(Pageable pageable) {
         return iImageRepository.findByPage(pageable);

@@ -23,8 +23,8 @@ public class ProductService {
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
-    public List<Product> findByName(String name) {
-        return productRepository.findByName(name);
+    public List<Product> SearchByName(String name) {
+        return productRepository.SearchByName(name);
     }
     public Page<Product> findByPage(Pageable pageable) {
         return productRepository.findByPage(pageable);

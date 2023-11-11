@@ -54,7 +54,7 @@ public class UserController {
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam("name") String name) {
         try {
-            List<User> list = userService.findByName(name);
+            List<User> list = userService.SearchByName(name);
             List<UserResponse> response = list.stream().map(user -> new UserResponse(user)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -98,16 +98,16 @@ public class UserController {
 
             //check exits
             if (userService.findByUsername(request.getUsername()).isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("username already exists");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("username already exists");
             }
             if (userService.findByEmail(request.getEmail()).isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("email already exists");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("email already exists");
             }
             if (userService.findByCic(request.getCic()).isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("citizen identification card already exists");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("citizen identification card already exists");
             }
             if (userService.findByPhone(request.getPhone()).isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("phone number already exists");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("phone number already exists");
             }
             //
 

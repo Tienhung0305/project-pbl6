@@ -29,8 +29,12 @@ public class BusinessService {
         return businessRepository.findById(id);
     }
 
-    public List<Business> findByName(String name) {
+    public Optional<Business> findByName(String name) {
         return businessRepository.findByName(name);
+    }
+
+    public List<Business> SearchByName(String name) {
+        return businessRepository.SearchByName(name);
     }
 
     public Page<Business> findByPage(Pageable pageable) {

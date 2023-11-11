@@ -52,7 +52,7 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam("name") String name) {
         try {
-            List<Product> list = productService.findByName(name);
+            List<Product> list = productService.SearchByName(name);
             List<ProductResponse> response = list.stream().map(product -> new ProductResponse(product)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {

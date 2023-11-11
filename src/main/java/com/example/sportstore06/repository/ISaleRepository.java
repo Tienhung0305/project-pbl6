@@ -15,6 +15,6 @@ import java.util.Optional;
 public interface ISaleRepository extends JpaRepository<Sale,Integer> {
     @Query("SELECT i FROM Sale i")
     Page<Sale> findByPage(Pageable pageable);
-
-    List<Sale> findByName(String Name);
+    @Query("SELECT i FROM Sale i WHERE i.name LIKE %:Name%")
+    List<Sale> SearchByName(String Name);
 }

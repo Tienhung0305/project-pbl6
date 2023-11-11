@@ -53,7 +53,7 @@ public class BusinessController {
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam("name") String name) {
         try {
-            List<Business> list = businessService.findByName(name);
+            List<Business> list = businessService.SearchByName(name);
             List<BusinessResponse> response = list.stream().map(business -> new BusinessResponse(business)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -94,6 +94,10 @@ public class BusinessController {
             if (imageService.findById(request.getId_image()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
             }
+            //check exits
+            if (businessService.findByName(request.getName()).isPresent()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("name already exists");
+            }
             businessService.save(0, request);
             return ResponseEntity.accepted().build();
         } catch (Exception e) {
@@ -116,6 +120,11 @@ public class BusinessController {
             }
             if (imageService.findById(request.getId_image()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+            }
+            //check exits
+            if (businessService.findByName(request.getName()).isPresent() &&
+            businessService.findByName(request.getName()).get().getId() != id) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("name already exists");
             }
             businessService.save(request.getId_user(), request);
             return ResponseEntity.accepted().build();
