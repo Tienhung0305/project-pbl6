@@ -45,7 +45,7 @@ public class User implements UserDetails {
     @Size(min = 10, max = 12)
     private String cic;
     @NotBlank
-    @Size(min = 5, max = 50)
+    @Size(min = 5, max = 200)
     private String address;
     @Column(unique=true)
     @NotBlank
