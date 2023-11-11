@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,9 +51,15 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam("name") String name) {
+    public ResponseEntity<?> search(@RequestParam(value = "name",required = true) String name,
+                                    @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
-            List<Product> list = productService.SearchByName(name);
+            List<Product> list = new ArrayList<Product>();
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                list = productService.SearchByName(name, state.get());
+            } else {
+                list = productService.SearchByName(name);
+            }
             List<ProductResponse> response = list.stream().map(product -> new ProductResponse(product)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -64,7 +71,8 @@ public class ProductController {
     public ResponseEntity<?> findByPage(@RequestParam(value = "page", required = false) Optional<Integer> page,
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
-                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
+                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                        @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
             Pageable pageable;
             if (sort != null) {
@@ -73,7 +81,12 @@ public class ProductController {
             } else {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            Page<Product> byPage = productService.findByPage(pageable);
+            Page<Product> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = productService.findByPage(pageable, state.get());
+            } else {
+                byPage = productService.findByPage(pageable);
+            }
             Page<ProductResponse> responses = byPage.map(product -> new ProductResponse(product));
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {

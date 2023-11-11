@@ -34,6 +34,13 @@ public class UserService {
         return userRepository.findByPage(pageable);
     }
 
+    public List<User> SearchByName(String name, Integer state) {
+        return userRepository.SearchByName(name, state);
+    }
+    public Page<User> findByPage(Pageable pageable, Integer state) {
+        return userRepository.findByPage(pageable, state);
+    }
+
     public boolean deleteById(int id) {
         try {
             userRepository.deleteById(id);

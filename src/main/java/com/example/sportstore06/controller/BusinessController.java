@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,9 +52,15 @@ public class BusinessController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam("name") String name) {
+    public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
-            List<Business> list = businessService.SearchByName(name);
+            List<Business> list = new ArrayList<Business>();
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                list = businessService.SearchByName(name, state.get());
+            } else {
+                list = businessService.SearchByName(name);
+            }
             List<BusinessResponse> response = list.stream().map(business -> new BusinessResponse(business)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -65,7 +72,8 @@ public class BusinessController {
     public ResponseEntity<?> findByPage(@RequestParam(value = "page", required = false) Optional<Integer> page,
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
-                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
+                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                        @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
             Pageable pageable;
             if (sort != null) {
@@ -74,7 +82,12 @@ public class BusinessController {
             } else {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            Page<Business> byPage = businessService.findByPage(pageable);
+            Page<Business> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = businessService.findByPage(pageable, state.get());
+            } else {
+                byPage = businessService.findByPage(pageable);
+            }
             Page<BusinessResponse> responses = byPage.map(business -> new BusinessResponse(business));
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
@@ -123,7 +136,7 @@ public class BusinessController {
             }
             //check exits
             if (businessService.findByName(request.getName()).isPresent() &&
-            businessService.findByName(request.getName()).get().getId() != id) {
+                    businessService.findByName(request.getName()).get().getId() != id) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("name already exists");
             }
             businessService.save(request.getId_user(), request);

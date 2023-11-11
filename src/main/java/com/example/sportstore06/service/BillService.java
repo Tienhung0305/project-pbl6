@@ -37,6 +37,14 @@ public class BillService {
         return billRepository.findByPage(pageable);
     }
 
+    public List<Bill> SearchByName(String name, Boolean state_null) {
+        return billRepository.SearchByName(name, state_null);
+    }
+
+    public Page<Bill> findByPage(Pageable pageable, Boolean state_null) {
+        return billRepository.findByPage(pageable, state_null);
+    }
+
     public boolean deleteById(int id) {
         try {
             billRepository.deleteById(id);

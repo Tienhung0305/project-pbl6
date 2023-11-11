@@ -16,8 +16,11 @@ import java.util.Optional;
 public interface IBusinessRepository extends JpaRepository<Business, Integer> {
     @Query("SELECT i FROM Business i")
     Page<Business> findByPage(Pageable pageable);
-
+    @Query("SELECT i FROM Business i WHERE i.state = :state")
+    Page<Business> findByPage(Pageable pageable, Integer state);
     @Query("SELECT i FROM Business i WHERE i.name LIKE %:Name%")
     List<Business> SearchByName (String Name);
+    @Query("SELECT i FROM Business i WHERE i.name LIKE %:Name% AND i.state = :state")
+    List<Business> SearchByName (String Name, Integer state);
     Optional<Business>  findByName (String Name);
 }

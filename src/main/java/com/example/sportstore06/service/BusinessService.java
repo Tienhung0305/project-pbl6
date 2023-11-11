@@ -41,6 +41,13 @@ public class BusinessService {
         return businessRepository.findByPage(pageable);
     }
 
+    public List<Business> SearchByName(String name, Integer state) {
+        return businessRepository.SearchByName(name,state);
+    }
+    public Page<Business> findByPage(Pageable pageable, Integer state) {
+        return businessRepository.findByPage(pageable,state);
+    }
+
     public boolean deleteById(int id) {
         try {
             businessRepository.deleteById(id);

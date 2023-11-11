@@ -52,9 +52,15 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam("name") String name) {
+    public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
-            List<User> list = userService.SearchByName(name);
+            List<User> list = new ArrayList<User>();
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                list = userService.SearchByName(name, state.get());
+            } else {
+                list = userService.SearchByName(name);
+            }
             List<UserResponse> response = list.stream().map(user -> new UserResponse(user)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -66,7 +72,8 @@ public class UserController {
     public ResponseEntity<?> findByPage(@RequestParam(value = "page", required = false) Optional<Integer> page,
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
-                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
+                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                        @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
             Pageable pageable;
             if (sort != null) {
@@ -75,7 +82,12 @@ public class UserController {
             } else {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            Page<User> byPage = userService.findByPage(pageable);
+            Page<User> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = userService.findByPage(pageable, state.get());
+            } else {
+                byPage = userService.findByPage(pageable);
+            }
             Page<UserResponse> responses = byPage.map(user -> new UserResponse(user));
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {

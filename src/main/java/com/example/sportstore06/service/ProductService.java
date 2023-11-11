@@ -29,6 +29,12 @@ public class ProductService {
     public Page<Product> findByPage(Pageable pageable) {
         return productRepository.findByPage(pageable);
     }
+    public List<Product> SearchByName(String name, Integer state) {
+        return productRepository.SearchByName(name,state);
+    }
+    public Page<Product> findByPage(Pageable pageable, Integer state) {
+        return productRepository.findByPage(pageable,state);
+    }
 
     public boolean deleteById(int id) {
         try {

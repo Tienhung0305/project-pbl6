@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class BillController {
     private final BillService billService;
     private final UserService userService;
     private final ProductService productService;
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {
@@ -51,9 +53,15 @@ public class BillController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam("name") String name) {
+    public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "state_null", required = false) Optional<Boolean> state_null) {
         try {
-            List<Bill> list = billService.SearchByName(name);
+            List<Bill> list = new ArrayList<Bill>();
+            if (state_null.isPresent()) {
+                list = billService.SearchByName(name, state_null.get());
+            } else {
+                list = billService.SearchByName(name);
+            }
             List<BillResponse> response = list.stream().map(bill -> new BillResponse(bill)).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -65,7 +73,8 @@ public class BillController {
     public ResponseEntity<?> findByPage(@RequestParam(value = "page", required = false) Optional<Integer> page,
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
-                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
+                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                        @RequestParam(value = "state_null", required = false) Optional<Boolean> state_null) {
         try {
             Pageable pageable;
             if (sort != null) {
@@ -74,7 +83,12 @@ public class BillController {
             } else {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            Page<Bill> byPage = billService.findByPage(pageable);
+            Page<Bill> byPage;
+            if (state_null.isPresent()) {
+                byPage = billService.findByPage(pageable, state_null.get());
+            } else {
+                byPage = billService.findByPage(pageable);
+            }
             Page<BillResponse> responses = byPage.map(bill -> new BillResponse(bill));
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {

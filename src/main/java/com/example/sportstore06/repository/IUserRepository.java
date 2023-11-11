@@ -14,13 +14,15 @@ import java.util.Optional;
 @Repository
 public interface IUserRepository extends JpaRepository<User,Integer> {
     Optional<User> findByUsername(String userName);
-
     @Query("SELECT i FROM User i WHERE i.name LIKE %:Name%")
     List<User> SearchByName(String Name);
+    @Query("SELECT i FROM User i WHERE i.name LIKE %:Name% AND i.state = :state")
+    List<User> SearchByName(String Name, Integer state);
     Optional<User> findByEmail(String email);
-
     Optional<User> findByPhone(String email);
     Optional<User> findByCic(String email);
     @Query("SELECT i FROM User i")
     Page<User> findByPage(Pageable pageable);
+    @Query("SELECT i FROM User i WHERE i.state = :state")
+    Page<User> findByPage(Pageable pageable, Integer state);
 }
