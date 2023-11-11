@@ -25,7 +25,7 @@ public class BillDetail {
     @JsonBackReference
     private Bill bill;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "id_product", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private Product product;
