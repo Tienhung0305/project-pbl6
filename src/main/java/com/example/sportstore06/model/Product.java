@@ -55,6 +55,10 @@ public class Product {
     @JsonManagedReference
     private Set<BillDetail> billDetailSet = new HashSet<>();
 
+//    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+//    @JsonManagedReference
+//    private Set<Cart> cartSet = new HashSet<>();
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_sale", referencedColumnName = "id")
     @JsonBackReference

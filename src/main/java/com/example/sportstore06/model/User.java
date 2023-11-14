@@ -82,6 +82,10 @@ public class User implements UserDetails {
     @JsonManagedReference
     private Set<Bill> billSet = new HashSet<>();
 
+//    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+//    @JsonManagedReference
+//    private Set<Cart> cartSet = new HashSet<>();
+
     @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Image image;
