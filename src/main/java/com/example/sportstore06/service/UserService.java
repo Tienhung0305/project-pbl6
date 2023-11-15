@@ -33,7 +33,6 @@ public class UserService {
     public Page<User> findByPage(Pageable pageable) {
         return userRepository.findByPage(pageable);
     }
-
     public List<User> SearchByName(String name, Integer state) {
         return userRepository.SearchByName(name, state);
     }

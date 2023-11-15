@@ -19,8 +19,8 @@ public interface IUserRepository extends JpaRepository<User,Integer> {
     @Query("SELECT i FROM User i WHERE i.name LIKE %:Name% AND i.state = :state")
     List<User> SearchByName(String Name, Integer state);
     Optional<User> findByEmail(String email);
-    Optional<User> findByPhone(String email);
-    Optional<User> findByCic(String email);
+    Optional<User> findByPhone(String phone);
+    Optional<User> findByCic(String cic);
     @Query("SELECT i FROM User i")
     Page<User> findByPage(Pageable pageable);
     @Query("SELECT i FROM User i WHERE i.state = :state")
