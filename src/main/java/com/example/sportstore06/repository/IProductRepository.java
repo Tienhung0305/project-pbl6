@@ -17,9 +17,9 @@ public interface IProductRepository extends JpaRepository<Product,Integer> {
     Page<Product> findByPage(Pageable pageable);
     @Query("SELECT i FROM Product i WHERE i.state = :state")
     Page<Product> findByPage(Pageable pageable, Integer state);
-    @Query("SELECT i FROM Product i WHERE i.state = :state AND i.category = :id_category")
+    @Query("SELECT i FROM Product i WHERE i.state = :state AND i.category.id = :id_category")
     Page<Product> findByCategory(Pageable pageable, Integer state, Integer id_category);
-    @Query("SELECT i FROM Product i WHERE i.category = :id_category")
+    @Query("SELECT i FROM Product i WHERE i.category.id = :id_category")
     Page<Product> findByCategory(Pageable pageable, Integer id_category);
     @Query("SELECT i FROM Product i WHERE i.state = :state AND i.business.id = :id_business")
     Page<Product> findByBusiness(Pageable pageable, Integer state, Integer id_business);
