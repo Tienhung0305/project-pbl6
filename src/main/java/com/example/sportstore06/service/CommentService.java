@@ -30,6 +30,10 @@ public class CommentService {
         return commentRepository.findByPage(pageable);
     }
 
+    public Page<Comment> findByProduct(Pageable pageable, Integer id_product) {
+        return commentRepository.findByProduct(pageable,id_product);
+    }
+
     public boolean deleteById(int id) {
         try {
             commentRepository.deleteById(id);

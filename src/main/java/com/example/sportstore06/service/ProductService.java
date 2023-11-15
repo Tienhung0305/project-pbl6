@@ -23,17 +23,54 @@ public class ProductService {
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
+
     public List<Product> SearchByName(String name) {
         return productRepository.SearchByName(name);
     }
+
     public Page<Product> findByPage(Pageable pageable) {
         return productRepository.findByPage(pageable);
     }
-    public List<Product> SearchByName(String name, Integer state) {
-        return productRepository.SearchByName(name,state);
+
+    //begin update
+    public List<Product> findByBrand(String brand)
+    {
+        return productRepository.findByBrand(brand);
     }
+    public Page<Product> findByCategory(Pageable pageable, Integer id_category) {
+        return productRepository.findByCategory(pageable, id_category);
+    }
+    public Page<Product> findByBusiness(Pageable pageable, Integer id_business) {
+        return productRepository.findByBusiness(pageable, id_business);
+    }
+    public Page<Product> findBySale(Pageable pageable, Integer id_sale) {
+        return productRepository.findBySale(pageable, id_sale);
+    }
+    public Page<Product> findByBrand(Pageable pageable, String brand) {
+        return productRepository.findByBrand(pageable, brand);
+    }
+    //
+    public Page<Product> findByCategory(Pageable pageable, Integer state, Integer id_category) {
+        return productRepository.findByCategory(pageable, state, id_category);
+    }
+    public Page<Product> findByBusiness(Pageable pageable,Integer state, Integer id_business) {
+        return productRepository.findByBusiness(pageable, state, id_business);
+    }
+    public Page<Product> findBySale(Pageable pageable,Integer state, Integer id_sale) {
+        return productRepository.findBySale(pageable,state, id_sale);
+    }
+    public Page<Product> findByBrand(Pageable pageable,Integer state, String brand) {
+        return productRepository.findByBrand(pageable,state, brand);
+    }
+
+    //end
+
+    public List<Product> SearchByName(String name, Integer state) {
+        return productRepository.SearchByName(name, state);
+    }
+
     public Page<Product> findByPage(Pageable pageable, Integer state) {
-        return productRepository.findByPage(pageable,state);
+        return productRepository.findByPage(pageable, state);
     }
 
     public boolean deleteById(int id) {

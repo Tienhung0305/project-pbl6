@@ -51,7 +51,7 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam(value = "name",required = true) String name,
+    public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
                                     @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
             List<Product> list = new ArrayList<Product>();
@@ -67,7 +67,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<?> findByPage(@RequestParam(value = "page", required = false) Optional<Integer> page,
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
@@ -93,6 +93,133 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
     }
+
+    //update
+    @GetMapping("/find-by-category/{id_category}")
+    public ResponseEntity<?> findByCategory(@PathVariable("id_category") Integer id_category,
+                                            @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                            @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                            @RequestParam(value = "sort", required = false) String sort,
+                                            @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                            @RequestParam(value = "state", required = false) Optional<Integer> state) {
+        try {
+            if (categoryService.findById(id_category).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
+            }
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Product> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = productService.findByCategory(pageable, state.get(), id_category);
+            } else {
+                byPage = productService.findByCategory(pageable, id_category);
+            }
+            Page<ProductResponse> responses = byPage.map(product -> new ProductResponse(product));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
+    @GetMapping("/find-by-business/{id_business}")
+    public ResponseEntity<?> findByBusiness(@PathVariable("id_business") Integer id_business,
+                                            @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                            @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                            @RequestParam(value = "sort", required = false) String sort,
+                                            @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                            @RequestParam(value = "state", required = false) Optional<Integer> state) {
+        try {
+            if (businessService.findById(id_business).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
+            }
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Product> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = productService.findByBusiness(pageable, state.get(), id_business);
+            } else {
+                byPage = productService.findByBusiness(pageable, id_business);
+            }
+            Page<ProductResponse> responses = byPage.map(product -> new ProductResponse(product));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
+    @GetMapping("/find-by-sale/{id_sale}")
+    public ResponseEntity<?> findBySale(@PathVariable("id_sale") Integer id_sale,
+                                        @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                        @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                        @RequestParam(value = "sort", required = false) String sort,
+                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                        @RequestParam(value = "state", required = false) Optional<Integer> state) {
+        try {
+            if (saleService.findById(id_sale).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
+            }
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Product> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = productService.findBySale(pageable, state.get(), id_sale);
+            } else {
+                byPage = productService.findBySale(pageable, id_sale);
+            }
+            Page<ProductResponse> responses = byPage.map(product -> new ProductResponse(product));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
+    @GetMapping("/find-by-brand/{brand}")
+    public ResponseEntity<?> findByBrand(@PathVariable("brand") String brand,
+                                         @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                         @RequestParam(value = "sort", required = false) String sort,
+                                         @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                         @RequestParam(value = "state", required = false) Optional<Integer> state) {
+        try {
+            if (productService.findByBrand(brand).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("brand not found");
+            }
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Product> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = productService.findByBrand(pageable, state.get(), brand);
+            } else {
+                byPage = productService.findByBrand(pageable, brand);
+            }
+            Page<ProductResponse> responses = byPage.map(product -> new ProductResponse(product));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
+    //end
 
     @PostMapping("/save")
     private ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequest request) {

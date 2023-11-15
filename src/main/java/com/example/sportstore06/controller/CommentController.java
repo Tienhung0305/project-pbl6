@@ -65,6 +65,31 @@ public class CommentController {
         }
     }
 
+    @GetMapping("/find-by-product/{id_product}")
+    public ResponseEntity<?> findByProduct(@PathVariable("id_product") Integer id_product,
+                                           @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                           @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                           @RequestParam(value = "sort", required = false) String sort,
+                                           @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
+        try {
+            if (productService.findById(id_product).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
+            }
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Comment> byPage = commentService.findByProduct(pageable, id_product);
+            Page<CommentResponse> responses = byPage.map(comment -> new CommentResponse(comment, commentService.findByReply(comment.getId()).orElse(null)));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
     @PostMapping("/save")
     private ResponseEntity<?> addComment(@Valid @RequestBody CommentRequest request) {
         try {
