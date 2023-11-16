@@ -37,6 +37,10 @@ public class ProductController {
     private final SaleService saleService;
     private final CategoryService categoryService;
 
+    @GetMapping("/get-count")
+    public ResponseEntity<?> getCount() {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getCount());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {

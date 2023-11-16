@@ -23,7 +23,9 @@ public class UserService {
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
     private final IImageRepository iImageRepository;
-
+    public Long getCount() {
+        return userRepository.count();
+    }
     public Optional<User> findById(int id) {
         return userRepository.findById(id);
     }

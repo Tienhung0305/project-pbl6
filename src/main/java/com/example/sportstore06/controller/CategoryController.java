@@ -32,6 +32,10 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final ImageService imageService;
 
+    @GetMapping("/get-count")
+    public ResponseEntity<?> getCount() {
+        return ResponseEntity.status(HttpStatus.OK).body(categoryService.getCount());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {

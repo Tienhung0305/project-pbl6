@@ -20,6 +20,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ImageService {
     private final IImageRepository iImageRepository;
+    public Long getCount() {
+        return iImageRepository.count();
+    }
     public Optional<Image> findById(int id) {
         return iImageRepository.findById(id);
     }

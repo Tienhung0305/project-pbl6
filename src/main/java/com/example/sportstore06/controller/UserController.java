@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -36,7 +37,12 @@ public class UserController {
     private final UserService userService;
     private final RoleService roleService;
     private final ImageService imageService;
+    private final PasswordEncoder passwordEncoder;
 
+    @GetMapping("/get-count")
+    public ResponseEntity<?> getCount() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getCount());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id, @AuthenticationPrincipal User user) {
         try {
@@ -45,6 +51,33 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.OK).body(u);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("get-by-username/{username}")
+    public ResponseEntity<?> findByUsername(@PathVariable("username") String username, @AuthenticationPrincipal User user) {
+        try {
+            if (userService.findByUsername(username).isPresent()) {
+                UserResponse u = new UserResponse(userService.findByUsername(username).get());
+                return ResponseEntity.status(HttpStatus.OK).body(u);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("username not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("check-email/{email}")
+    public ResponseEntity<?> checkEmail(@PathVariable("email") String email) {
+        try {
+            if (userService.findByEmail(email).isPresent()) {
+                return ResponseEntity.accepted().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("email not found");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

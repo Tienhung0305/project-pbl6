@@ -17,6 +17,10 @@ public class CartService {
     private final ICartRepository cartRepository;
     private final IUserRepository userRepository;
     private final IProductRepository productRepository;
+
+    public Long getCount() {
+        return cartRepository.count();
+    }
     public List<Cart> findAll() {
         return cartRepository.findAll();
     }

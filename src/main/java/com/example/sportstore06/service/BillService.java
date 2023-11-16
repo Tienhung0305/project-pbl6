@@ -25,6 +25,9 @@ public class BillService {
     private final IProductRepository productRepository;
     private final IBillDetailRepository billDetailRepository;
 
+    public Long getCount() {
+        return billRepository.count();
+    }
     public Optional<Bill> findById(int id) {
         return billRepository.findById(id);
     }

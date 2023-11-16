@@ -28,6 +28,10 @@ public class RoleController {
     private Integer page_size_default;
     private final RoleService roleService;
 
+    @GetMapping("/get-count")
+    public ResponseEntity<?> getCount() {
+        return ResponseEntity.status(HttpStatus.OK).body(roleService.getCount());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {

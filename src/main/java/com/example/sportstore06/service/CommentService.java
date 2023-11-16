@@ -22,6 +22,9 @@ public class CommentService {
     private final IProductRepository productRepository;
     private final IUserRepository userRepository;
 
+    public Long getCount() {
+        return commentRepository.count();
+    }
     public Optional<Comment> findById(int id) {
         return commentRepository.findById(id);
     }

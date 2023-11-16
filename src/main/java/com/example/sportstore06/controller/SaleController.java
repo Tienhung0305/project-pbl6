@@ -32,6 +32,10 @@ public class SaleController {
     private final ImageService imageService;
     private final BusinessService businessService;
 
+    @GetMapping("/get-count")
+    public ResponseEntity<?> getCount() {
+        return ResponseEntity.status(HttpStatus.OK).body(saleService.getCount());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {

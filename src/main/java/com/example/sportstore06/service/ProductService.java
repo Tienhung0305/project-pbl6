@@ -20,6 +20,9 @@ public class ProductService {
     private final ICategoryRepository categoryRepository;
     private final IImageRepository iImageRepository;
 
+    public Long getCount() {
+        return productRepository.count();
+    }
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }

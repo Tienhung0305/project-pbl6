@@ -19,6 +19,10 @@ import java.util.Optional;
 public class SaleService {
     private final ISaleRepository saleRepository;
     private final IImageRepository iImageRepository;
+
+    public Long getCount() {
+        return saleRepository.count();
+    }
     public Optional<Sale> findById(int id) {
         return saleRepository.findById(id);
     }

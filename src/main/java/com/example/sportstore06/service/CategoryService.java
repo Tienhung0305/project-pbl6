@@ -30,6 +30,9 @@ public class CategoryService {
     private final ICategoryRepository categoryRepository;
     private final IImageRepository imageRepository;
 
+    public Long getCount() {
+        return categoryRepository.count();
+    }
     public Optional<Category> findById(int id) {
         return categoryRepository.findById(id);
     }

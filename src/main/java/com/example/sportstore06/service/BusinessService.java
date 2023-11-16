@@ -25,6 +25,9 @@ import java.util.Optional;
 public class BusinessService {
     private final IBusinessRepository businessRepository;
     private final IImageRepository iImageRepository;
+    public Long getCount() {
+        return businessRepository.count();
+    }
     public Optional<Business> findById(int id) {
         return businessRepository.findById(id);
     }
