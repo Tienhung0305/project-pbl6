@@ -35,6 +35,7 @@ public class ProductResponse {
         this.id = product.getId();
         this.name = product.getName();
         this.detail = product.getDetail();
+        this.quantity = product.getQuantity();
         this.price = product.getPrice();
         this.attribute = product.getAttribute();
         this.brand = product.getBrand();
