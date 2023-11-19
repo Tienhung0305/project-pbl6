@@ -23,7 +23,7 @@ public class ImageService {
     public Long getCount() {
         return iImageRepository.count();
     }
-    public Optional<Image> findById(int id) {
+    public Optional<Image> findById(Integer id) {
         return iImageRepository.findById(id);
     }
     public List<Image> SearchByName(String name) {
@@ -32,7 +32,7 @@ public class ImageService {
     public Page<Image> findByPage(Pageable pageable) {
         return iImageRepository.findByPage(pageable);
     }
-    public boolean deleteById(int id) {
+    public boolean deleteById(Integer id) {
         try {
             iImageRepository.deleteById(id);
             return true;
@@ -41,7 +41,7 @@ public class ImageService {
         }
     }
 
-    public void save(int id, ImageRequest request) {
+    public void save(Integer id, ImageRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
         if (iImageRepository.findById(id).isPresent()) {
@@ -61,7 +61,7 @@ public class ImageService {
         iImageRepository.save(u);
     }
 
-    public void change_url(int id, String url)
+    public void change_url(Integer id, String url)
     {
         if(iImageRepository.findById(id).isPresent())
         {

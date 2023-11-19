@@ -10,6 +10,7 @@ import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Category;
 import com.example.sportstore06.model.Product;
 import com.example.sportstore06.repository.ICategoryRepository;
+import com.example.sportstore06.repository.IGroupRepository;
 import com.example.sportstore06.repository.IImageRepository;
 import com.example.sportstore06.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import java.util.Optional;
 public class CategoryService {
     private final ICategoryRepository categoryRepository;
     private final IImageRepository imageRepository;
+    private final IGroupRepository groupRepository;
 
     public Long getCount() {
         return categoryRepository.count();
@@ -55,22 +57,11 @@ public class CategoryService {
     }
 
     public void save(int id, CategoryRequest request) {
-        Timestamp created_at;
-        Timestamp updated_at;
-        if (categoryRepository.findById(id).isPresent()) {
-            created_at = categoryRepository.findById(id).get().getCreated_at();
-            updated_at = new Timestamp(new Date().getTime());
-        } else {
-            created_at = new Timestamp(new Date().getTime());
-            updated_at = created_at;
-        }
 
         var c = Category.builder().
                 id(id).
                 name(request.getName()).
-                created_at(created_at).
-                updated_at(updated_at).
-                image(imageRepository.findById(request.getId_image()).get()).
+                group(groupRepository.findById(request.getId_group()).get()).
                 build();
         categoryRepository.save(c);
     }

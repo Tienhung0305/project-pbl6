@@ -137,9 +137,6 @@ public class UserController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("role not found");
                 }
             }
-            if (imageService.findById(request.getId_image()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
-            }
 
             //check exits
             if (userService.findByUsername(request.getUsername()).isPresent()) {
@@ -175,9 +172,6 @@ public class UserController {
                 if (ObRole.isEmpty()) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("role not found");
                 }
-            }
-            if (imageService.findById(request.getId_image()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
             }
 
             //check exits

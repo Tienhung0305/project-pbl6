@@ -2,6 +2,7 @@ package com.example.sportstore06.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -13,6 +14,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Reference;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -47,5 +50,9 @@ public class Comment {
     @JsonProperty("id_user")
     @JsonBackReference
     private User user;
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private Set<Image> imageSet = new HashSet<>();
 
 }

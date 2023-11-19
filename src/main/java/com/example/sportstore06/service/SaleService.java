@@ -49,7 +49,6 @@ public class SaleService {
                 ended_at(request.getEnded_at()).
                 name(request.getName()).
                 content(request.getContent()).
-                image(iImageRepository.findById(request.getId_image()).get()).
                 build();
         saleRepository.save(s);
     }

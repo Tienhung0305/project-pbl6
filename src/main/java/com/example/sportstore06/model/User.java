@@ -55,6 +55,7 @@ public class User implements UserDetails {
     @Size(min = 1, max = 100)
     private String password;
     private String remember_token;
+    private String image_url;
     private Timestamp created_at;
     private Timestamp updated_at;
     @NotNull
@@ -82,13 +83,9 @@ public class User implements UserDetails {
     @JsonManagedReference
     private Set<Bill> billSet = new HashSet<>();
 
-//    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-//    @JsonManagedReference
-//    private Set<Cart> cartSet = new HashSet<>();
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
-    private Image image;
+    private Set<Cart> cartSet = new HashSet<>();
 
     @JsonIgnore
     @Override

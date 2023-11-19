@@ -4,6 +4,7 @@ package com.example.sportstore06.controller;
 import com.example.sportstore06.dao.request.ProductRequest;
 import com.example.sportstore06.dao.response.ProductResponse;
 import com.example.sportstore06.dao.response.UserResponse;
+import com.example.sportstore06.model.Category;
 import com.example.sportstore06.model.Product;
 import com.example.sportstore06.model.User;
 import com.example.sportstore06.service.*;
@@ -19,9 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin()
@@ -41,6 +40,7 @@ public class ProductController {
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getCount());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {
@@ -100,16 +100,18 @@ public class ProductController {
     }
 
     //update
-    @GetMapping("/find-by-category/{id_category}")
-    public ResponseEntity<?> findByCategory(@PathVariable("id_category") Integer id_category,
+    @GetMapping("/find-by-category/{set_id_category}")
+    public ResponseEntity<?> findByCategory(@PathVariable("set_id_category") List<Integer> set_id_category,
                                             @RequestParam(value = "page", required = false) Optional<Integer> page,
                                             @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                             @RequestParam(value = "sort", required = false) String sort,
                                             @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
                                             @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
-            if (categoryService.findById(id_category).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
+            for (Integer id : set_id_category) {
+                if (categoryService.findById(id).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
+                }
             }
             Pageable pageable;
             if (sort != null) {
@@ -120,9 +122,9 @@ public class ProductController {
             }
             Page<Product> byPage;
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                byPage = productService.findByCategory(pageable, state.get(), id_category);
+                byPage = productService.findByCategory(pageable, state.get(), set_id_category);
             } else {
-                byPage = productService.findByCategory(pageable, id_category);
+                byPage = productService.findByCategory(pageable, set_id_category);
             }
             Page<ProductResponse> responses = byPage.map(product -> new ProductResponse(product));
             return ResponseEntity.status(HttpStatus.OK).body(responses);
@@ -193,56 +195,31 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/find-by-brand/{brand}")
-    public ResponseEntity<?> findByBrand(@PathVariable("brand") String brand,
-                                         @RequestParam(value = "page", required = false) Optional<Integer> page,
-                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
-                                         @RequestParam(value = "sort", required = false) String sort,
-                                         @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
-                                         @RequestParam(value = "state", required = false) Optional<Integer> state) {
-        try {
-            if (productService.findByBrand(brand).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("brand not found");
-            }
-            Pageable pageable;
-            if (sort != null) {
-                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
-                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
-            } else {
-                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
-            }
-            Page<Product> byPage;
-            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                byPage = productService.findByBrand(pageable, state.get(), brand);
-            } else {
-                byPage = productService.findByBrand(pageable, brand);
-            }
-            Page<ProductResponse> responses = byPage.map(product -> new ProductResponse(product));
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
-        } catch (InvalidDataAccessApiUsageException exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
-        }
-    }
 
     //end
 
     @PostMapping("/save")
     private ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequest request) {
         try {
-            for (int id_image : request.getId_imageSet()) {
+            for (Integer id_image : request.getId_imageSet()) {
                 if (imageService.findById(id_image).isEmpty()) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
                 }
             }
+
+            for (Integer id_category : request.getId_categorySet()) {
+                if (categoryService.findById(id_category).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
+                }
+            }
+
             if (businessService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             }
             if (request.getId_sale() != null && saleService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
             }
-            if (request.getId_category() != null && categoryService.findById(request.getId_category()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
-            }
+
             productService.save(0, request);
             return ResponseEntity.accepted().build();
         } catch (Exception e) {
@@ -262,14 +239,16 @@ public class ProductController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
                 }
             }
+            for (Integer id_category : request.getId_categorySet()) {
+                if (categoryService.findById(id_category).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
+                }
+            }
             if (businessService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             }
             if (request.getId_sale() != null && saleService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
-            }
-            if (request.getId_category() != null && categoryService.findById(request.getId_category()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
             }
             productService.save(id, request);
             return ResponseEntity.accepted().build();

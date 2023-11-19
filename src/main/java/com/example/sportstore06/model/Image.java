@@ -18,30 +18,12 @@ import java.sql.Timestamp;
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String name;
     private Timestamp created_at;
     private Timestamp updated_at;
     @NotBlank
     private String url;
-
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_category", referencedColumnName = "id", unique = true)
-    @JsonBackReference
-    private Category category;
-
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_user", referencedColumnName = "id", unique = true)
-    @JsonBackReference
-    private User user;
-
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_business", referencedColumnName = "id", unique = true)
-    @JsonBackReference
-    private Business business;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
@@ -55,9 +37,4 @@ public class Image {
     @JsonBackReference
     private Comment comment;
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_sale", referencedColumnName = "id", unique = true)
-    @JsonBackReference
-    private Sale sale;
 }

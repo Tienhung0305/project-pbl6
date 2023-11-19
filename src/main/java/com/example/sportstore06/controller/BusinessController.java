@@ -105,12 +105,6 @@ public class BusinessController {
             if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
             }
-            if (request.getState() < 0 || request.getState() > 3) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("state not found");
-            }
-            if (imageService.findById(request.getId_image()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
-            }
             //check exits
             if (businessService.findByName(request.getName()).isPresent()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("name already exists");
@@ -132,12 +126,6 @@ public class BusinessController {
             if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
             }
-            if (request.getState() < 0 || request.getState() > 3) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("state not found");
-            }
-            if (imageService.findById(request.getId_image()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
-            }
             //check exits
             if (businessService.findByName(request.getName()).isPresent() &&
                     businessService.findByName(request.getName()).get().getId() != id) {
@@ -149,40 +137,4 @@ public class BusinessController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
-    @PutMapping("/change-state/{id}")
-    private ResponseEntity<?> changeState(@PathVariable("id") Integer id,
-                                          @RequestParam(value = "state", required = true) Integer state) {
-        try {
-            if (businessService.findById(id).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
-            } else if (state < 0 || state > 3) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("state not found");
-            } else {
-                businessService.changeState(id, state);
-                return ResponseEntity.accepted().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/delete/{id}")
-    private ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
-        try {
-            if (businessService.findById(id).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
-            } else {
-                boolean checkDelete = businessService.deleteById(id);
-                if (!checkDelete) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't delete");
-                }
-                return ResponseEntity.accepted().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-
 }

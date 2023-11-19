@@ -1,6 +1,7 @@
 package com.example.sportstore06.dao.response;
 
 import com.example.sportstore06.model.Category;
+import com.example.sportstore06.model.Group;
 import com.example.sportstore06.model.Image;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,15 +17,13 @@ import java.sql.Timestamp;
 public class CategoryResponse {
     private int id;
     private String name;
-    private Timestamp created_at;
-    private Timestamp updated_at;
-    private Image image;
+    private Integer group_id;
+    private String group_name;
     public CategoryResponse(Category category)
     {
         this.id = category.getId();
         this.name = category.getName();
-        this.created_at = category.getCreated_at();
-        this.updated_at = category.getUpdated_at();
-        this.image = category.getImage();
+        this.group_id = category.getGroup().getId();
+        this.group_name = category.getGroup().getName();
     }
 }

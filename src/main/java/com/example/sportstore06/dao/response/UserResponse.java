@@ -27,7 +27,7 @@ public class UserResponse {
     private String address;
     private String username;
     private Set<String> roles;
-    private Image image;
+    private String image_url;
     private Timestamp created_at;
     private Timestamp updated_at;
     private Integer state;
@@ -44,7 +44,7 @@ public class UserResponse {
         this.state = user.getState();
         this.created_at = user.getCreated_at();
         this.updated_at = user.getUpdated_at();
-        this.image = user.getImage();
+        this.image_url = user.getImage_url();
         this.roles = user.getRoleSet()
                 .stream()
                 .map(role -> role.getName())

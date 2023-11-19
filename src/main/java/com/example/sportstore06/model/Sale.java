@@ -37,8 +37,4 @@ public class Sale {
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Product> productSet = new HashSet<>();
-
-    @OneToOne(mappedBy = "sale", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Image image;
 }

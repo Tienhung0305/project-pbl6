@@ -42,9 +42,9 @@ public class UserRequest {
     @Min(value = 0, message = "state must is (0,1,2)")
     @Max(value = 3, message = "state must is (0,1,2)")
     private Integer state;
+    private String image_url;
 
     @NotNull(message = "roles must not be null")
     private Set<String> roles;
 
-    private Integer id_image;
 }

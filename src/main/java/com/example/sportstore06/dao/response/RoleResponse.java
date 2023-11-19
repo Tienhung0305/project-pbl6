@@ -18,7 +18,6 @@ import lombok.Setter;
 public class RoleResponse {
     private int id;
     private String name;
-
     public RoleResponse (Role role)
     {
         this.id = role.getId();

@@ -4,6 +4,7 @@ import com.example.sportstore06.dao.request.CommentRequest;
 import com.example.sportstore06.dao.response.CommentResponse;
 import com.example.sportstore06.model.Comment;
 import com.example.sportstore06.service.CommentService;
+import com.example.sportstore06.service.ImageService;
 import com.example.sportstore06.service.ProductService;
 import com.example.sportstore06.service.UserService;
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ public class CommentController {
     private final CommentService commentService;
     private final ProductService productService;
     private final UserService userService;
+    private final ImageService imageService;
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
@@ -97,6 +99,11 @@ public class CommentController {
     @PostMapping("/save")
     private ResponseEntity<?> addComment(@Valid @RequestBody CommentRequest request) {
         try {
+            for (int id_image : request.getId_imageSet()) {
+                if (imageService.findById(id_image).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+                }
+            }
             if (productService.findById(request.getId_product()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found ");
             } else if (userService.findById(request.getId_user()).isEmpty()) {
@@ -118,6 +125,11 @@ public class CommentController {
         try {
             if (commentService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id comment not found");
+            }
+            for (int id_image : request.getId_imageSet()) {
+                if (imageService.findById(id_image).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+                }
             }
             if (productService.findById(request.getId_product()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found ");

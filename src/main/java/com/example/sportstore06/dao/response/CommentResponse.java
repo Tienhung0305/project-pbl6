@@ -1,12 +1,15 @@
 package com.example.sportstore06.dao.response;
 
 import com.example.sportstore06.model.Comment;
+import com.example.sportstore06.model.Image;
 import com.example.sportstore06.repository.ICommentRepository;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,6 +24,7 @@ public class CommentResponse {
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
+    private Set<Image> imageSet = new HashSet<>();
 
     public CommentResponse(Comment comment, Comment reply) {
         this.id = comment.getId();
@@ -31,5 +35,6 @@ public class CommentResponse {
         this.created_at = comment.getCreated_at();
         this.updated_at = comment.getUpdated_at();
         this.id_reply = reply != null ? reply.getId() : null;
+        this.imageSet = comment.getImageSet();
     }
 }

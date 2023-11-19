@@ -23,6 +23,7 @@ public class ProductService {
     public Long getCount() {
         return productRepository.count();
     }
+
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
@@ -36,35 +37,30 @@ public class ProductService {
     }
 
     //begin update
-    public List<Product> findByBrand(String brand)
-    {
-        return productRepository.findByBrand(brand);
+    public Page<Product> findByCategory(Pageable pageable, List<Integer> categoryIds) {
+        return productRepository.findByCategory(pageable, categoryIds);
     }
-    public Page<Product> findByCategory(Pageable pageable, Integer id_category) {
-        return productRepository.findByCategory(pageable, id_category);
+
+    public Page<Product> findByCategory(Pageable pageable, Integer state, List<Integer> categoryIds) {
+        return productRepository.findByCategory(pageable, state, categoryIds);
     }
+
     public Page<Product> findByBusiness(Pageable pageable, Integer id_business) {
         return productRepository.findByBusiness(pageable, id_business);
     }
+
+    public Page<Product> findByBusiness(Pageable pageable, Integer state, Integer id_business) {
+        return productRepository.findByBusiness(pageable, state, id_business);
+    }
+
     public Page<Product> findBySale(Pageable pageable, Integer id_sale) {
         return productRepository.findBySale(pageable, id_sale);
     }
-    public Page<Product> findByBrand(Pageable pageable, String brand) {
-        return productRepository.findByBrand(pageable, brand);
+
+    public Page<Product> findBySale(Pageable pageable, Integer state, Integer id_sale) {
+        return productRepository.findBySale(pageable, state, id_sale);
     }
-    //
-    public Page<Product> findByCategory(Pageable pageable, Integer state, Integer id_category) {
-        return productRepository.findByCategory(pageable, state, id_category);
-    }
-    public Page<Product> findByBusiness(Pageable pageable,Integer state, Integer id_business) {
-        return productRepository.findByBusiness(pageable, state, id_business);
-    }
-    public Page<Product> findBySale(Pageable pageable,Integer state, Integer id_sale) {
-        return productRepository.findBySale(pageable,state, id_sale);
-    }
-    public Page<Product> findByBrand(Pageable pageable,Integer state, String brand) {
-        return productRepository.findByBrand(pageable,state, brand);
-    }
+
 
     //end
 
@@ -97,20 +93,27 @@ public class ProductService {
         }
 
         Set<Image> setImage = new HashSet<>();
-        for (int i : request.getId_imageSet()) {
+        for (Integer i : request.getId_imageSet()) {
             setImage.add(iImageRepository.findById(i).get());
         }
+        request.getId_categorySet();
+
+        Set<Category> categories = new HashSet<>();
+        for (Integer i : request.getId_categorySet()) {
+            Optional<Category> Ob = categoryRepository.findById(i);
+            categories.add(Ob.get());
+        }
+
         var u = Product.builder().
                 id(id).
                 name(request.getName()).
                 detail(request.getDetail()).
                 price(request.getPrice()).
                 attribute(request.getAttribute()).
-                brand(request.getBrand()).
                 quantity(request.getQuantity()).
                 business(businessRepository.findById(request.getId_business()).get()).
-                sale(request.getId_category() == null ? null : saleRepository.findById(request.getId_sale()).get()).
-                category(request.getId_category() == null ? null : categoryRepository.findById(request.getId_category()).get()).
+                sale(request.getId_sale() == null ? null : saleRepository.findById(request.getId_sale()).get()).
+                categorySet(categories).
                 created_at(created_at).
                 updated_at(updated_at).
                 state(request.getState()).

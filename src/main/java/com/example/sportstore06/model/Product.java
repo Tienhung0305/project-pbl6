@@ -28,18 +28,24 @@ public class Product {
     @Min(value = 0)
     private Double price;
     private String attribute;
-    private String brand;
     @Min(value = 0)
     private Integer quantity;
     //private int id_business;
     //private int id_sale;
-    //private int id_category;
-    private Timestamp created_at;
+     private Timestamp created_at;
     private Timestamp updated_at;
     @NotNull
     @Min(value = 0)
     @Max(value = 3)
     private Integer state;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "product_categories",
+            joinColumns = @JoinColumn(name = "id_product"),
+            inverseJoinColumns = @JoinColumn(name = "id_category")
+    )
+    @JsonManagedReference
+    Set<Category> categorySet = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_business", nullable = false, referencedColumnName = "id")
@@ -47,22 +53,17 @@ public class Product {
     private Business business;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_category", referencedColumnName = "id")
+    @JoinColumn(name = "id_sale", referencedColumnName = "id")
     @JsonBackReference
-    private Category category;
+    private Sale sale;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<BillDetail> billDetailSet = new HashSet<>();
 
-//    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
-//    @JsonManagedReference
-//    private Set<Cart> cartSet = new HashSet<>();
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_sale", referencedColumnName = "id")
-    @JsonBackReference
-    private Sale sale;
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<Cart> cartSet = new HashSet<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonManagedReference

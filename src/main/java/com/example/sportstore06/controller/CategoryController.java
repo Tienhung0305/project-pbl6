@@ -5,7 +5,9 @@ import com.example.sportstore06.dao.response.CategoryResponse;
 import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.model.Category;
 import com.example.sportstore06.model.User;
+import com.example.sportstore06.service.BusinessService;
 import com.example.sportstore06.service.CategoryService;
+import com.example.sportstore06.service.GroupService;
 import com.example.sportstore06.service.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,7 @@ public class CategoryController {
     @Value("${page_size_default}")
     private Integer page_size_default;
     private final CategoryService categoryService;
-    private final ImageService imageService;
+    private final GroupService groupService;
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
@@ -85,8 +87,8 @@ public class CategoryController {
     @PostMapping("/save")
     private ResponseEntity<?> addCategory(@Valid @RequestBody CategoryRequest request) {
         try {
-            if (imageService.findById(request.getId_image()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found ");
+            if (groupService.findById(request.getId_group()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id group not found ");
             }
             categoryService.save(0, request);
             return ResponseEntity.accepted().build();
@@ -102,8 +104,8 @@ public class CategoryController {
             if (categoryService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found ");
             }
-            if (imageService.findById(request.getId_image()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found ");
+            if (groupService.findById(request.getId_group()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id group not found ");
             }
             categoryService.save(id, request);
             return ResponseEntity.accepted().build();

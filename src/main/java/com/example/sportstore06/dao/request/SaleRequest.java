@@ -33,6 +33,4 @@ public class SaleRequest {
     @NotNull(message = "name must not be null")
     private String name;
     private String content;
-    @NotNull(message = "id_image must not be null")
-    private Integer id_image;
 }

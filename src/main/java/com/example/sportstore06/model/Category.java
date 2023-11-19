@@ -2,6 +2,7 @@ package com.example.sportstore06.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,14 +22,15 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    private Timestamp created_at;
-    private Timestamp updated_at;
+    //private int group_id;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @ManyToMany(mappedBy = "categorySet", fetch = FetchType.EAGER)
+    @JsonBackReference
     private Set<Product> productSet = new HashSet<>();
 
-    @OneToOne(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JsonManagedReference
-    private Image image;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id", nullable = false, referencedColumnName = "id")
+    @JsonBackReference
+    private Group group;
+
 }

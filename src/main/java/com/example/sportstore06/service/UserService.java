@@ -80,8 +80,6 @@ public class UserService {
             roles.add(ObRole.get());
         }
 
-        Image image = iImageRepository.findById(request.getId_image()).get();
-
         var u = User.builder().
                 id(id).
                 name(request.getName()).
@@ -97,7 +95,7 @@ public class UserService {
                 created_at(created_at).
                 updated_at(updated_at).
                 roleSet(roles).
-                image(image).
+                image_url(request.getImage_url()).
                 build();
         userRepository.save(u);
     }

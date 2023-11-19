@@ -85,10 +85,6 @@ public class SaleController {
     @PostMapping("/save")
     private ResponseEntity<?> addSale(@Valid @RequestBody SaleRequest request) {
         try {
-
-            if (imageService.findById(request.getId_image()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
-            }
             if (businessService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             }
@@ -105,9 +101,6 @@ public class SaleController {
         try {
             if (saleService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
-            }
-            if (imageService.findById(request.getId_image()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
             }
             if (businessService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");

@@ -26,12 +26,6 @@ public class Business {
     private String name;
     private String about;
     private Integer tax;
-    @NotNull(message = "state must not be null")
-    @Min(value = 0, message = "state must is (0,1,2)")
-    @Max(value = 3, message = "state must is (0,1,2)")
-    private Integer state;
-    private Timestamp created_at;
-    private Timestamp updated_at;
 
     @OneToMany(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonManagedReference
@@ -41,8 +35,4 @@ public class Business {
     @JoinColumn(name = "id", referencedColumnName = "id")
     @JsonBackReference
     private User user;
-
-    @OneToOne(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Image image;
 }

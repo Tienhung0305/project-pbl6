@@ -22,8 +22,6 @@ public class SaleResponse {
     private Timestamp ended_at;
     private String name;
     private String content;
-    private Integer id_image;
-
     public SaleResponse(Sale sale) {
         this.id = sale.getId();
         this.discount = sale.getDiscount();
@@ -32,6 +30,5 @@ public class SaleResponse {
         this.ended_at = sale.getEnded_at();
         this.name = sale.getName();
         this.content = sale.getContent();
-        this.id_image = sale.getImage() == null ? null : sale.getImage().getId();
     }
 }

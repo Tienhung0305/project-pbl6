@@ -12,6 +12,8 @@ import lombok.Setter;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -27,7 +29,7 @@ public class BillResponse {
     private Timestamp created_at;
     private Timestamp updated_at;
     private Boolean state_null;
-    private Set<BillDetail> bill_detailSet = new HashSet<>();
+    private Set<BillDetailResponse> bill_detailSet = new HashSet<>();
 
     public BillResponse(Bill bill) {
         this.id = bill.getId();
@@ -38,6 +40,8 @@ public class BillResponse {
         this.created_at = bill.getCreated_at();
         this.updated_at = bill.getUpdated_at();
         this.state_null = bill.getState_null();
-        this.bill_detailSet = bill.getBill_detailSet();
+        Set<BillDetail> billDetailSet = bill.getBill_detailSet();
+        Stream<BillDetailResponse> response = billDetailSet.stream().map(billDetail -> new BillDetailResponse(billDetail));
+        this.bill_detailSet = response.collect(Collectors.toSet());
     }
 }

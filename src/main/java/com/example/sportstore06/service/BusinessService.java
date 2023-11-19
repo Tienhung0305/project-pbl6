@@ -24,7 +24,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BusinessService {
     private final IBusinessRepository businessRepository;
-    private final IImageRepository iImageRepository;
     public Long getCount() {
         return businessRepository.count();
     }
@@ -60,31 +59,13 @@ public class BusinessService {
         }
     }
     public void save(int id, BusinessRequest request) {
-        Timestamp created_at;
-        Timestamp updated_at;
-        if (businessRepository.findById(id).isPresent()) {
-            created_at = businessRepository.findById(id).get().getCreated_at();
-            updated_at = new Timestamp(new Date().getTime());
-        } else {
-            created_at = new Timestamp(new Date().getTime());
-            updated_at = created_at;
-        }
         var b = Business.builder().
                 id(request.getId_user()).
                 name(request.getName()).
                 about(request.getAbout()).
                 tax(request.getTax()).
-                state(request.getState()).
-                created_at(created_at).
-                updated_at(updated_at).
-                image(iImageRepository.findById(request.getId_image()).get()).
                 build();
         businessRepository.save(b);
     }
 
-    public void changeState(int id, int state) {
-        Business business = businessRepository.findById(id).get();
-        business.setState(state);
-        businessRepository.save(business);
-    }
 }

@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,4 +29,6 @@ public class CommentRequest {
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
+
+    private Set<Integer> id_imageSet = new HashSet<>();
 }
