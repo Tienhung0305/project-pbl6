@@ -54,7 +54,7 @@ public class ImageService {
         var u = Image.builder().
                 id(id).
                 name(request.getName()).
-                is_main(request.getIs_main()).
+                main(request.getMain()).
                 created_at(created_at).
                 updated_at(updated_at).
                 url(request.getUrl()).

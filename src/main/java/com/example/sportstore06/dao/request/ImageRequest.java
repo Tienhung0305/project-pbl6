@@ -20,7 +20,7 @@ public class ImageRequest {
     private String name;
     private Timestamp created_at;
     private Timestamp updated_at;
-    private Boolean is_main;
+    private Boolean main;
     @NotBlank(message = "url must not be blank")
     private String url;
 }

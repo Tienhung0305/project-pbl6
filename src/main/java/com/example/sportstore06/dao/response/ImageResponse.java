@@ -22,7 +22,7 @@ public class ImageResponse {
     private String url;
     private Integer id_product;
     private Integer id_comment;
-    private Boolean is_main;
+    private Boolean main;
     public ImageResponse(Image image) {
         this.id = image.getId();
         this.name = image.getName();
@@ -31,6 +31,6 @@ public class ImageResponse {
         this.url = image.getUrl();
         this.id_product = image.getProduct() == null ? null : image.getProduct().getId();
         this.id_comment = image.getComment() == null ? null : image.getComment().getId();
-        this.is_main = image.getIs_main();
+        this.main = image.getMain();
     }
 }
