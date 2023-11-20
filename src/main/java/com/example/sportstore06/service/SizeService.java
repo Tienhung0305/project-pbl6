@@ -6,7 +6,9 @@ import com.example.sportstore06.model.Category;
 import com.example.sportstore06.model.Image;
 import com.example.sportstore06.model.Product;
 import com.example.sportstore06.model.SizeProduct;
+import com.example.sportstore06.repository.IImageRepository;
 import com.example.sportstore06.repository.IProductRepository;
+import com.example.sportstore06.repository.ISaleRepository;
 import com.example.sportstore06.repository.ISizeProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,16 +24,24 @@ import java.util.Set;
 public class SizeService {
     private final ISizeProductRepository sizeProductRepository;
     private final IProductRepository productRepository;
+    private final IImageRepository iImageRepository;
     public Optional<SizeProduct> findById(int id) {
         return sizeProductRepository.findById(id);
     }
 
     public void save(int id, SizeProductRequest request) {
+
+        Set<Image> setImage = new HashSet<>();
+        for (Integer i : request.getId_imageSet()) {
+            setImage.add(iImageRepository.findById(i).get());
+        }
+
         var u = SizeProduct.builder().
                 id(id).
                 product(productRepository.findById(request.getId_product()).get()).
                 size(request.getSize()).
                 color(request.getColor()).
+                imageSet(setImage).
                 build();
         sizeProductRepository.save(u);
     }

@@ -41,7 +41,7 @@ public class ImageService {
         }
     }
 
-    public void save(Integer id, ImageRequest request) {
+    public Integer save(Integer id, ImageRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
         if (iImageRepository.findById(id).isPresent()) {
@@ -59,6 +59,7 @@ public class ImageService {
                 url(request.getUrl()).
                 build();
         iImageRepository.save(u);
+        return u.getId();
     }
 
     public void change_url(Integer id, String url)

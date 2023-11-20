@@ -1,9 +1,13 @@
 package com.example.sportstore06.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -26,4 +30,8 @@ public class SizeProduct {
     @JoinColumn(name = "id_product", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private Product product;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private Set<Image> imageSet = new HashSet<>();
 }

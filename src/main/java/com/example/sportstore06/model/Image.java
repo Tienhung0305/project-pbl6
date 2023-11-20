@@ -3,6 +3,7 @@ package com.example.sportstore06.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import jakarta.validation.constraints.NotBlank;
@@ -36,5 +37,11 @@ public class Image {
     @JoinColumn(name = "id_comment", referencedColumnName = "id")
     @JsonBackReference
     private Comment comment;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_size", referencedColumnName = "id")
+    @JsonBackReference
+    private SizeProduct size;
 
 }

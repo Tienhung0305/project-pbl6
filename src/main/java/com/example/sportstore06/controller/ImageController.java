@@ -86,8 +86,8 @@ public class ImageController {
     @PostMapping("/save")
     private ResponseEntity<?> addImage(@Valid @RequestBody ImageRequest request) {
         try {
-            imageService.save(0, request);
-            return ResponseEntity.accepted().build();
+            Integer id = imageService.save(0, request);
+            return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (
                 Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -102,7 +102,7 @@ public class ImageController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
             }
             imageService.save(id, request);
-            return ResponseEntity.accepted().build();
+            return ResponseEntity.status(HttpStatus.OK).body(id);
         } catch (
                 Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

@@ -2,6 +2,7 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.ProductRequest;
 import com.example.sportstore06.dao.request.SizeProductRequest;
+import com.example.sportstore06.service.ImageService;
 import com.example.sportstore06.service.ProductService;
 import com.example.sportstore06.service.SizeService;
 import jakarta.validation.Valid;
@@ -17,11 +18,17 @@ import org.springframework.web.bind.annotation.*;
 public class SizeController {
     private final SizeService sizeService;
     private final ProductService productService;
+    private final ImageService imageService;
     @PostMapping("/save")
     private ResponseEntity<?> addSize(@Valid @RequestBody SizeProductRequest request) {
         try {
             if (productService.findById(request.getId_product()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
+            }
+            for (int id_image : request.getId_imageSet()) {
+                if (imageService.findById(id_image).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+                }
             }
             sizeService.save(0, request);
             return ResponseEntity.accepted().build();
@@ -39,6 +46,11 @@ public class SizeController {
             }
             if (productService.findById(request.getId_product()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
+            }
+            for (int id_image : request.getId_imageSet()) {
+                if (imageService.findById(id_image).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+                }
             }
             sizeService.save(id, request);
             return ResponseEntity.accepted().build();

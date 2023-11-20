@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,4 +22,5 @@ public class SizeProductRequest {
     @Min(value = 1,message = "quantity must greater than 1")
     private Integer quantity;
     private String color;
+    private Set<Integer> id_imageSet = new HashSet<>();
 }
