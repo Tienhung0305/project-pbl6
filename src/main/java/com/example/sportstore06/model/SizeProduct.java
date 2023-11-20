@@ -23,15 +23,10 @@ public class SizeProduct {
     //private Integer id_product;
     @Min(value = 1)
     private Integer quantity;
-    private String color;
     private String size;
 
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "id_product", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private Product product;
-
-    @OneToMany(mappedBy = "size", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JsonManagedReference
-    private Set<Image> imageSet = new HashSet<>();
 }

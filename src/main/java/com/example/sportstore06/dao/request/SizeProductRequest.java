@@ -21,6 +21,5 @@ public class SizeProductRequest {
     private String size;
     @Min(value = 1,message = "quantity must greater than 1")
     private Integer quantity;
-    private String color;
     private Set<Integer> id_imageSet = new HashSet<>();
 }

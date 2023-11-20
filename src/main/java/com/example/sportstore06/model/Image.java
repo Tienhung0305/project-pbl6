@@ -37,11 +37,4 @@ public class Image {
     @JoinColumn(name = "id_comment", referencedColumnName = "id")
     @JsonBackReference
     private Comment comment;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_size", referencedColumnName = "id")
-    @JsonBackReference
-    private SizeProduct size;
-
 }

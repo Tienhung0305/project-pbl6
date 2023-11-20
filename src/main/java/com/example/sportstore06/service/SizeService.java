@@ -30,18 +30,10 @@ public class SizeService {
     }
 
     public void save(int id, SizeProductRequest request) {
-
-        Set<Image> setImage = new HashSet<>();
-        for (Integer i : request.getId_imageSet()) {
-            setImage.add(iImageRepository.findById(i).get());
-        }
-
         var u = SizeProduct.builder().
                 id(id).
                 product(productRepository.findById(request.getId_product()).get()).
                 size(request.getSize()).
-                color(request.getColor()).
-                imageSet(setImage).
                 build();
         sizeProductRepository.save(u);
     }

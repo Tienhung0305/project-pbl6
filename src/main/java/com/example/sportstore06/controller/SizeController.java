@@ -25,11 +25,6 @@ public class SizeController {
             if (productService.findById(request.getId_product()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
             }
-            for (int id_image : request.getId_imageSet()) {
-                if (imageService.findById(id_image).isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
-                }
-            }
             sizeService.save(0, request);
             return ResponseEntity.accepted().build();
         } catch (Exception e) {
@@ -46,11 +41,6 @@ public class SizeController {
             }
             if (productService.findById(request.getId_product()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
-            }
-            for (int id_image : request.getId_imageSet()) {
-                if (imageService.findById(id_image).isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
-                }
             }
             sizeService.save(id, request);
             return ResponseEntity.accepted().build();
