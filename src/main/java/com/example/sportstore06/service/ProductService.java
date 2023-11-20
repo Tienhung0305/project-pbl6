@@ -110,7 +110,6 @@ public class ProductService {
                 detail(request.getDetail()).
                 price(request.getPrice()).
                 attribute(request.getAttribute()).
-                quantity(request.getQuantity()).
                 business(businessRepository.findById(request.getId_business()).get()).
                 sale(request.getId_sale() == null ? null : saleRepository.findById(request.getId_sale()).get()).
                 categorySet(categories).

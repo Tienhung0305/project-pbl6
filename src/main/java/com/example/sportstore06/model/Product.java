@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -22,14 +23,13 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotBlank
-    @Size(min = 1, max = 100)
+    @Length(min = 1, max = 100)
     private String name;
     private String detail;
     @Min(value = 0)
     private Double price;
     private String attribute;
-    @Min(value = 0)
-    private Integer quantity;
+
     //private int id_business;
     //private int id_sale;
      private Timestamp created_at;
@@ -68,4 +68,8 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<SizeProduct> sizeSet = new HashSet<>();
 }

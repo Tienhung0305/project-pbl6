@@ -24,8 +24,6 @@ public class ProductRequest {
     @Min(value = 0, message = "price must be greater 0")
     private Double price;
     private String attribute;
-    @Min(value = 0, message = "quantity must be greater 0")
-    private Integer quantity;
     @NotNull(message = "id business must not be null")
     private Integer id_business;
     private Integer id_sale;

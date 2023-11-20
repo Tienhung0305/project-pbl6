@@ -16,6 +16,8 @@ import java.util.Optional;
 public interface ICategoryRepository extends JpaRepository<Category,Integer> {
     @Query("SELECT i FROM Category i")
     Page<Category> findByPage(Pageable pageable);
+    @Query("SELECT i FROM Category i")
+    List<Category> findByGroupName(Pageable pageable);
     @Query("SELECT i FROM Category i WHERE i.name LIKE %:Name%")
     List<Category> SearchByName(String Name);
 }

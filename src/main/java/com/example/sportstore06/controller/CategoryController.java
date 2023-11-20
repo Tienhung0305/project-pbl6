@@ -5,6 +5,7 @@ import com.example.sportstore06.dao.response.CategoryResponse;
 import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.model.Category;
 import com.example.sportstore06.model.User;
+import com.example.sportstore06.repository.IGroupRepository;
 import com.example.sportstore06.service.BusinessService;
 import com.example.sportstore06.service.CategoryService;
 import com.example.sportstore06.service.GroupService;
@@ -33,6 +34,11 @@ public class CategoryController {
     private Integer page_size_default;
     private final CategoryService categoryService;
     private final GroupService groupService;
+
+    @GetMapping("/get-group")
+    public ResponseEntity<?> getGroup() {
+        return ResponseEntity.status(HttpStatus.OK).body(groupService.findAll());
+    }
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
