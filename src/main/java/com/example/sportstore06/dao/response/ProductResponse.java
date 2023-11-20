@@ -12,6 +12,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -44,6 +45,11 @@ public class ProductResponse {
                 this.brand = category.getName();
             }
         }
+        Set<Image> collect = product.getImageSet()
+                .stream()
+                .sorted((image1, image2) -> image2.getUpdated_at().compareTo(image1.getUpdated_at()))
+                .collect(Collectors.toSet());
+
         this.attribute = product.getAttribute();
         this.id_business = product.getBusiness() != null ? product.getBusiness().getId() : null;
         this.id_sale = product.getSale() != null ? product.getSale().getId() : null;
@@ -51,7 +57,7 @@ public class ProductResponse {
         this.created_at = product.getCreated_at();
         this.updated_at = product.getUpdated_at();
         this.state = product.getState();
-        this.imageSet = product.getImageSet();
+        this.imageSet = collect;
         this.sizeProduct = product.getSizeSet();
     }
 }

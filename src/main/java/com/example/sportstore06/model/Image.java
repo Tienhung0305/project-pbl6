@@ -21,6 +21,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    private Integer is_main;
     private Timestamp created_at;
     private Timestamp updated_at;
     @NotBlank
