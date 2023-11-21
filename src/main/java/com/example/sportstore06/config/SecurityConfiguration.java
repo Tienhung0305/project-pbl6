@@ -3,6 +3,7 @@ package com.example.sportstore06.config;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 import com.example.sportstore06.model.Permission;
+import com.example.sportstore06.repository.IPermissionRepository;
 import com.example.sportstore06.security.UserService;
 import com.example.sportstore06.service.RoleService;
 import org.springframework.context.annotation.Bean;
@@ -38,17 +39,31 @@ import java.util.stream.Collectors;
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
-    private final RoleService roleService;
+    private final IPermissionRepository permissionRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        List<Permission> all = permissionRepository.findAll();
+        String[] permissionRouter = new String[all.size()];
+        for (int i = 0; i < all.size(); i++) {
+            if(!all.get(i).equals("/api/v1/auth/**")) {
+                permissionRouter[i] = all.get(i).getRoute().trim();
+            }
+        }
+
         http
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.disable())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/**").permitAll()
-                                //.requestMatchers("/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN")
-                                .anyRequest().authenticated())
+                        request.requestMatchers("/api/v1/auth/**","/swagger-ui/**","/v3/api-docs/**")
+                                .permitAll()
+                                .requestMatchers(GET, permissionRouter).hasAnyAuthority("ROLE_ADMIN","ROLE_CUSTOMER","ROLE_BUSINESS")
+                                .requestMatchers(PUT, permissionRouter).hasAnyAuthority("ROLE_ADMIN")
+                                .requestMatchers(POST, permissionRouter).hasAnyAuthority("ROLE_ADMIN")
+                                .requestMatchers(DELETE, permissionRouter).hasAnyAuthority("ROLE_ADMIN")
+                                .anyRequest()
+                                .authenticated()
+                )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
