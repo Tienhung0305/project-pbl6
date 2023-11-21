@@ -36,11 +36,14 @@ public class CommentController {
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getCount());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {
             if (commentService.findById(id).isPresent()) {
-                CommentResponse p = new CommentResponse(commentService.findById(id).get(), commentService.findByReply(id).orElse(null));
+                CommentResponse p = new CommentResponse(
+                        commentService.findById(id).get(),
+                        commentService.findByReply(id));
                 return ResponseEntity.status(HttpStatus.OK).body(p);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id comment not found");
@@ -63,8 +66,10 @@ public class CommentController {
             } else {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
+
             Page<Comment> byPage = commentService.findByPage(pageable);
-            Page<CommentResponse> responses = byPage.map(comment -> new CommentResponse(comment, commentService.findByReply(comment.getId()).orElse(null)));
+            Page<CommentResponse> responses = byPage.map(comment ->
+                    new CommentResponse(comment, commentService.findByReply(comment.getId())));
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
@@ -89,8 +94,8 @@ public class CommentController {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
             Page<Comment> byPage = commentService.findByProduct(pageable, id_product);
-            Page<CommentResponse> responses = byPage.map(comment -> new CommentResponse(comment, commentService.findByReply(comment.getId()).orElse(null)));
-            return ResponseEntity.status(HttpStatus.OK).body(responses);
+            Page<CommentResponse> responses = byPage.map(comment ->
+                    new CommentResponse(comment, commentService.findByReply(comment.getId())));            return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }

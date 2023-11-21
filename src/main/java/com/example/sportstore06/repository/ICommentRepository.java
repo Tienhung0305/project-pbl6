@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,5 +18,5 @@ public interface ICommentRepository extends JpaRepository<Comment, Integer> {
     Page<Comment> findByPage(Pageable pageable);
     @Query("SELECT i FROM Comment i WHERE i.product.id = :id_product")
     Page<Comment> findByProduct(Pageable pageable, Integer id_product);
-    Optional<Comment> findByReply(Integer reply);
+    List<Comment> findByReply(Integer reply);
 }

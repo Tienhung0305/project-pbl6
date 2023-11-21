@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +26,7 @@ public class CommentService {
     public Long getCount() {
         return commentRepository.count();
     }
+
     public Optional<Comment> findById(int id) {
         return commentRepository.findById(id);
     }
@@ -34,7 +36,7 @@ public class CommentService {
     }
 
     public Page<Comment> findByProduct(Pageable pageable, Integer id_product) {
-        return commentRepository.findByProduct(pageable,id_product);
+        return commentRepository.findByProduct(pageable, id_product);
     }
 
     public boolean deleteById(int id) {
@@ -45,9 +47,11 @@ public class CommentService {
             return false;
         }
     }
-    public Optional<Comment> findByReply(Integer reply) {
+
+    public List<Comment> findByReply(Integer reply) {
         return commentRepository.findByReply(reply);
     }
+
     public void save(int id, CommentRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
