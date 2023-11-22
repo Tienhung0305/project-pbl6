@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/sale")
 @RequiredArgsConstructor
+@CrossOrigin()
 public class SaleController {
     @Value("${page_size_default}")
     private Integer page_size_default;

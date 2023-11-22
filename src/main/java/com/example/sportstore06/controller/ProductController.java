@@ -23,10 +23,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin()
+
 @RestController
 @RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
+@CrossOrigin()
 public class ProductController {
     @Value("${page_size_default}")
     private Integer page_size_default;
