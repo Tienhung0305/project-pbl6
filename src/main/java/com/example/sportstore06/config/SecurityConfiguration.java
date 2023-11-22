@@ -28,7 +28,11 @@ import static org.springframework.http.HttpMethod.PUT;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,12 +56,13 @@ public class SecurityConfiguration {
         }
 
         http
-                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.disable())
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/api/v1/auth/**","/swagger-ui/**","/v3/api-docs/**")
                                 .permitAll()
-                                .requestMatchers(GET, permissionRouter).hasAnyAuthority("ROLE_ADMIN","ROLE_CUSTOMER","ROLE_BUSINESS")
+                                .requestMatchers(GET, permissionRouter)
+                                .permitAll()
                                 .requestMatchers(PUT, permissionRouter).hasAnyAuthority("ROLE_ADMIN")
                                 .requestMatchers(POST, permissionRouter).hasAnyAuthority("ROLE_ADMIN")
                                 .requestMatchers(DELETE, permissionRouter).hasAnyAuthority("ROLE_ADMIN")
