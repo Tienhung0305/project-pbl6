@@ -74,6 +74,7 @@ public class CartController {
     @PostMapping("/save")
     private ResponseEntity<?> addCart(@Valid @RequestBody CartRequest request) {
         try {
+
             if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
             }
