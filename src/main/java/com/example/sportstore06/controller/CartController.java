@@ -63,19 +63,22 @@ public class CartController {
     public ResponseEntity<?> GetAllByIdUser(@PathVariable("id_user") Integer id_user) {
         try {
             if (userService.findById(id_user).isPresent()) {
-                List<Cart> carts = cartService.findAll();
+                List<Cart> carts = cartService.GetAllByIdUser(id_user);
                 Set<ProductCartResponse> products = new HashSet<>();
                 Set<Business> businesses = new HashSet<>();
                 Set<BusinessCartResponse> response = new HashSet<>();
                 for (Cart cart : carts) {
-                    businesses.add(businessService.findById(cart.getProduct().getId()).get());}
+                    businesses.add(businessService.findById(cart.getProduct().getId()).get());
+                    ProductCartResponse productCartResponse = new ProductCartResponse(cart);
+                    products.add(productCartResponse);
+                }
                 for (Business b : businesses) {
                     Set<ProductCartResponse> products_business = products.stream().filter(
                             product -> product.getProduct().getId_business() == b.getId()).collect(Collectors.toSet());
                     BusinessCartResponse businessCartResponse = new BusinessCartResponse(b,products_business);
                     response.add(businessCartResponse);
                 }
-                return ResponseEntity.status(HttpStatus.OK).body(response);
+                return ResponseEntity.status(HttpStatus.OK).body("OK");
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
             }
