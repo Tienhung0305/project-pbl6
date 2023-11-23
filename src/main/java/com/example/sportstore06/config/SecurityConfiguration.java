@@ -46,15 +46,6 @@ public class SecurityConfiguration {
     private final IPermissionRepository permissionRepository;
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         List<Permission> all = permissionRepository.findAll();
         String[] permissionRouter = new String[all.size()];
@@ -65,7 +56,7 @@ public class SecurityConfiguration {
         }
 
         http
-                .cors(cors -> cors.disable())
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/api/v1/auth/**","/swagger-ui/**","/v3/api-docs/**")
