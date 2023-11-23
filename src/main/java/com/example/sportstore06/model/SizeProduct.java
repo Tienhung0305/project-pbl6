@@ -29,4 +29,8 @@ public class SizeProduct {
     @JoinColumn(name = "id_product", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private Product product;
+
+    @OneToMany(mappedBy = "size", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<Cart> cartSet = new HashSet<>();
 }

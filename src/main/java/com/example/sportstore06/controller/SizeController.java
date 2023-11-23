@@ -2,6 +2,7 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.ProductRequest;
 import com.example.sportstore06.dao.request.SizeProductRequest;
+import com.example.sportstore06.dao.response.ProductResponse;
 import com.example.sportstore06.service.ImageService;
 import com.example.sportstore06.service.ProductService;
 import com.example.sportstore06.service.SizeService;
@@ -20,6 +21,20 @@ public class SizeController {
     private final SizeService sizeService;
     private final ProductService productService;
     private final ImageService imageService;
+
+    @GetMapping("/get-quantity/{id}")
+    public ResponseEntity<?> getQuantity(@PathVariable("id") Integer id) {
+        try {
+            if (sizeService.findById(id).isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(sizeService.findById(id).get().getQuantity());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id size not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/save")
     private ResponseEntity<?> addSize(@Valid @RequestBody SizeProductRequest request) {
         try {

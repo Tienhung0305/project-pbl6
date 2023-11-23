@@ -18,6 +18,7 @@ public class CartService {
     private final ICartRepository cartRepository;
     private final IUserRepository userRepository;
     private final IProductRepository productRepository;
+    private final ISizeProductRepository sizRepository;
 
     public Long getCount() {
         return cartRepository.count();
@@ -31,9 +32,10 @@ public class CartService {
         return cartRepository.findById(id);
     }
 
-    Optional<Cart> FindByIdUserAndIdProduct(Integer id_user, Integer id_product) {
-        return cartRepository.FindByIdUserAndIdProduct(id_user, id_product);
+    Optional<Cart> FindByIdUserAndIdSize(Integer id_user, Integer id_size) {
+        return cartRepository.FindByIdUserAndIdSize(id_user, id_size);
     }
+
     ;
 
     public List<Cart> GetAllByIdUser(Integer id) {
@@ -59,25 +61,31 @@ public class CartService {
             created_at = new Timestamp(new Date().getTime());
             updated_at = created_at;
         }
-        Optional<Cart> ObCart = cartRepository.FindByIdUserAndIdProduct(request.getId_user(), request.getId_product());
+        Optional<Cart> ObCart = cartRepository.FindByIdUserAndIdSize(request.getId_user(), request.getId_size());
         Integer q = request.getQuantity();
         if (ObCart.isPresent() && id != 0) {
             q = ObCart.get().getQuantity() + request.getQuantity();
         }
+        if (q >= sizRepository.findById(request.getId_size()).get().getQuantity()) {
+            q = sizRepository.findById(request.getId_size()).get().getQuantity();
+        }
         var c = Cart.builder().
                 id(id).
                 user(userRepository.findById(request.getId_user()).get()).
-                product(productRepository.findById(request.getId_product()).get()).
+                size(sizRepository.findById(request.getId_size()).get()).
                 quantity(q).
                 created_at(created_at).
                 updated_at(updated_at).
                 build();
         cartRepository.save(c);
-
     }
 
     public void changeQuantity(int id, int quantity) {
         Cart cart = cartRepository.findById(id).get();
+        Integer q = quantity;
+        if (q >= cart.getSize().getQuantity()) {
+            q = cart.getSize().getQuantity();
+        }
         cart.setQuantity(quantity);
         cartRepository.save(cart);
     }

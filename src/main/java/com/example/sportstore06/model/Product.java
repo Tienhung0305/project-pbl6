@@ -61,10 +61,6 @@ public class Product {
     @JsonManagedReference
     private Set<BillDetail> billDetailSet = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
-    @JsonManagedReference
-    private Set<Cart> cartSet = new HashSet<>();
-
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();

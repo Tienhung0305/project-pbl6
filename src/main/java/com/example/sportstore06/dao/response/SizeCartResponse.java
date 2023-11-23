@@ -1,7 +1,7 @@
 package com.example.sportstore06.dao.response;
 
 import com.example.sportstore06.model.Cart;
-import com.example.sportstore06.model.Product;
+import com.example.sportstore06.model.SizeProduct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,11 +12,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductCartResponse {
+public class SizeCartResponse {
     private Integer id_cart;
-    private ProductResponse product;
-    public ProductCartResponse(Cart cart) {
+    private SizeProduct size;
+    public SizeCartResponse(Cart cart) {
         this.id_cart = cart.getId();
-        this.product = new ProductResponse(cart.getProduct());
+        this.size = cart.getSize();
     }
 }
