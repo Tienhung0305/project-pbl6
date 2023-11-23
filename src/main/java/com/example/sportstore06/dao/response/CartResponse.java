@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartResponse {
+    private Integer id;
     private Integer id_user;
     private SizeProduct size;
     private Integer quantity;
@@ -23,6 +24,7 @@ public class CartResponse {
 
     public CartResponse(Cart cart)
     {
+        this.id = cart.getId();
         this.id_user = cart.getUser().getId();
         this.size = cart.getSize();
         this.quantity = cart.getQuantity();
