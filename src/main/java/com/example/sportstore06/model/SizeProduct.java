@@ -31,6 +31,6 @@ public class SizeProduct {
     private Product product;
 
     @OneToMany(mappedBy = "size", fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonBackReference
     private Set<Cart> cartSet = new HashSet<>();
 }

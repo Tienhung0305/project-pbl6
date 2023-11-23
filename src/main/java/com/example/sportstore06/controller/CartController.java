@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class CartController {
     private final CartService cartService;
     private final UserService userService;
-    private final ProductService productService;
     private final BusinessService businessService;
     private final SizeService sizeService;
     @GetMapping("/get-count")

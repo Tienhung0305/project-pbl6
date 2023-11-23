@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 public class CartResponse {
     private Integer id;
     private Integer id_user;
-    private SizeProduct size;
+    private SizeProductResponse sizeProduct;
     private Integer quantity;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -26,7 +26,7 @@ public class CartResponse {
     {
         this.id = cart.getId();
         this.id_user = cart.getUser().getId();
-        this.size = cart.getSize();
+        this.sizeProduct = new SizeProductResponse(cart.getSize());
         this.quantity = cart.getQuantity();
         this.created_at = cart.getCreated_at();
         this.updated_at = cart.getUpdated_at();

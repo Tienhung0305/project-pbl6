@@ -31,7 +31,7 @@ public class Cart {
 
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "id_size", nullable = false, referencedColumnName = "id")
-    @JsonBackReference
+    @JsonManagedReference
     private SizeProduct size;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -36,8 +36,6 @@ public class CartService {
         return cartRepository.FindByIdUserAndIdSize(id_user, id_size);
     }
 
-    ;
-
     public List<Cart> GetAllByIdUser(Integer id) {
         return cartRepository.GetAllByIdUser(id);
     }

@@ -3,6 +3,7 @@ package com.example.sportstore06.dao.response;
 import com.example.sportstore06.model.Category;
 import com.example.sportstore06.model.Image;
 import com.example.sportstore06.model.Product;
+import com.example.sportstore06.model.SizeProduct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,7 @@ public class ProductResponse {
     private Timestamp updated_at;
     private Set<Image> imageSet = new HashSet<>();
     private Integer state;
+    private Set<SizeProduct> sizeProductSet = new HashSet<>();
 
     public ProductResponse(Product product) {
         this.id = product.getId();
@@ -50,5 +52,6 @@ public class ProductResponse {
         this.updated_at = product.getUpdated_at();
         this.state = product.getState();
         this.imageSet = product.getImageSet();
+        this.sizeProductSet = product.getSizeSet();
     }
 }
