@@ -59,16 +59,20 @@ public class CartService {
             created_at = new Timestamp(new Date().getTime());
             updated_at = created_at;
         }
+
         Optional<Cart> ObCart = cartRepository.FindByIdUserAndIdSize(request.getId_user(), request.getId_size());
         Integer q = request.getQuantity();
-        if (ObCart.isPresent() && id != 0) {
+        int id_cart = id;
+        if (ObCart.isPresent() && id == 0) {
             q = ObCart.get().getQuantity() + request.getQuantity();
+            id_cart = ObCart.get().getId();
         }
         if (q >= sizRepository.findById(request.getId_size()).get().getQuantity()) {
             q = sizRepository.findById(request.getId_size()).get().getQuantity();
         }
+
         var c = Cart.builder().
-                id(id).
+                id(id_cart).
                 user(userRepository.findById(request.getId_user()).get()).
                 size(sizRepository.findById(request.getId_size()).get()).
                 quantity(q).
