@@ -34,7 +34,6 @@ public class Cart {
     @JsonBackReference
     private SizeProduct size;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user", nullable = false, referencedColumnName = "id")
     @JsonBackReference
