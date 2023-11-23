@@ -53,16 +53,26 @@ public class ImageController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam("name") String name) {
+    public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                    @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                    @RequestParam(value = "sort", required = false) String sort,
+                                    @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
         try {
-            List<Image> list = imageService.SearchByName(name);
-            List<ImageResponse> response = list.stream().map(image -> new ImageResponse(image)).collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Image> byPage = imageService.SearchByName(pageable,name);
+            Page<ImageResponse> responses = byPage.map(image -> new ImageResponse(image));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
     }
-
     @GetMapping()
     public ResponseEntity<?> findByPage(@RequestParam(value = "page", required = false) Optional<Integer> page,
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,

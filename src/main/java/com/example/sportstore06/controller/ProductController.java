@@ -58,18 +58,29 @@ public class ProductController {
 
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                    @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                    @RequestParam(value = "sort", required = false) String sort,
+                                    @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
                                     @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
-            List<Product> list = new ArrayList<Product>();
-            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                list = productService.SearchByName(name, state.get());
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
             } else {
-                list = productService.SearchByName(name);
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            List<ProductResponse> response = list.stream().map(product -> new ProductResponse(product)).collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            Page<Product> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = productService.SearchByName(pageable, name, state.get());
+            } else {
+                byPage = productService.SearchByName(pageable, name);
+            }
+            Page<ProductResponse> responses = byPage.map(product -> new ProductResponse(product));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
     }
 

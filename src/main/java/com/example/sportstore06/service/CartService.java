@@ -2,6 +2,7 @@ package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.CartRequest;
 import com.example.sportstore06.model.Cart;
+import com.example.sportstore06.model.Product;
 import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,15 +22,24 @@ public class CartService {
     public Long getCount() {
         return cartRepository.count();
     }
+
     public List<Cart> findAll() {
         return cartRepository.findAll();
     }
+
     public Optional<Cart> findById(int id) {
         return cartRepository.findById(id);
     }
+
+    Optional<Cart> FindByIdUserAndIdProduct(Integer id_user, Integer id_product) {
+        return cartRepository.FindByIdUserAndIdProduct(id_user, id_product);
+    }
+    ;
+
     public List<Cart> GetAllByIdUser(Integer id) {
         return cartRepository.GetAllByIdUser(id);
     }
+
     public boolean deleteById(int id) {
         try {
             cartRepository.deleteById(id);
@@ -49,16 +59,21 @@ public class CartService {
             created_at = new Timestamp(new Date().getTime());
             updated_at = created_at;
         }
-
+        Optional<Cart> ObCart = cartRepository.FindByIdUserAndIdProduct(request.getId_user(), request.getId_product());
+        Integer q = request.getQuantity();
+        if (ObCart.isPresent() && id != 0) {
+            q = ObCart.get().getQuantity() + request.getQuantity();
+        }
         var c = Cart.builder().
                 id(id).
                 user(userRepository.findById(request.getId_user()).get()).
                 product(productRepository.findById(request.getId_product()).get()).
-                quantity(request.getQuantity()).
+                quantity(q).
                 created_at(created_at).
                 updated_at(updated_at).
                 build();
         cartRepository.save(c);
+
     }
 
     public void changeQuantity(int id, int quantity) {

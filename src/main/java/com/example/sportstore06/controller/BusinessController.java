@@ -58,18 +58,29 @@ public class BusinessController {
 
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                    @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                    @RequestParam(value = "sort", required = false) String sort,
+                                    @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
                                     @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
-            List<Business> list = new ArrayList<Business>();
-            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                list = businessService.SearchByName(name, state.get());
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
             } else {
-                list = businessService.SearchByName(name);
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            List<BusinessResponse> response = list.stream().map(business -> new BusinessResponse(business)).collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            Page<Business> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = businessService.SearchByName(pageable,name,state.get());
+            } else {
+                byPage = businessService.SearchByName(pageable,name);
+            }
+            Page<BusinessResponse> responses = byPage.map(business -> new BusinessResponse(business));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
     }
 

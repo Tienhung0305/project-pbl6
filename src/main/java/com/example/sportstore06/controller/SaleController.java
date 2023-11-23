@@ -52,13 +52,24 @@ public class SaleController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam("name") String name) {
+    public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                    @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                    @RequestParam(value = "sort", required = false) String sort,
+                                    @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
         try {
-            List<Sale> list = saleService.SearchByName(name);
-            List<SaleResponse> response = list.stream().map(sale -> new SaleResponse(sale)).collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Sale> byPage = saleService.SearchByName(pageable,name);
+            Page<SaleResponse> responses = byPage.map(sale -> new SaleResponse(sale));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
     }
 

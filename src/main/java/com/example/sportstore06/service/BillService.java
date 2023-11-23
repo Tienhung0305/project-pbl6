@@ -32,16 +32,16 @@ public class BillService {
         return billRepository.findById(id);
     }
 
-    public List<Bill> SearchByName(String name) {
-        return billRepository.SearchByName(name);
+    public Page<Bill> SearchByName(Pageable pageable, String name) {
+        return billRepository.SearchByName(pageable,name);
     }
 
     public Page<Bill> findByPage(Pageable pageable) {
         return billRepository.findByPage(pageable);
     }
 
-    public List<Bill> SearchByName(String name, Boolean state_null) {
-        return billRepository.SearchByName(name, state_null);
+    public Page<Bill> SearchByName(Pageable pageable, String name, Boolean state_null) {
+        return billRepository.SearchByName(pageable, name, state_null);
     }
 
     public Page<Bill> findByPage(Pageable pageable, Boolean state_null) {

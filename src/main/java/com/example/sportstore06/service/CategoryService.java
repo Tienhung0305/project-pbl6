@@ -39,8 +39,8 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
-    public List<Category> SearchByName(String name) {
-        return categoryRepository.SearchByName(name);
+    public Page<Category> SearchByName(Pageable pageable, String name) {
+        return categoryRepository.SearchByName(pageable, name);
     }
 
     public Page<Category> findByPage(Pageable pageable) {

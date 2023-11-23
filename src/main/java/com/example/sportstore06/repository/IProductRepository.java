@@ -30,7 +30,7 @@ public interface IProductRepository extends JpaRepository<Product,Integer> {
     @Query("SELECT i FROM Product i WHERE i.sale.id = :id_sale")
     Page<Product> findBySale(Pageable pageable, Integer id_sale);
     @Query("SELECT i FROM Product i WHERE i.name LIKE %:Name%")
-    List<Product>SearchByName(String Name);
+    Page<Product>SearchByName(Pageable pageable,String Name);
     @Query("SELECT i FROM Product i WHERE i.name LIKE %:Name% AND i.state = :state")
-    List<Product>SearchByName(String Name, Integer state);
+    Page<Product>SearchByName(Pageable pageable, String Name, Integer state);
 }

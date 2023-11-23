@@ -18,5 +18,5 @@ public interface IPaymentRepository extends JpaRepository<Payment,Integer> {
     Page<Payment> findByPage(Pageable pageable);
 
     @Query("SELECT i FROM Payment i WHERE i.name LIKE %:Name%")
-    List<Payment> SearchByName(String Name);
+    Page<Payment> SearchByName(Pageable pageable, String Name);
 }

@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartResponse {
-    private UserResponse userResponse;
+    private Integer id_user;
     private ProductResponse productResponse;
     private Integer quantity;
     private Timestamp created_at;
@@ -22,7 +22,7 @@ public class CartResponse {
 
     public CartResponse(Cart cart)
     {
-        this.userResponse = new UserResponse(cart.getUser());
+        this.id_user = cart.getUser().getId();
         this.productResponse = new ProductResponse(cart.getProduct());
         this.quantity = cart.getQuantity();
         this.created_at = cart.getCreated_at();

@@ -35,16 +35,16 @@ public class BusinessService {
         return businessRepository.findByName(name);
     }
 
-    public List<Business> SearchByName(String name) {
-        return businessRepository.SearchByName(name);
+    public Page<Business> SearchByName(Pageable pageable, String name) {
+        return businessRepository.SearchByName(pageable,name);
     }
 
     public Page<Business> findByPage(Pageable pageable) {
         return businessRepository.findByPage(pageable);
     }
 
-    public List<Business> SearchByName(String name, Integer state) {
-        return businessRepository.SearchByName(name,state);
+    public Page<Business> SearchByName(Pageable pageable, String name, Integer state) {
+        return businessRepository.SearchByName(pageable,name,state);
     }
     public Page<Business> findByPage(Pageable pageable, Integer state) {
         return businessRepository.findByPage(pageable,state);

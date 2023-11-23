@@ -44,6 +44,7 @@ public class UserController {
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCount());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id, @AuthenticationPrincipal User user) {
         try {
@@ -87,18 +88,29 @@ public class UserController {
 
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                    @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                    @RequestParam(value = "sort", required = false) String sort,
+                                    @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
                                     @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
-            List<User> list = new ArrayList<User>();
-            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                list = userService.SearchByName(name, state.get());
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
             } else {
-                list = userService.SearchByName(name);
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            List<UserResponse> response = list.stream().map(user -> new UserResponse(user)).collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            Page<User> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = userService.SearchByName(pageable, name, state.get());
+            } else {
+                byPage = userService.SearchByName(pageable, name);
+            }
+            Page<UserResponse> responses = byPage.map(user -> new UserResponse(user));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
     }
 

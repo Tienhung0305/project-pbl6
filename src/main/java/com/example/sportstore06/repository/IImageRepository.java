@@ -18,5 +18,5 @@ public interface IImageRepository extends JpaRepository<Image,Integer> {
     Page<Image> findByPage(Pageable pageable);
 
     @Query("SELECT i FROM Image i WHERE i.name LIKE %:Name%")
-    List<Image> SearchByName(String Name);
+    Page<Image> SearchByName(Pageable pageable, String Name);
 }

@@ -2,9 +2,10 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.BusinessRequest;
 import com.example.sportstore06.dao.request.CartRequest;
-import com.example.sportstore06.dao.response.BusinessResponse;
-import com.example.sportstore06.dao.response.CartResponse;
+import com.example.sportstore06.dao.response.*;
+import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Cart;
+import com.example.sportstore06.model.Product;
 import com.example.sportstore06.service.BusinessService;
 import com.example.sportstore06.service.CartService;
 import com.example.sportstore06.service.ProductService;
@@ -15,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,11 +27,13 @@ public class CartController {
     private final CartService cartService;
     private final UserService userService;
     private final ProductService productService;
+    private final BusinessService businessService;
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(cartService.getCount());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {
@@ -60,8 +63,18 @@ public class CartController {
     public ResponseEntity<?> GetAllByIdUser(@PathVariable("id_user") Integer id_user) {
         try {
             if (userService.findById(id_user).isPresent()) {
-                List<Cart> list = cartService.GetAllByIdUser(id_user);
-                List<CartResponse> response = list.stream().map(cart -> new CartResponse(cart)).collect(Collectors.toList());
+                List<Cart> carts = cartService.findAll();
+                Set<ProductCartResponse> products = new HashSet<>();
+                Set<Business> businesses = new HashSet<>();
+                Set<BusinessCartResponse> response = new HashSet<>();
+                for (Cart cart : carts) {
+                    businesses.add(businessService.findById(cart.getProduct().getId()).get());}
+                for (Business b : businesses) {
+                    Set<ProductCartResponse> products_business = products.stream().filter(
+                            product -> product.getProduct().getId_business() == b.getId()).collect(Collectors.toSet());
+                    BusinessCartResponse businessCartResponse = new BusinessCartResponse(b,products_business);
+                    response.add(businessCartResponse);
+                }
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");

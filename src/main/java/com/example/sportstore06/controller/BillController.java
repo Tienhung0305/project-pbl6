@@ -43,6 +43,7 @@ public class BillController {
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(billService.getCount());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {
@@ -59,18 +60,29 @@ public class BillController {
 
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                    @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                    @RequestParam(value = "sort", required = false) String sort,
+                                    @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
                                     @RequestParam(value = "state_null", required = false) Optional<Boolean> state_null) {
         try {
-            List<Bill> list = new ArrayList<Bill>();
-            if (state_null.isPresent()) {
-                list = billService.SearchByName(name, state_null.get());
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
             } else {
-                list = billService.SearchByName(name);
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            List<BillResponse> response = list.stream().map(bill -> new BillResponse(bill)).collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            Page<Bill> byPage;
+            if (state_null.isPresent()) {
+                byPage = billService.SearchByName(pageable, name, state_null.get());
+            } else {
+                byPage = billService.SearchByName(pageable, name);
+            }
+            Page<BillResponse> responses = byPage.map(bill -> new BillResponse(bill));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
     }
 

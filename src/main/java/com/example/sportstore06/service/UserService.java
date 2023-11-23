@@ -29,14 +29,14 @@ public class UserService {
     public Optional<User> findById(int id) {
         return userRepository.findById(id);
     }
-    public List<User> SearchByName(String name) {
-        return userRepository.SearchByName(name);
+    public Page<User> SearchByName(Pageable pageable, String name) {
+        return userRepository.SearchByName(pageable, name);
     }
     public Page<User> findByPage(Pageable pageable) {
         return userRepository.findByPage(pageable);
     }
-    public List<User> SearchByName(String name, Integer state) {
-        return userRepository.SearchByName(name, state);
+    public Page<User> SearchByName(Pageable pageable, String name, Integer state) {
+        return userRepository.SearchByName(pageable, name, state);
     }
     public Page<User> findByPage(Pageable pageable, Integer state) {
         return userRepository.findByPage(pageable, state);

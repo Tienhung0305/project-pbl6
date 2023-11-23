@@ -28,8 +28,8 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public List<Product> SearchByName(String name) {
-        return productRepository.SearchByName(name);
+    public Page<Product> SearchByName(Pageable pageable, String name) {
+        return productRepository.SearchByName(pageable,name);
     }
 
     public Page<Product> findByPage(Pageable pageable) {
@@ -64,8 +64,8 @@ public class ProductService {
 
     //end
 
-    public List<Product> SearchByName(String name, Integer state) {
-        return productRepository.SearchByName(name, state);
+    public Page<Product> SearchByName(Pageable pageable, String name, Integer state) {
+        return productRepository.SearchByName(pageable, name, state);
     }
 
     public Page<Product> findByPage(Pageable pageable, Integer state) {
