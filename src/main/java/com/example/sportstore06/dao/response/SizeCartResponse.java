@@ -15,10 +15,10 @@ import lombok.Setter;
 public class SizeCartResponse {
     private Integer id_cart;
     private Integer quantity;
-    private SizeProduct size;
+    private SizeProductResponse size;
     public SizeCartResponse(Cart cart) {
         this.id_cart = cart.getId();
         this.quantity = cart.getQuantity();
-        this.size = cart.getSize();
+        this.size = new SizeProductResponse(cart.getSize());
     }
 }
