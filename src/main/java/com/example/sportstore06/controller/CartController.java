@@ -66,6 +66,11 @@ public class CartController {
                     SizeCartResponse productCartResponse = new SizeCartResponse(cart);
                     products.add(productCartResponse);
                 }
+                businesses =
+                        businesses
+                        .stream()
+                        .sorted(Comparator.comparingInt(Business::getId))
+                        .collect(Collectors.toSet());
                 for (Business b : businesses) {
                     Set<SizeCartResponse> products_business = products.stream().filter(
                             product -> sizeService.findById(product.getSize().getId()).get().getProduct().getBusiness().getId() == b.getId()).collect(Collectors.toSet());

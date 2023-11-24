@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Comparator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -18,6 +20,9 @@ public class BusinessCartResponse {
     public BusinessCartResponse(Business business, Set<SizeCartResponse> products)
     {
         this.business = new BusinessResponse(business);
-        this.productSet = products;
+        this.productSet = products
+                .stream()
+                .sorted(Comparator.comparingInt(SizeCartResponse::getId_cart))
+                .collect(Collectors.toSet());
     }
 }
