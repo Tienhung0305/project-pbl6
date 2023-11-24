@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Getter
@@ -14,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class BusinessCartResponse {
     private BusinessResponse business;
-    private Set<SizeCartResponse> productSet;
+    private Set<SizeCartResponse> productSet = new LinkedHashSet<>();
     public BusinessCartResponse(Business business, Set<SizeCartResponse> products)
     {
         this.business = new BusinessResponse(business);
