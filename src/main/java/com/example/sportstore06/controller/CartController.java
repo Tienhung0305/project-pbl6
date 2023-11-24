@@ -68,7 +68,7 @@ public class CartController {
                 }
                 for (Business b : businesses) {
                     Set<SizeCartResponse> products_business = products.stream().filter(
-                            product -> product.getSize().getProduct().getBusiness().getId() == b.getId()).collect(Collectors.toSet());
+                            product -> sizeService.findById(product.getSize().getId()).get().getProduct().getBusiness().getId() == b.getId()).collect(Collectors.toSet());
                     BusinessCartResponse businessCartResponse = new BusinessCartResponse(b,products_business);
                     response.add(businessCartResponse);
                 }
