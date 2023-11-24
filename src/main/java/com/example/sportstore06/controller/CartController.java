@@ -58,19 +58,14 @@ public class CartController {
         try {
             if (userService.findById(id_user).isPresent()) {
                 List<Cart> carts = cartService.GetAllByIdUser(id_user);
-                Set<SizeCartResponse> products = new HashSet<>();
-                Set<Business> businesses = new HashSet<>();
-                Set<BusinessCartResponse> response = new HashSet<>();
+                Set<SizeCartResponse> products = new LinkedHashSet<>();
+                Set<Business> businesses = new LinkedHashSet<>();
+                Set<BusinessCartResponse> response = new LinkedHashSet<>();
                 for (Cart cart : carts) {
                     businesses.add(businessService.findById(cart.getSize().getProduct().getBusiness().getId()).get());
                     SizeCartResponse productCartResponse = new SizeCartResponse(cart);
                     products.add(productCartResponse);
                 }
-                businesses =
-                        businesses
-                        .stream()
-                        .sorted(Comparator.comparingInt(Business::getId))
-                        .collect(Collectors.toSet());
                 for (Business b : businesses) {
                     Set<SizeCartResponse> products_business = products.stream().filter(
                             product -> sizeService.findById(product.getSize().getId()).get().getProduct().getBusiness().getId() == b.getId()).collect(Collectors.toSet());
