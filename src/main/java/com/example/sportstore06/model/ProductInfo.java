@@ -62,4 +62,8 @@ public class ProductInfo {
     @OneToMany(mappedBy = "productInfo", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Product> productSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private Set<Comment> commentSet = new HashSet<>();
 }

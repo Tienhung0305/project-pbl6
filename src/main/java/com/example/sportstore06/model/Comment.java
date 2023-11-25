@@ -49,5 +49,4 @@ public class Comment {
     @OneToMany(mappedBy = "comment", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();
-
 }
