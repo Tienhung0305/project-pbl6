@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -27,6 +27,7 @@ public class ProductInfoResponse {
     private Timestamp updated_at;
     private Set<ImageResponse> imageSet;
     private Integer state;
+    private Double price_min;
     private Set<ProductResponse> productSet;
 
     public ProductInfoResponse(ProductInfo productInfo) {
@@ -59,5 +60,9 @@ public class ProductInfoResponse {
                 .stream()
                 .map(product -> product != null ? new ProductResponse(product) : null)
                 .collect(Collectors.toSet());
+
+        List<Double> l = new ArrayList<>();
+        productInfo.getProductSet().forEach(product -> l.add(product.getPrice()));
+        this.price_min = l.isEmpty() ? null : Collections.min(l);
     }
 }
