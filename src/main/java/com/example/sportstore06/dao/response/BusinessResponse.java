@@ -42,9 +42,12 @@ public class BusinessResponse {
         Integer count_comment = 0;
         Integer count_comment_like = 0;
         Integer count_comment_dislike = 0;
+        Integer count_product = 0;
         Set<ProductInfo> productInfoSet = business.getProductInfoSet();
         for (ProductInfo p : productInfoSet) {
-            count_product = count_product + 1;
+            if(p.getState() == 0) {
+                count_product = count_product + 1;
+            }
             for (Comment c : p.getCommentSet()) {
                 if (c.getReply() == null) {
                     if (c.getIs_like()) {
@@ -60,7 +63,7 @@ public class BusinessResponse {
         this.count_comment_like = count_comment_like;
         this.count_comment_dislike = count_comment_dislike;
         this.count_comment = count_comment;
-        this.count_product = productInfoSet.size();
+        this.count_product = count_product;
 
         this.time_start = business.getUser().getCreated_at();
     }
