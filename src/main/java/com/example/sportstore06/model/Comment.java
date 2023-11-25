@@ -1,17 +1,13 @@
 package com.example.sportstore06.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.Reference;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -28,26 +24,25 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    //private int id_product;
+    //private int id_product_information;
     @NotBlank
     @Length(min = 1, max = 200)
     private String content;
     @NotNull
     private Boolean report;
+    private Boolean is_like;
     private Integer reply;
     //private int id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_product", nullable = false, referencedColumnName = "id")
-    @JsonProperty("id_product")
+    @JoinColumn(name = "id_product_information", nullable = false, referencedColumnName = "id")
     @JsonBackReference
-    private Product product;
+    private ProductInfo productInfo;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user", nullable = false, referencedColumnName = "id")
-    @JsonProperty("id_user")
     @JsonBackReference
     private User user;
 

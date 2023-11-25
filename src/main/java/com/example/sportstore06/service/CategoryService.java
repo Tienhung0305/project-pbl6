@@ -1,28 +1,15 @@
 package com.example.sportstore06.service;
 
-import com.example.sportstore06.dao.request.BillRequest;
 import com.example.sportstore06.dao.request.CategoryRequest;
-import com.example.sportstore06.dao.request.ProductRequest;
-import com.example.sportstore06.dao.response.CategoryResponse;
-import com.example.sportstore06.dao.response.ProductResponse;
-import com.example.sportstore06.model.Bill;
-import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Category;
-import com.example.sportstore06.model.Product;
+import com.example.sportstore06.repository.ICategoryGroupRepository;
 import com.example.sportstore06.repository.ICategoryRepository;
-import com.example.sportstore06.repository.IGroupRepository;
 import com.example.sportstore06.repository.IImageRepository;
-import com.example.sportstore06.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,7 +17,7 @@ import java.util.Optional;
 public class CategoryService {
     private final ICategoryRepository categoryRepository;
     private final IImageRepository imageRepository;
-    private final IGroupRepository groupRepository;
+    private final ICategoryGroupRepository categoryGroupRepository;
 
     public Long getCount() {
         return categoryRepository.count();
@@ -61,7 +48,9 @@ public class CategoryService {
         var c = Category.builder().
                 id(id).
                 name(request.getName()).
-                group(groupRepository.findById(request.getId_group()).get()).
+                categoryGroup(categoryGroupRepository
+                        .findById(request.getCategory_group_id())
+                        .get()).
                 build();
         categoryRepository.save(c);
     }

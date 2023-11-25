@@ -4,7 +4,7 @@ package com.example.sportstore06.service;
 import com.example.sportstore06.dao.request.CommentRequest;
 import com.example.sportstore06.model.Comment;
 import com.example.sportstore06.repository.ICommentRepository;
-import com.example.sportstore06.repository.IProductRepository;
+import com.example.sportstore06.repository.IProductInfoRepository;
 import com.example.sportstore06.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CommentService {
     private final ICommentRepository commentRepository;
-    private final IProductRepository productRepository;
+    private final IProductInfoRepository productInfoRepository;
     private final IUserRepository userRepository;
 
     public Long getCount() {
@@ -35,8 +35,8 @@ public class CommentService {
         return commentRepository.findByPage(pageable);
     }
 
-    public Page<Comment> findByProduct(Pageable pageable, Integer id_product) {
-        return commentRepository.findByProduct(pageable, id_product);
+    public Page<Comment> findByProductInfo(Pageable pageable, Integer id_product_information) {
+        return commentRepository.findByProductInfo(pageable, id_product_information);
     }
 
     public boolean deleteById(int id) {
@@ -64,11 +64,12 @@ public class CommentService {
         }
         var c = Comment.builder().
                 id(id).
-                product(productRepository.findById(request.getId_product()).get()).
+                productInfo(productInfoRepository.findById(request.getId_product_information()).get()).
                 content(request.getContent()).
                 report(request.getReport()).
+                is_like(request.getIs_like()).
                 reply(request.getReply() == null ? null : request.getReply()).
-                user(userRepository.findById(request.getId_user()).get()).
+                user(request.getId_user() != null ? userRepository.findById(request.getId_user()).get() : null).
                 created_at(created_at).
                 updated_at(updated_at).
                 build();

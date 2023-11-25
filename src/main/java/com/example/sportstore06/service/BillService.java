@@ -4,10 +4,7 @@ package com.example.sportstore06.service;
 import com.example.sportstore06.dao.request.BillRequest;
 import com.example.sportstore06.model.Bill;
 import com.example.sportstore06.model.BillDetail;
-import com.example.sportstore06.repository.IBillDetailRepository;
-import com.example.sportstore06.repository.IBillRepository;
-import com.example.sportstore06.repository.IProductRepository;
-import com.example.sportstore06.repository.IUserRepository;
+import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -79,11 +76,13 @@ public class BillService {
                 state_null(request.getState_null()).
                 build();
 
-        Set<BillDetail> set = request.getBill_detailSet().stream().map(billDetailRequest ->
-                BillDetail.builder().
+        Set<BillDetail> set = request.getBill_detailSet()
+                .stream()
+                .map(billDetailRequest -> BillDetail.builder().
                         bill(u).
                         product(productRepository.findById(billDetailRequest.getId_product()).get()).
                         quantity(billDetailRequest.getQuantity()).
+                        price(billDetailRequest.getPrice()).
                         build()).collect(Collectors.toSet());
         u.setBill_detailSet(set);
         billRepository.save(u);

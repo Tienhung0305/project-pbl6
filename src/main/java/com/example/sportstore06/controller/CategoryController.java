@@ -5,10 +5,9 @@ import com.example.sportstore06.dao.response.CategoryResponse;
 import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.model.Category;
 import com.example.sportstore06.model.User;
-import com.example.sportstore06.repository.IGroupRepository;
 import com.example.sportstore06.service.BusinessService;
+import com.example.sportstore06.service.CategoryGroupService;
 import com.example.sportstore06.service.CategoryService;
-import com.example.sportstore06.service.GroupService;
 import com.example.sportstore06.service.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +33,11 @@ public class CategoryController {
     @Value("${page_size_default}")
     private Integer page_size_default;
     private final CategoryService categoryService;
-    private final GroupService groupService;
+    private final CategoryGroupService categoryGroupService;
 
-    @GetMapping("/get-group")
+    @GetMapping("/get-category-group")
     public ResponseEntity<?> getGroup() {
-        return ResponseEntity.status(HttpStatus.OK).body(groupService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(categoryGroupService.findAll());
     }
 
     @GetMapping("/get-count")
@@ -75,7 +74,7 @@ public class CategoryController {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
             Page<Category> byPage = categoryService.SearchByName(pageable, name);
-            Page<CategoryResponse> responses = byPage.map(category -> new CategoryResponse(category));
+            Page<CategoryResponse> responses = byPage.map(category -> category != null ? new CategoryResponse(category) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
@@ -96,7 +95,7 @@ public class CategoryController {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
             Page<Category> byPage = categoryService.findByPage(pageable);
-            Page<CategoryResponse> responses = byPage.map(category -> new CategoryResponse(category));
+            Page<CategoryResponse> responses = byPage.map(category -> category != null ? new CategoryResponse(category) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
@@ -106,8 +105,8 @@ public class CategoryController {
     @PostMapping("/save")
     private ResponseEntity<?> addCategory(@Valid @RequestBody CategoryRequest request) {
         try {
-            if (groupService.findById(request.getId_group()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id group not found ");
+            if (categoryGroupService.findById(request.getCategory_group_id()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category group not found ");
             }
             categoryService.save(0, request);
             return ResponseEntity.accepted().build();
@@ -123,8 +122,8 @@ public class CategoryController {
             if (categoryService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found ");
             }
-            if (groupService.findById(request.getId_group()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id group not found ");
+            if (categoryGroupService.findById(request.getCategory_group_id()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category group not found ");
             }
             categoryService.save(id, request);
             return ResponseEntity.accepted().build();

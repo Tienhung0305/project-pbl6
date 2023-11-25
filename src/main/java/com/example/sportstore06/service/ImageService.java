@@ -1,13 +1,8 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.ImageRequest;
-import com.example.sportstore06.dao.request.ProductRequest;
-import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Image;
-import com.example.sportstore06.model.Product;
-import com.example.sportstore06.repository.ICategoryRepository;
 import com.example.sportstore06.repository.IImageRepository;
-import com.example.sportstore06.repository.IProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

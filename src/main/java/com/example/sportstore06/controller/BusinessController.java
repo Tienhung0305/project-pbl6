@@ -2,13 +2,8 @@ package com.example.sportstore06.controller;
 
 
 import com.example.sportstore06.dao.request.BusinessRequest;
-import com.example.sportstore06.dao.request.ProductRequest;
 import com.example.sportstore06.dao.response.BusinessResponse;
-import com.example.sportstore06.dao.response.ProductResponse;
-import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.model.Business;
-import com.example.sportstore06.model.Product;
-import com.example.sportstore06.model.User;
 import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/business")

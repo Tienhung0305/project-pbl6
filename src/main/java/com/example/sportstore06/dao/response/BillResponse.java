@@ -2,8 +2,6 @@ package com.example.sportstore06.dao.response;
 
 import com.example.sportstore06.model.Bill;
 import com.example.sportstore06.model.BillDetail;
-import com.example.sportstore06.model.Product;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +39,9 @@ public class BillResponse {
         this.updated_at = bill.getUpdated_at();
         this.state_null = bill.getState_null();
         Set<BillDetail> billDetailSet = bill.getBill_detailSet();
-        Stream<BillDetailResponse> response = billDetailSet.stream().map(billDetail -> new BillDetailResponse(billDetail));
+        Stream<BillDetailResponse> response = billDetailSet
+                .stream()
+                .map(billDetail -> billDetail != null ? new BillDetailResponse(billDetail) : null);
         this.bill_detailSet = response.collect(Collectors.toSet());
     }
 }

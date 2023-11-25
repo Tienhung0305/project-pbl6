@@ -3,10 +3,7 @@ package com.example.sportstore06.controller;
 import com.example.sportstore06.dao.request.CommentRequest;
 import com.example.sportstore06.dao.response.CommentResponse;
 import com.example.sportstore06.model.Comment;
-import com.example.sportstore06.service.CommentService;
-import com.example.sportstore06.service.ImageService;
-import com.example.sportstore06.service.ProductService;
-import com.example.sportstore06.service.UserService;
+import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +26,7 @@ public class CommentController {
     @Value("${page_size_default}")
     private Integer page_size_default;
     private final CommentService commentService;
-    private final ProductService productService;
+    private final ProductInfoService productInfoService;
     private final UserService userService;
     private final ImageService imageService;
 
@@ -84,7 +81,7 @@ public class CommentController {
                                            @RequestParam(value = "sort", required = false) String sort,
                                            @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
         try {
-            if (productService.findById(id_product).isEmpty()) {
+            if (productInfoService.findById(id_product).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
             }
             Pageable pageable;
@@ -94,7 +91,7 @@ public class CommentController {
             } else {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            Page<Comment> byPage = commentService.findByProduct(pageable, id_product);
+            Page<Comment> byPage = commentService.findByProductInfo(pageable, id_product);
             Page<CommentResponse> responses = byPage.map(comment ->
                     new CommentResponse(comment, commentService.findByReply(comment.getId())));            return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
@@ -110,8 +107,8 @@ public class CommentController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
                 }
             }
-            if (productService.findById(request.getId_product()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found ");
+            if (productInfoService.findById(request.getId_product_information()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found ");
             } else if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
             } else if (request.getReply() != null && commentService.findById(request.getReply()).isEmpty()) {
@@ -137,8 +134,8 @@ public class CommentController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
                 }
             }
-            if (productService.findById(request.getId_product()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found ");
+            if (productInfoService.findById(request.getId_product_information()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found ");
             }
             if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");

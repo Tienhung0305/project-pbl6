@@ -1,9 +1,6 @@
 package com.example.sportstore06.service;
 
-import com.example.sportstore06.dao.request.CommentRequest;
 import com.example.sportstore06.dao.request.SaleRequest;
-import com.example.sportstore06.model.Business;
-import com.example.sportstore06.model.Product;
 import com.example.sportstore06.model.Sale;
 import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,7 +15,6 @@ import java.util.Optional;
 public class SaleService {
     private final ISaleRepository saleRepository;
     private final IImageRepository iImageRepository;
-
     public Long getCount() {
         return saleRepository.count();
     }

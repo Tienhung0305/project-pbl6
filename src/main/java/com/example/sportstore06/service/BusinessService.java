@@ -2,21 +2,14 @@ package com.example.sportstore06.service;
 
 
 import com.example.sportstore06.dao.request.BusinessRequest;
-import com.example.sportstore06.model.Bill;
 import com.example.sportstore06.model.Business;
-import com.example.sportstore06.model.Product;
 import com.example.sportstore06.repository.IBusinessRepository;
-import com.example.sportstore06.repository.IImageRepository;
-import com.example.sportstore06.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -64,6 +57,7 @@ public class BusinessService {
                 name(request.getName()).
                 about(request.getAbout()).
                 tax(request.getTax()).
+                payment(request.getPayment()).
                 build();
         businessRepository.save(b);
     }

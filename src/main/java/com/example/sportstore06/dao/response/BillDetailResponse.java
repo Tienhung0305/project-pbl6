@@ -13,14 +13,14 @@ import lombok.Setter;
 public class BillDetailResponse {
     private int id;
     private Integer id_bill;
-    private Integer id_product;
+    private ProductResponse product;
     private Integer quantity;
-    private Integer price;
+    private Double price;
 
-    public BillDetailResponse(BillDetail billDetail){
+    public BillDetailResponse(BillDetail billDetail) {
         this.id = billDetail.getId();
         this.id_bill = billDetail.getBill().getId();
-        this.id_product = billDetail.getProduct().getId();
+        this.product = billDetail.getProduct() != null ? new ProductResponse(billDetail.getProduct()) : null;
         this.quantity = billDetail.getQuantity();
         this.price = billDetail.getPrice();
     }

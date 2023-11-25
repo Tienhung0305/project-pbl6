@@ -1,39 +1,25 @@
 package com.example.sportstore06.dao.request;
 
-import com.example.sportstore06.model.Category;
-import com.example.sportstore06.model.Image;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRequest {
-    @NotBlank(message = "name must not be blank")
-    @Size(min = 1, max = 100, message = "name must be between 1 and 100 characters")
-    private String name;
-    private String detail;
-    @Min(value = 0, message = "price must be greater 0")
+    @NotNull(message = "id product information must not be null")
+    private Integer id_product_information;
+    @Min(value = 1,message = "price must greater than 1")
     private Double price;
-    private String attribute;
-    @NotNull(message = "id business must not be null")
-    private Integer id_business;
-    private Integer id_sale;
-    private Timestamp created_at;
-    private Timestamp updated_at;
-    @NotNull(message = "state must not be null")
-    @Min(value = 0, message = "state must is (0,1,2)")
-    @Max(value = 3, message = "state must is (0,1,2)")
-    private Integer state;
-
-    private Set<Integer> id_categorySet;
-    private Set<Integer> id_imageSet = new HashSet<>();
+    private String size;
+    @Min(value = 1,message = "quantity must greater than 1")
+    private Integer quantity;
 }

@@ -24,8 +24,8 @@ public class SaleResponse {
     private String content;
     public SaleResponse(Sale sale) {
         this.id = sale.getId();
-        this.discount = sale.getDiscount();
         this.id_business = sale.getId_business();
+        this.discount = sale.getDiscount();
         this.started_at = sale.getStarted_at();
         this.ended_at = sale.getEnded_at();
         this.name = sale.getName();

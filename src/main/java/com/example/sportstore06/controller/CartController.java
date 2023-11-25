@@ -22,7 +22,8 @@ public class CartController {
     private final CartService cartService;
     private final UserService userService;
     private final BusinessService businessService;
-    private final SizeService sizeService;
+    private final ProductService productService;
+
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(cartService.getCount());
@@ -46,7 +47,8 @@ public class CartController {
     public ResponseEntity<?> findAll() {
         try {
             List<Cart> list = cartService.findAll();
-            List<CartResponse> response = list.stream().map(cart -> new CartResponse(cart)).collect(Collectors.toList());
+            List<CartResponse> response = list.stream().map(cart -> cart != null ? new CartResponse(cart) : null)
+                    .collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -58,19 +60,30 @@ public class CartController {
         try {
             if (userService.findById(id_user).isPresent()) {
                 List<Cart> carts = cartService.GetAllByIdUser(id_user);
-                Set<SizeCartResponse> products = new LinkedHashSet<>();
-                Set<Business> businesses = new LinkedHashSet<>();
-                Set<BusinessCartResponse> response = new LinkedHashSet<>();
-                for (Cart cart : carts) {
-                    businesses.add(businessService.findById(cart.getSize().getProduct().getBusiness().getId()).get());
-                    SizeCartResponse productCartResponse = new SizeCartResponse(cart);
-                    products.add(productCartResponse);
+                List<Business> businesses = new ArrayList<>();
+                List<CartBusinessResponse> response = new ArrayList<>();
+                List<CartProductResponse> cartProducts = new ArrayList<>();
+
+                if (carts != null) {
+                    for (Cart cart : carts) {
+                        Integer id_business = cart.getProduct().getProductInfo().getBusiness().getId();
+                        businesses.add(businessService.findById(id_business).get());
+
+                        CartProductResponse cartProduct = new CartProductResponse(id_business, new ProductResponse(cart.getProduct()));
+                        cartProducts.add(id_business, cartProduct);
+                    }
                 }
-                for (Business b : businesses) {
-                    Set<SizeCartResponse> products_business = products.stream().filter(
-                            product -> sizeService.findById(product.getSize().getId()).get().getProduct().getBusiness().getId() == b.getId()).collect(Collectors.toSet());
-                    BusinessCartResponse businessCartResponse = new BusinessCartResponse(b,products_business);
-                    response.add(businessCartResponse);
+                if (!businesses.isEmpty()) {
+                    for (Business b : businesses) {
+                        List<ProductResponse> temp = new ArrayList<>();
+                        for (CartProductResponse c : cartProducts) {
+                            if (c.getId_business() == b.getId()) {
+                                temp.add(c.getProductResponse());
+                            }
+                        }
+                        CartBusinessResponse cartBusinessResponse = new CartBusinessResponse(b.getId(), temp);
+                        response.add(cartBusinessResponse);
+                    }
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {
@@ -88,8 +101,8 @@ public class CartController {
             if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
             }
-            if (sizeService.findById(request.getId_size()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id size not found");
+            if (productService.findById(request.getId_product()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
             }
             cartService.save(0, request);
             return ResponseEntity.accepted().build();
@@ -108,8 +121,8 @@ public class CartController {
             if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
             }
-            if (sizeService.findById(request.getId_size()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id size not found");
+            if (productService.findById(request.getId_product()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
             }
             cartService.save(id, request);
             return ResponseEntity.accepted().build();

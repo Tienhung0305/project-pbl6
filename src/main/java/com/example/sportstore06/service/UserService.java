@@ -29,27 +29,6 @@ public class UserService {
     public Optional<User> findById(int id) {
         return userRepository.findById(id);
     }
-    public Page<User> SearchByName(Pageable pageable, String name) {
-        return userRepository.SearchByName(pageable, name);
-    }
-    public Page<User> findByPage(Pageable pageable) {
-        return userRepository.findByPage(pageable);
-    }
-    public Page<User> SearchByName(Pageable pageable, String name, Integer state) {
-        return userRepository.SearchByName(pageable, name, state);
-    }
-    public Page<User> findByPage(Pageable pageable, Integer state) {
-        return userRepository.findByPage(pageable, state);
-    }
-
-    public boolean deleteById(int id) {
-        try {
-            userRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
     public Optional<User> findByUsername(String userName) {
         return userRepository.findByUsername(userName);
     }
@@ -61,6 +40,27 @@ public class UserService {
     }
     public Optional<User> findByCic(String cic) {
         return userRepository.findByCic(cic);
+    }
+    public Page<User> findByPage(Pageable pageable) {
+        return userRepository.findByPage(pageable);
+    }
+    public Page<User> findByPage(Pageable pageable, Integer state) {
+        return userRepository.findByPage(pageable, state);
+    }
+    public Page<User> SearchByName(Pageable pageable, String name) {
+        return userRepository.SearchByName(pageable, name);
+    }
+    public Page<User> SearchByName(Pageable pageable, String name, Integer state) {
+        return userRepository.SearchByName(pageable, name, state);
+    }
+
+    public boolean deleteById(int id) {
+        try {
+            userRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public void save(int id, UserRequest request) {

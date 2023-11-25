@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import jakarta.validation.constraints.NotBlank;
+
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -47,7 +48,7 @@ public class UserResponse {
         this.image_url = user.getImage_url();
         this.roles = user.getRoleSet()
                 .stream()
-                .map(role -> role.getName())
+                .map(role -> role != null ? role.getName() : null)
                 .collect(Collectors.toSet());
     }
 }

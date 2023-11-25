@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleRequest {
-    @Column(unique=true)
+    @Column(unique = true)
     @NotBlank(message = "name must not be black")
     private String name;
 }

@@ -24,11 +24,14 @@ public class Business {
     @Size(min = 1, max = 50, message = "name must be between 1 and 50 characters")
     private String name;
     private String about;
+    @Column(unique = true)
+    @NotBlank(message = "payment must not be blank")
+    private String payment;
     private Integer tax;
 
     @OneToMany(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonManagedReference
-    private Set<Product> productSet = new HashSet<>();
+    private Set<ProductInfo> productInfoSet = new HashSet<>();
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id", referencedColumnName = "id")

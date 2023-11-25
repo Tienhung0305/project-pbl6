@@ -13,14 +13,14 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@Table(name = "groupss")
-public class Group {
+@Table(name = "category_groups")
+public class CategoryGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "categoryGroup", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Category> categorySet = new HashSet<>();
 }

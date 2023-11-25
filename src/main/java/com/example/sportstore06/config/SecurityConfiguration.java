@@ -47,6 +47,46 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        String[] WHITE_LIST_URL = {
+//                "/api/v1/auth/**",
+//                "/swagger-ui/**",
+//                "/v3/api-docs",
+//                "/v3/api-docs/**",
+//                "/swagger-resources",
+//                "/swagger-resources/**",
+//                "/swagger-ui/**",
+//                "/swagger-ui.html"
+//        };
+//
+//        http
+//                .cors(AbstractHttpConfigurer::disable)
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(request ->
+//                        request.requestMatchers(WHITE_LIST_URL)
+//                                .permitAll()
+//                                .requestMatchers(
+//                                        "/api/v1/bill/**",
+//                                        "/api/v1/cart/**",
+//                                        "/api/v1/business/**",
+//                                        "/api/v1/category/**",
+//                                        "/api/v1/comment/**",
+//                                        "/api/v1/image/**",
+//                                        "/api/v1/role/**",
+//                                        "/api/v1/sale/**",
+//                                        "/api/v1/user/**",
+//                                        "/api/v1/product-information",
+//                                        "/api/v1/product/**"
+//                                )
+//                                .permitAll()
+//                                .anyRequest()
+//                                .authenticated()
+//                )
+//                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+//                .authenticationProvider(authenticationProvider()).addFilterBefore(
+//                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//        return http.build();
+
+
 
         String[] WHITE_LIST_URL = {
                 "/api/v1/auth/**",
@@ -75,7 +115,7 @@ public class SecurityConfiguration {
                                         "/api/v1/role/**",
                                         "/api/v1/sale/**",
                                         "/api/v1/user/**",
-                                        "/api/v1/size/**",
+                                        "/api/v1/product-information/**",
                                         "/api/v1/product/**"
                                 )
                                 .permitAll()
@@ -116,13 +156,13 @@ public class SecurityConfiguration {
                                 .requestMatchers(PUT, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS","ROLE_CUSTOMER")
                                 .requestMatchers(DELETE, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
 
-                                .requestMatchers(POST, "/api/v1/size/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-                                .requestMatchers(PUT, "/api/v1/size/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-                                .requestMatchers(DELETE, "/api/v1/size/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-
                                 .requestMatchers(POST, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
                                 .requestMatchers(PUT, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
                                 .requestMatchers(DELETE, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
+
+                                .requestMatchers(POST, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
+                                .requestMatchers(PUT, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
+                                .requestMatchers(DELETE, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
                                 .anyRequest()
                                 .authenticated()
                 )

@@ -79,7 +79,7 @@ public class BillController {
             } else {
                 byPage = billService.SearchByName(pageable, name);
             }
-            Page<BillResponse> responses = byPage.map(bill -> new BillResponse(bill));
+            Page<BillResponse> responses = byPage.map(bill -> bill != null ? new BillResponse(bill) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
@@ -106,7 +106,7 @@ public class BillController {
             } else {
                 byPage = billService.findByPage(pageable);
             }
-            Page<BillResponse> responses = byPage.map(bill -> new BillResponse(bill));
+            Page<BillResponse> responses = byPage.map(bill -> bill != null ? new BillResponse(bill) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");

@@ -17,8 +17,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentRequest {
-    @NotNull(message = "id product must not be null")
-    private Integer id_product;
+    @NotNull(message = "id product information must not be null")
+    private Integer id_product_information;
     @NotBlank
     @Length(min = 1, max = 200)
     private String content;
@@ -29,6 +29,6 @@ public class CommentRequest {
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
-
+    private Boolean is_like;
     private Set<Integer> id_imageSet = new HashSet<>();
 }

@@ -23,5 +23,4 @@ public class RoleResponse {
         this.id = role.getId();
         this.name = role.getName();
     }
-
 }

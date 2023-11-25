@@ -2,7 +2,6 @@ package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.CartRequest;
 import com.example.sportstore06.model.Cart;
-import com.example.sportstore06.model.Product;
 import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +16,8 @@ import java.util.Optional;
 public class CartService {
     private final ICartRepository cartRepository;
     private final IUserRepository userRepository;
+    private final IProductInfoRepository productInfoRepository;
     private final IProductRepository productRepository;
-    private final ISizeProductRepository sizRepository;
 
     public Long getCount() {
         return cartRepository.count();
@@ -32,8 +31,8 @@ public class CartService {
         return cartRepository.findById(id);
     }
 
-    Optional<Cart> FindByIdUserAndIdSize(Integer id_user, Integer id_size) {
-        return cartRepository.FindByIdUserAndIdSize(id_user, id_size);
+    Optional<Cart> FindByIdUserAndIdProduct(Integer id_user, Integer id_product) {
+        return cartRepository.FindByIdUserAndIdProduct(id_user, id_product);
     }
 
     public List<Cart> GetAllByIdUser(Integer id) {
@@ -60,21 +59,21 @@ public class CartService {
             updated_at = created_at;
         }
 
-        Optional<Cart> ObCart = cartRepository.FindByIdUserAndIdSize(request.getId_user(), request.getId_size());
+        Optional<Cart> ObCart = cartRepository.FindByIdUserAndIdProduct(request.getId_user(), request.getId_product());
         Integer q = request.getQuantity();
         int id_cart = id;
         if (ObCart.isPresent() && id == 0) {
             q = ObCart.get().getQuantity() + request.getQuantity();
             id_cart = ObCart.get().getId();
         }
-        if (q >= sizRepository.findById(request.getId_size()).get().getQuantity()) {
-            q = sizRepository.findById(request.getId_size()).get().getQuantity();
+        if (q >= productRepository.findById(request.getId_product()).get().getQuantity()) {
+            q = productRepository.findById(request.getId_product()).get().getQuantity();
         }
 
         var c = Cart.builder().
                 id(id_cart).
                 user(userRepository.findById(request.getId_user()).get()).
-                size(sizRepository.findById(request.getId_size()).get()).
+                product(productRepository.findById(request.getId_product()).get()).
                 quantity(q).
                 created_at(created_at).
                 updated_at(updated_at).
@@ -85,8 +84,8 @@ public class CartService {
     public void changeQuantity(int id, int quantity) {
         Cart cart = cartRepository.findById(id).get();
         Integer q = quantity;
-        if (q >= cart.getSize().getQuantity()) {
-            q = cart.getSize().getQuantity();
+        if (q >= cart.getProduct().getQuantity()) {
+            q = cart.getProduct().getQuantity();
         }
         cart.setQuantity(quantity);
         cartRepository.save(cart);

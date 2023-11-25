@@ -1,6 +1,5 @@
 package com.example.sportstore06.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -36,5 +35,5 @@ public class Sale {
 
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
     @JsonManagedReference
-    private Set<Product> productSet = new HashSet<>();
+    private Set<ProductInfo> productInfoSet = new HashSet<>();
 }

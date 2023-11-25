@@ -17,7 +17,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoleService {
     private final IRoleRepository roleRepository;
-
     public Long getCount() {
         return roleRepository.count();
     }

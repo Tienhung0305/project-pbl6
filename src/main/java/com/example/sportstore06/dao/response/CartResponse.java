@@ -1,8 +1,6 @@
 package com.example.sportstore06.dao.response;
 
 import com.example.sportstore06.model.Cart;
-import com.example.sportstore06.model.SizeProduct;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +14,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class CartResponse {
     private Integer id;
-    private Integer id_user;
-    private SizeProductResponse sizeProduct;
+    private UserResponse user;
+    private ProductResponse product;
     private Integer quantity;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -25,8 +23,8 @@ public class CartResponse {
     public CartResponse(Cart cart)
     {
         this.id = cart.getId();
-        this.id_user = cart.getUser().getId();
-        this.sizeProduct = new SizeProductResponse(cart.getSize());
+        this.user = cart.getUser() != null ? new UserResponse(cart.getUser()) :null;
+        this.product = cart.getProduct() != null ? new ProductResponse(cart.getProduct()) : null;
         this.quantity = cart.getQuantity();
         this.created_at = cart.getCreated_at();
         this.updated_at = cart.getUpdated_at();
