@@ -47,7 +47,7 @@ public class BusinessResponse {
         for (ProductInfo p : productInfoSet) {
             count_product = count_product + 1;
             for (Comment c : p.getCommentSet()) {
-                if (c.getReply()!=null) {
+                if (c.getReply() == null) {
                     if (c.getIs_like()) {
                         count_comment_like = count_comment_like + 1;
                     }
