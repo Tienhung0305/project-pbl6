@@ -67,10 +67,13 @@ public class CartController {
                 if (carts != null) {
                     for (Cart cart : carts) {
                         Integer id_business = cart.getProduct().getProductInfo().getBusiness().getId();
-                        businesses.add(businessService.findById(id_business).get());
 
+                        Business business = businessService.findById(id_business).get();
+                        if (!businesses.contains(business)) {
+                            businesses.add(business);
+                        }
                         CartProductResponse cartProduct = new CartProductResponse(id_business, new ProductResponse(cart.getProduct()));
-                        cartProducts.add(id_business, cartProduct);
+                        cartProducts.add(cartProduct);
                     }
                 }
                 if (!businesses.isEmpty()) {

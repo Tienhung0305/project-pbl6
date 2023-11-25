@@ -86,8 +86,6 @@ public class SecurityConfiguration {
 //                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 //        return http.build();
 
-
-
         String[] WHITE_LIST_URL = {
                 "/api/v1/auth/**",
                 "/swagger-ui/**",
