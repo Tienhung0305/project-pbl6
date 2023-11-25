@@ -27,7 +27,7 @@ public class BusinessResponse {
     private Integer count_comment_like;
     private Integer count_comment_dislike;
     private Timestamp time_start;
-    private Timestamp count_product;
+    private Integer count_product;
 
     public BusinessResponse(Business business) {
         this.id = business.getId();
@@ -42,7 +42,6 @@ public class BusinessResponse {
         Integer count_comment = 0;
         Integer count_comment_like = 0;
         Integer count_comment_dislike = 0;
-        Integer count_product = 0;
         Set<ProductInfo> productInfoSet = business.getProductInfoSet();
         for (ProductInfo p : productInfoSet) {
             count_product = count_product + 1;
@@ -61,6 +60,7 @@ public class BusinessResponse {
         this.count_comment_like = count_comment_like;
         this.count_comment_dislike = count_comment_dislike;
         this.count_comment = count_comment;
+        this.count_product = productInfoSet.size();
 
         this.time_start = business.getUser().getCreated_at();
     }
