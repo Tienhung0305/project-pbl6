@@ -13,7 +13,7 @@ import java.util.List;
 public interface ICommentRepository extends JpaRepository<Comment, Integer> {
     @Query("SELECT i FROM Comment i")
     Page<Comment> findByPage(Pageable pageable);
-    @Query("SELECT i FROM Comment i WHERE i.productInfo = :id_product_information")
+    @Query("SELECT i FROM Comment i WHERE i.productInfo.id = :id_product_information")
     Page<Comment> findByProductInfo(Pageable pageable, Integer id_product_information);
     List<Comment> findByReply(Integer reply);
 }

@@ -74,15 +74,15 @@ public class CommentController {
         }
     }
 
-    @GetMapping("/find-by-product/{id_product}")
-    public ResponseEntity<?> findByProduct(@PathVariable("id_product") Integer id_product,
+    @GetMapping("/find-by-product/{id_product_info}")
+    public ResponseEntity<?> findByProduct(@PathVariable("id_product_info") Integer id_product_info,
                                            @RequestParam(value = "page", required = false) Optional<Integer> page,
                                            @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                            @RequestParam(value = "sort", required = false) String sort,
                                            @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
         try {
-            if (productInfoService.findById(id_product).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
+            if (productInfoService.findById(id_product_info).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found");
             }
             Pageable pageable;
             if (sort != null) {
@@ -91,9 +91,10 @@ public class CommentController {
             } else {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            Page<Comment> byPage = commentService.findByProductInfo(pageable, id_product);
+            Page<Comment> byPage = commentService.findByProductInfo(pageable, id_product_info);
             Page<CommentResponse> responses = byPage.map(comment ->
-                    new CommentResponse(comment, commentService.findByReply(comment.getId())));            return ResponseEntity.status(HttpStatus.OK).body(responses);
+                    new CommentResponse(comment, commentService.findByReply(comment.getId())));
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }

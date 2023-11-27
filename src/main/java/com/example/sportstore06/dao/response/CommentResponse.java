@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class CommentResponse {
     private int id;
-    private Integer id_product;
+    private Integer id_product_info;
     private String content;
     private Boolean report;
     private Set<Integer> SetReply;
@@ -28,7 +28,7 @@ public class CommentResponse {
 
     public CommentResponse(Comment comment, List<Comment> commentList) {
         this.id = comment.getId();
-        this.id_product = comment.getProductInfo().getId();
+        this.id_product_info = comment.getProductInfo().getId();
         this.content = comment.getContent();
         this.report = comment.getReport();
         this.is_like = comment.getIs_like();
