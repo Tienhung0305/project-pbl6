@@ -61,7 +61,11 @@ public class CartController {
         try {
             if (userService.findById(id_user).isPresent()) {
                 List<Cart> carts = cartService.GetAllByIdUser(id_user);
-                return ResponseEntity.status(HttpStatus.OK).body(carts);
+                List<CartResponse> responses = new ArrayList<>();
+                for (Cart c : carts) {
+                    responses.add(new CartResponse(c));
+                }
+                return ResponseEntity.status(HttpStatus.OK).body(responses);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
             }
