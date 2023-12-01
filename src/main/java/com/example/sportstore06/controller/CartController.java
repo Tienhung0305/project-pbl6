@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,35 +61,7 @@ public class CartController {
         try {
             if (userService.findById(id_user).isPresent()) {
                 List<Cart> carts = cartService.GetAllByIdUser(id_user);
-                List<Business> businesses = new ArrayList<>();
-                List<CartBusinessResponse> response = new ArrayList<>();
-                List<CartProductResponse> cartProducts = new ArrayList<>();
-
-                if (carts != null) {
-                    for (Cart cart : carts) {
-                        Integer id_business = cart.getProduct().getProductInfo().getBusiness().getId();
-
-                        Business business = businessService.findById(id_business).get();
-                        if (!businesses.contains(business)) {
-                            businesses.add(business);
-                        }
-                        CartProductResponse cartProduct = new CartProductResponse(id_business, new ProductResponse(cart.getProduct()));
-                        cartProducts.add(cartProduct);
-                    }
-                }
-                if (!businesses.isEmpty()) {
-                    for (Business b : businesses) {
-                        List<ProductResponse> temp = new ArrayList<>();
-                        for (CartProductResponse c : cartProducts) {
-                            if (c.getId_business() == b.getId()) {
-                                temp.add(c.getProductResponse());
-                            }
-                        }
-                        CartBusinessResponse cartBusinessResponse = new CartBusinessResponse(b.getId(), temp);
-                        response.add(cartBusinessResponse);
-                    }
-                }
-                return ResponseEntity.status(HttpStatus.OK).body(response);
+                return ResponseEntity.status(HttpStatus.OK).body(carts);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
             }

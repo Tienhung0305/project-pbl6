@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,5 +16,5 @@ import java.util.Set;
 @AllArgsConstructor
 public class CartBusinessResponse {
     private Integer id_business;
-    private List<ProductResponse> productSet;
+    private List<CartProductResponse> productSet;
 }
