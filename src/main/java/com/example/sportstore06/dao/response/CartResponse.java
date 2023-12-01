@@ -16,6 +16,7 @@ public class CartResponse {
     private Integer id;
     private UserResponse user;
     private ProductResponse product;
+    private BusinessResponse business;
     private Integer quantity;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -28,5 +29,6 @@ public class CartResponse {
         this.quantity = cart.getQuantity();
         this.created_at = cart.getCreated_at();
         this.updated_at = cart.getUpdated_at();
+        this.business = new BusinessResponse(cart.getProduct().getProductInfo().getBusiness());
     }
 }
