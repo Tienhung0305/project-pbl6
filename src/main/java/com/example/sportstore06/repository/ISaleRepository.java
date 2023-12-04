@@ -17,6 +17,6 @@ public interface ISaleRepository extends JpaRepository<Sale,Integer> {
     Page<Sale> findByPage(Pageable pageable);
     @Query("SELECT i FROM Sale i WHERE i.name LIKE %:Name%")
     Page<Sale> SearchByName(Pageable pageable, String Name);
-    @Query("SELECT i FROM Sale i WHERE i.id_business = :id_business")
+    @Query("SELECT i FROM Sale i WHERE i.business.id = :id_business")
     Page<Sale> findByIdBusiness(Pageable pageable, Integer id_business);
 }
