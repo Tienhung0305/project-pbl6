@@ -203,9 +203,39 @@ public class ProductInfoController {
         }
     }
 
+    @GetMapping("/find-by-sale-discount/{discount}")
+    public ResponseEntity<?> findBySale(@PathVariable("discount") Double discount,
+                                        @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                        @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                        @RequestParam(value = "sort", required = false) String sort,
+                                        @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                        @RequestParam(value = "state", required = false) Optional<Integer> state) {
+        try {
+            if (discount < 1 || discount > 100) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("discount must be between 1 and 100");
+            }
+            Pageable pageable = null;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<ProductInfo> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = productInfoService.findBySaleDiscount(pageable, state.get(), discount);
+            } else {
+                byPage = productInfoService.findBySaleDiscount(pageable, discount);
+            }
+            Page<ProductInfoResponse> responses = byPage.map(product -> product != null ? new ProductInfoResponse(product) : null);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
 
     //end
-
     @PostMapping("/save")
     private ResponseEntity<?> addProduct(@Valid @RequestBody ProductInfoRequest request) {
         try {

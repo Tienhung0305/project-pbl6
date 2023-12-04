@@ -22,6 +22,7 @@ public class SaleResponse {
     private Timestamp ended_at;
     private String name;
     private String content;
+    private String url;
     public SaleResponse(Sale sale) {
         this.id = sale.getId();
         this.id_business = sale.getId_business();
@@ -30,5 +31,6 @@ public class SaleResponse {
         this.ended_at = sale.getEnded_at();
         this.name = sale.getName();
         this.content = sale.getContent();
+        this.url = sale.getUrl();
     }
 }

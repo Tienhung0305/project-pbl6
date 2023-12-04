@@ -27,6 +27,11 @@ public interface IProductInfoRepository extends JpaRepository<ProductInfo,Intege
     Page<ProductInfo> findBySale(Pageable pageable, Integer state, Integer id_sale);
     @Query("SELECT i FROM ProductInfo i WHERE i.sale.id = :id_sale")
     Page<ProductInfo> findBySale(Pageable pageable, Integer id_sale);
+
+    @Query("SELECT i FROM ProductInfo i WHERE i.state = :state AND i.sale.discount = :discount")
+    Page<ProductInfo> findBySaleDiscount(Pageable pageable, Integer state, Double discount);
+    @Query("SELECT i FROM ProductInfo i WHERE i.sale.discount = :discount")
+    Page<ProductInfo> findBySaleDiscount(Pageable pageable, Double discount);
     @Query("SELECT i FROM ProductInfo i WHERE i.name LIKE %:Name%")
     Page<ProductInfo>SearchByName(Pageable pageable, String Name);
     @Query("SELECT i FROM ProductInfo i WHERE i.name LIKE %:Name% AND i.state = :state")

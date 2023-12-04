@@ -30,13 +30,13 @@ public class SaleController {
     @Value("${page_size_default}")
     private Integer page_size_default;
     private final SaleService saleService;
-    private final ImageService imageService;
     private final BusinessService businessService;
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getCount());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {
@@ -48,6 +48,29 @@ public class SaleController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-by-business{id_business}")
+    public ResponseEntity<?> findByIdBusiness(
+            @PathVariable(value = "id_business", required = true) Integer id_business,
+            @RequestParam(value = "page", required = false) Optional<Integer> page,
+            @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
+        try {
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Sale> byPage = saleService.findByIdBusiness(pageable, id_business);
+            Page<SaleResponse> responses = byPage.map(sale -> sale != null ? new SaleResponse(sale) : null);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
     }
 
@@ -65,8 +88,8 @@ public class SaleController {
             } else {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
-            Page<Sale> byPage = saleService.SearchByName(pageable,name);
-            Page<SaleResponse> responses = byPage.map(sale -> new SaleResponse(sale));
+            Page<Sale> byPage = saleService.SearchByName(pageable, name);
+            Page<SaleResponse> responses = byPage.map(sale -> sale != null ? new SaleResponse(sale) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
@@ -87,7 +110,7 @@ public class SaleController {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
             Page<Sale> byPage = saleService.findByPage(pageable);
-            Page<SaleResponse> responses = byPage.map(sale -> new SaleResponse(sale));
+            Page<SaleResponse> responses = byPage.map(sale -> sale != null ? new SaleResponse(sale) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");

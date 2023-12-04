@@ -25,4 +25,5 @@ public class SaleRequest {
     @NotNull(message = "name must not be null")
     private String name;
     private String content;
+    private String url;
 }

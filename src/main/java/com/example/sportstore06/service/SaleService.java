@@ -27,6 +27,10 @@ public class SaleService {
     public Page<Sale> findByPage(Pageable pageable) {
         return saleRepository.findByPage(pageable);
     }
+    public Page<Sale> findByIdBusiness(Pageable pageable, Integer id_business) {
+        return saleRepository.findByIdBusiness(pageable,id_business);
+    }
+
     public boolean deleteById(int id) {
         try {
             saleRepository.deleteById(id);
@@ -44,6 +48,7 @@ public class SaleService {
                 ended_at(request.getEnded_at()).
                 name(request.getName()).
                 content(request.getContent()).
+                url(request.getUrl()).
                 build();
         saleRepository.save(s);
     }

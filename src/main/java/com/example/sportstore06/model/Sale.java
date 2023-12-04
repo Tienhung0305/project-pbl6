@@ -32,6 +32,7 @@ public class Sale {
     @NotBlank
     private String name;
     private String content;
+    private String url;
 
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
     @JsonManagedReference
