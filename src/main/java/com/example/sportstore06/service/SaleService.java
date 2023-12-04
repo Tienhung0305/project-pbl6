@@ -14,7 +14,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SaleService {
     private final ISaleRepository saleRepository;
-    private final IImageRepository iImageRepository;
+    private final IImageRepository imageRepository;
+    private final IBusinessRepository businessRepository;
     public Long getCount() {
         return saleRepository.count();
     }
@@ -43,7 +44,7 @@ public class SaleService {
         var s = Sale.builder().
                 id(id).
                 discount(request.getDiscount()).
-                id_business(request.getId_business()).
+                business(businessRepository.findById(request.getId_business()).get()).
                 started_at(request.getStarted_at()).
                 ended_at(request.getEnded_at()).
                 name(request.getName()).
