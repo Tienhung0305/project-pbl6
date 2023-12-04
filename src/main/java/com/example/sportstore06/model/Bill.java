@@ -28,7 +28,7 @@ public class Bill {
     //private int id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
-    private Boolean state_null;
+    private Integer state;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user", nullable = false, referencedColumnName = "id")

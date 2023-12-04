@@ -4,6 +4,7 @@ package com.example.sportstore06.service;
 import com.example.sportstore06.dao.request.BillRequest;
 import com.example.sportstore06.model.Bill;
 import com.example.sportstore06.model.BillDetail;
+import com.example.sportstore06.model.User;
 import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,12 +38,12 @@ public class BillService {
         return billRepository.findByPage(pageable);
     }
 
-    public Page<Bill> SearchByName(Pageable pageable, String name, Boolean state_null) {
-        return billRepository.SearchByName(pageable, name, state_null);
+    public Page<Bill> SearchByName(Pageable pageable, String name, Integer state) {
+        return billRepository.SearchByName(pageable, name, state);
     }
 
-    public Page<Bill> findByPage(Pageable pageable, Boolean state_null) {
-        return billRepository.findByPage(pageable, state_null);
+    public Page<Bill> findByPage(Pageable pageable, Integer state) {
+        return billRepository.findByPage(pageable, state);
     }
 
     public boolean deleteById(int id) {
@@ -73,7 +74,7 @@ public class BillService {
                 user(userRepository.findById(request.getId_user()).get()).
                 created_at(created_at).
                 updated_at(updated_at).
-                state_null(request.getState_null()).
+                state(request.getState()).
                 build();
 
         Set<BillDetail> set = request.getBill_detailSet()
@@ -86,6 +87,11 @@ public class BillService {
                         build()).collect(Collectors.toSet());
         u.setBill_detailSet(set);
         billRepository.save(u);
+    }
+    public void changeState(int id, int state) {
+        Bill bill = billRepository.findById(id).get();
+        bill.setState(state);
+        billRepository.save(bill);
     }
 
 }

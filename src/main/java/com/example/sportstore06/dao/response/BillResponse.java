@@ -26,7 +26,7 @@ public class BillResponse {
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
-    private Boolean state_null;
+    private Integer state;
     private Set<BillDetailResponse> bill_detailSet = new HashSet<>();
 
     public BillResponse(Bill bill) {
@@ -37,7 +37,7 @@ public class BillResponse {
         this.id_user = bill.getUser() != null ? bill.getUser().getId() : null;
         this.created_at = bill.getCreated_at();
         this.updated_at = bill.getUpdated_at();
-        this.state_null = bill.getState_null();
+        this.state = bill.getState();
         Set<BillDetail> billDetailSet = bill.getBill_detailSet();
         Stream<BillDetailResponse> response = billDetailSet
                 .stream()

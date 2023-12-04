@@ -20,6 +20,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    @Column(columnDefinition = "bit(10)")
     private Boolean is_main;
     private Timestamp created_at;
     private Timestamp updated_at;

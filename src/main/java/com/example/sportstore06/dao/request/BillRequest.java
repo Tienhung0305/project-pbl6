@@ -24,7 +24,9 @@ public class BillRequest {
     private Timestamp created_at;
     private Timestamp updated_at;
     @NotNull(message = "state must not be null")
-    private Boolean state_null;
+    @Min(value = 0, message = "state must is (0,1,2)")
+    @Max(value = 3, message = "state must is (0,1,2)")
+    private Integer state;
     @NotNull(message = "bill details must not be null")
     private Set<BillDetailRequest> bill_detailSet = new HashSet<>();
 }

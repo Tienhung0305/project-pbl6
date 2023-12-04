@@ -64,7 +64,7 @@ public class BillController {
                                     @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                     @RequestParam(value = "sort", required = false) String sort,
                                     @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
-                                    @RequestParam(value = "state_null", required = false) Optional<Boolean> state_null) {
+                                    @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
             Pageable pageable;
             if (sort != null) {
@@ -74,8 +74,8 @@ public class BillController {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
             Page<Bill> byPage;
-            if (state_null.isPresent()) {
-                byPage = billService.SearchByName(pageable, name, state_null.get());
+            if (state.isPresent()) {
+                byPage = billService.SearchByName(pageable, name, state.get());
             } else {
                 byPage = billService.SearchByName(pageable, name);
             }
@@ -91,7 +91,7 @@ public class BillController {
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
                                         @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
-                                        @RequestParam(value = "state_null", required = false) Optional<Boolean> state_null) {
+                                        @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
             Pageable pageable;
             if (sort != null) {
@@ -101,8 +101,8 @@ public class BillController {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
             Page<Bill> byPage;
-            if (state_null.isPresent()) {
-                byPage = billService.findByPage(pageable, state_null.get());
+            if (state.isPresent()) {
+                byPage = billService.findByPage(pageable, state.get());
             } else {
                 byPage = billService.findByPage(pageable);
             }
@@ -148,6 +148,23 @@ public class BillController {
             }
             billService.save(id, request);
             return ResponseEntity.accepted().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/change-state/{id}")
+    private ResponseEntity<?> changeState(@PathVariable("id") Integer id,
+                                          @RequestParam(value = "state", required = true) Integer state) {
+        try {
+            if (billService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+            } else if (state < 0 || state > 3) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("state not found");
+            } else {
+                billService.changeState(id, state);
+                return ResponseEntity.accepted().build();
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

@@ -12,12 +12,12 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     @Query("SELECT i FROM Bill i")
     Page<Bill> findByPage(Pageable pageable);
 
-    @Query("SELECT i FROM Bill i WHERE i.state_null = :state_null")
-    Page<Bill> findByPage(Pageable pageable, Boolean state_null);
+    @Query("SELECT i FROM Bill i WHERE i.state = :state")
+    Page<Bill> findByPage(Pageable pageable, Integer state);
 
     @Query("SELECT i FROM Bill i WHERE i.name LIKE %:Name%")
     Page<Bill> SearchByName(Pageable pageable,String Name);
 
-    @Query("SELECT i FROM Bill i WHERE i.name LIKE %:Name% AND i.state_null = :state_null")
-    Page<Bill> SearchByName(Pageable pageable, String Name, Boolean state_null);
+    @Query("SELECT i FROM Bill i WHERE i.name LIKE %:Name% AND i.state = :state")
+    Page<Bill> SearchByName(Pageable pageable, String Name, Integer state);
 }

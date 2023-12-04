@@ -29,7 +29,9 @@ public class Comment {
     @Length(min = 1, max = 200)
     private String content;
     @NotNull
+    @Column(columnDefinition = "bit(10)")
     private Boolean report;
+    @Column(columnDefinition = "bit(10)")
     private Boolean is_like;
     private Integer reply;
     //private int id_user;
