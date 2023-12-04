@@ -37,4 +37,8 @@ public class Business {
     @JoinColumn(name = "id", referencedColumnName = "id")
     @JsonBackReference
     private User user;
+
+    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private Set<Sale> saleSet = new HashSet<>();
 }

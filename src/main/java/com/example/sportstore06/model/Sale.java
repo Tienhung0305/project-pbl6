@@ -1,5 +1,6 @@
 package com.example.sportstore06.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -23,8 +24,8 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private Double discount;
-    @NotNull
-    private Integer id_business;
+    //@NotNull
+    //private Integer id_business;
     @NotNull
     private Timestamp started_at;
     @NotNull
@@ -37,4 +38,9 @@ public class Sale {
     @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<ProductInfo> productInfoSet = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_business", nullable = false, referencedColumnName = "id")
+    @JsonBackReference
+    private Business business;
 }
