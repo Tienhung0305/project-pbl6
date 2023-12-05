@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class SaleResponse {
     private int id;
-    private Integer id_business;
+    private BusinessResponse businessResponse;
     private Double discount;
     private Timestamp started_at;
     private Timestamp ended_at;
@@ -25,7 +25,7 @@ public class SaleResponse {
     private String url;
     public SaleResponse(Sale sale) {
         this.id = sale.getId();
-        this.id_business = sale.getBusiness().getId();
+        this.businessResponse = sale.getBusiness() != null ? new BusinessResponse(sale.getBusiness()) : null;
         this.discount = sale.getDiscount();
         this.started_at = sale.getStarted_at();
         this.ended_at = sale.getEnded_at();
