@@ -23,6 +23,7 @@ public class ProductInfoService {
     public Long getCount() {
         return productInfoRepository.count();
     }
+
     public Optional<ProductInfo> findById(int id) {
         return productInfoRepository.findById(id);
     }
@@ -30,6 +31,7 @@ public class ProductInfoService {
     public Page<ProductInfo> findByPage(Pageable pageable, Integer state) {
         return productInfoRepository.findByPage(pageable, state);
     }
+
     public Page<ProductInfo> findByPage(Pageable pageable) {
         return productInfoRepository.findByPage(pageable);
     }
@@ -68,11 +70,19 @@ public class ProductInfoService {
     }
 
     public Page<ProductInfo> SearchByName(Pageable pageable, String name) {
-        return productInfoRepository.SearchByName(pageable,name);
+        return productInfoRepository.SearchByName(pageable, name);
     }
 
     public Page<ProductInfo> SearchByName(Pageable pageable, String name, Integer state) {
         return productInfoRepository.SearchByName(pageable, name, state);
+    }
+
+    public Page<ProductInfo> SearchByNameAndBusiness(Pageable pageable, String name, Integer id_business) {
+        return productInfoRepository.SearchByNameAndBusiness(pageable, name, id_business);
+    }
+
+    public Page<ProductInfo> SearchByNameAndBusiness(Pageable pageable, String name, Integer state, Integer id_business) {
+        return productInfoRepository.SearchByNameAndBusiness(pageable, name, state, id_business);
     }
 
     public boolean deleteById(int id) {

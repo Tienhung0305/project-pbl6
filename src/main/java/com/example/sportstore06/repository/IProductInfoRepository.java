@@ -1,5 +1,6 @@
 package com.example.sportstore06.repository;
 
+import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.ProductInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,6 @@ public interface IProductInfoRepository extends JpaRepository<ProductInfo,Intege
     Page<ProductInfo> findBySale(Pageable pageable, Integer state, Integer id_sale);
     @Query("SELECT i FROM ProductInfo i WHERE i.sale.id = :id_sale")
     Page<ProductInfo> findBySale(Pageable pageable, Integer id_sale);
-
     @Query("SELECT i FROM ProductInfo i WHERE i.state = :state AND i.sale.discount = :discount")
     Page<ProductInfo> findBySaleDiscount(Pageable pageable, Integer state, Double discount);
     @Query("SELECT i FROM ProductInfo i WHERE i.sale.discount = :discount")
@@ -36,4 +36,8 @@ public interface IProductInfoRepository extends JpaRepository<ProductInfo,Intege
     Page<ProductInfo>SearchByName(Pageable pageable, String Name);
     @Query("SELECT i FROM ProductInfo i WHERE i.name LIKE %:Name% AND i.state = :state")
     Page<ProductInfo>SearchByName(Pageable pageable, String Name, Integer state);
+    @Query("SELECT i FROM ProductInfo i WHERE i.name LIKE %:Name% AND i.business.id = :id_business")
+    Page<ProductInfo>SearchByNameAndBusiness(Pageable pageable, String Name, Integer id_business);
+    @Query("SELECT i FROM ProductInfo i WHERE i.name LIKE %:Name% AND i.state = :state AND i.business.id = :id_business")
+    Page<ProductInfo>SearchByNameAndBusiness(Pageable pageable, String Name, Integer state, Integer id_business);
 }

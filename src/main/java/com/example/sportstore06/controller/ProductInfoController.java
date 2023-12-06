@@ -172,6 +172,39 @@ public class ProductInfoController {
         }
     }
 
+
+    @GetMapping("/search-with-business/{id_business}")
+    public ResponseEntity<?> searchByBusiness(@PathVariable("id_business") Integer id_business,
+                                              @RequestParam(value = "name", required = true) String name,
+                                              @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                              @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                              @RequestParam(value = "sort", required = false) String sort,
+                                              @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                              @RequestParam(value = "state", required = false) Optional<Integer> state) {
+        try {
+            if (businessService.findById(id_business).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
+            }
+            Pageable pageable= null;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<ProductInfo> byPage;
+            if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
+                byPage = productInfoService.SearchByNameAndBusiness(pageable, name, state.get(), id_business);
+            } else {
+                byPage = productInfoService.SearchByNameAndBusiness(pageable, name , id_business);
+            }
+            Page<ProductInfoResponse> responses = byPage.map(product -> product != null ? new ProductInfoResponse(product) : null);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
     @GetMapping("/find-by-sale/{id_sale}")
     public ResponseEntity<?> findBySale(@PathVariable("id_sale") Integer id_sale,
                                         @RequestParam(value = "page", required = false) Optional<Integer> page,
