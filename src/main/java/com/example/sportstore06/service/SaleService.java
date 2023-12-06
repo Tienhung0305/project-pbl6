@@ -16,20 +16,32 @@ public class SaleService {
     private final ISaleRepository saleRepository;
     private final IImageRepository imageRepository;
     private final IBusinessRepository businessRepository;
+
     public Long getCount() {
         return saleRepository.count();
     }
+
     public Optional<Sale> findById(int id) {
         return saleRepository.findById(id);
     }
+
     public Page<Sale> SearchByName(Pageable pageable, String name) {
         return saleRepository.SearchByName(pageable, name);
     }
+
     public Page<Sale> findByPage(Pageable pageable) {
         return saleRepository.findByPage(pageable);
     }
+
     public Page<Sale> findByIdBusiness(Pageable pageable, Integer id_business) {
-        return saleRepository.findByIdBusiness(pageable,id_business);
+        return saleRepository.findByIdBusiness(pageable, id_business);
+    }
+
+    public Page<Sale> findByDiscount(Pageable pageable, Double discount) {
+        return saleRepository.findByDiscount(pageable, discount);
+    }
+    public Page<Sale> findByDiscount(Pageable pageable, Double discount, Integer id_business) {
+        return saleRepository.findByDiscount(pageable, discount, id_business);
     }
 
     public boolean deleteById(int id) {
@@ -40,6 +52,7 @@ public class SaleService {
             return false;
         }
     }
+
     public void save(int id, SaleRequest request) {
         var s = Sale.builder().
                 id(id).

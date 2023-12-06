@@ -74,6 +74,35 @@ public class SaleController {
         }
     }
 
+    @GetMapping("/get-by-discount{discount}")
+    public ResponseEntity<?> findByIdBusiness(
+            @PathVariable(value = "discount", required = true) Double discount,
+            @RequestParam(value = "id_business", required = false) Optional<Integer> id_business,
+            @RequestParam(value = "page", required = false) Optional<Integer> page,
+            @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "desc", required = false) Optional<Boolean> desc) {
+        try {
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Sale> byPage;
+            if (id_business.isEmpty()) {
+                byPage = saleService.findByDiscount(pageable, discount);
+            } else {
+                byPage = saleService.findByDiscount(pageable, discount, id_business.get());
+            }
+            Page<SaleResponse> responses = byPage.map(sale -> sale != null ? new SaleResponse(sale) : null);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
                                     @RequestParam(value = "page", required = false) Optional<Integer> page,
