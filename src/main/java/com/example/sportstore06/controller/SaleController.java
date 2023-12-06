@@ -39,15 +39,15 @@ public class SaleController {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getCount());
     }
 
-    @GetMapping("/get-discount")
-    public ResponseEntity<?> getDiscount() {
-        Double discount_max = saleService.getMaxDiscount();
-        Double discount_min = saleService.getMinDiscount();
-        Map<String, Double> result = new HashMap<>();
-        result.put("discount_max", discount_max);
-        result.put("discount_min", discount_min);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
-    }
+//    @GetMapping("/get-discount")
+//    public ResponseEntity<?> getDiscount() {
+//        Double discount_max = saleService.getMaxDiscount();
+//        Double discount_min = saleService.getMinDiscount();
+//        Map<String, Double> result = new HashMap<>();
+//        result.put("discount_max", discount_max);
+//        result.put("discount_min", discount_min);
+//        return ResponseEntity.status(HttpStatus.OK).body(result);
+//    }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {
@@ -77,6 +77,9 @@ public class SaleController {
             } else {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
             }
+            if (businessService.findById(id_business).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
+            }
             Page<Sale> byPage = saleService.findByIdBusiness(pageable, id_business);
             Page<SaleResponse> responses = byPage.map(sale -> sale != null ? new SaleResponse(sale) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
@@ -104,9 +107,12 @@ public class SaleController {
             }
             Page<Sale> byPage;
             if (id_business.isEmpty()) {
-                byPage = saleService.findByDiscount(pageable, discount_min, discount_max);
+                byPage = saleService.getByDiscount(pageable, discount_min, discount_max);
             } else {
-                byPage = saleService.findByDiscount(pageable, discount_min, discount_max, id_business.get());
+                if (businessService.findById(id_business.get()).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
+                }
+                byPage = saleService.getByDiscount(pageable, discount_min, discount_max, id_business.get());
             }
             Page<SaleResponse> responses = byPage.map(sale -> sale != null ? new SaleResponse(sale) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
