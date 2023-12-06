@@ -21,12 +21,12 @@ public class SaleService {
         return saleRepository.count();
     }
 
-//    public Double getMaxDiscount() {
-//        return saleRepository.getMaxDiscount();
-//    }
-//    public Double getMinDiscount() {
-//        return saleRepository.getMinDiscount();
-//    }
+    public Double getMaxDiscount() {
+        return saleRepository.getMaxDiscount();
+    }
+    public Double getMinDiscount() {
+        return saleRepository.getMinDiscount();
+    }
 
     public Optional<Sale> findById(int id) {
         return saleRepository.findById(id);

@@ -39,15 +39,15 @@ public class SaleController {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getCount());
     }
 
-//    @GetMapping("/get-discount")
-//    public ResponseEntity<?> getDiscount() {
-//        Double discount_max = saleService.getMaxDiscount();
-//        Double discount_min = saleService.getMinDiscount();
-//        Map<String, Double> result = new HashMap<>();
-//        result.put("discount_max", discount_max);
-//        result.put("discount_min", discount_min);
-//        return ResponseEntity.status(HttpStatus.OK).body(result);
-//    }
+    @GetMapping("/get-discount")
+    public ResponseEntity<?> getDiscount() {
+        Double discount_max = saleService.getMaxDiscount();
+        Double discount_min = saleService.getMinDiscount();
+        Map<String, Double> result = new HashMap<>();
+        result.put("discount_max", discount_max);
+        result.put("discount_min", discount_min);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {

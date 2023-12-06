@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,10 +20,10 @@ public interface ISaleRepository extends JpaRepository<Sale,Integer> {
     Page<Sale> SearchByName(Pageable pageable, String Name);
     @Query("SELECT i FROM Sale i WHERE i.business.id = :id_business")
     Page<Sale> findByIdBusiness(Pageable pageable, Integer id_business);
-    @Query("SELECT i FROM Sale i WHERE i.discount >= : discount_min AND i.discount <= : discount_max")
-    Page<Sale> getByDiscount(Pageable pageable, Double discount_min, Double discount_max);
+    @Query("SELECT i FROM Sale i WHERE i.discount >= :discount_min AND i.discount <= :discount_max")
+    Page<Sale> getByDiscount(Pageable pageable, @Param("discount_min") Double discount_min, @Param("discount_max") Double discount_max);
     @Query("SELECT i FROM Sale i WHERE i.discount >= :discount_min AND i.discount <= :discount_max AND i.business.id = :id_business")
-    Page<Sale> getByDiscount(Pageable pageable, Double discount_min, Double discount_max, Integer id_business);
+    Page<Sale> getByDiscount(Pageable pageable, @Param("discount_min") Double discount_min, @Param("discount_max") Double discount_max, @Param("id_business") Integer id_business);
     @Query("SELECT MAX(i.discount) FROM Sale i")
     Double getMaxDiscount();
     @Query("SELECT MIN(i.discount) FROM Sale i")
