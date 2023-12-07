@@ -85,6 +85,16 @@ public class ProductInfoService {
         return productInfoRepository.SearchByNameAndBusiness(pageable, name, state, id_business);
     }
 
+    public Page<ProductInfo> SearchByNameAndSale(Pageable pageable, String name, Integer id_sale){
+        return productInfoRepository.SearchByNameAndSale(pageable, name, id_sale);
+    }
+
+    public Page<ProductInfo> SearchByNameAndSale(Pageable pageable, String name, Integer state, Integer id_sale) {
+        return productInfoRepository.SearchByNameAndSale(pageable, name, state, id_sale);
+    }
+
+
+
     public boolean deleteById(int id) {
         try {
             productInfoRepository.deleteById(id);

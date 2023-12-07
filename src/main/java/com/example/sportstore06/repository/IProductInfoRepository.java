@@ -40,4 +40,8 @@ public interface IProductInfoRepository extends JpaRepository<ProductInfo,Intege
     Page<ProductInfo>SearchByNameAndBusiness(Pageable pageable, String Name, Integer id_business);
     @Query("SELECT i FROM ProductInfo i WHERE i.name LIKE %:Name% AND i.state = :state AND i.business.id = :id_business")
     Page<ProductInfo>SearchByNameAndBusiness(Pageable pageable, String Name, Integer state, Integer id_business);
+    @Query("SELECT i FROM ProductInfo i WHERE i.name LIKE %:Name% AND i.sale.id = :id_sale")
+    Page<ProductInfo>SearchByNameAndSale(Pageable pageable, String Name, Integer id_sale);
+    @Query("SELECT i FROM ProductInfo i WHERE i.name LIKE %:Name% AND i.state = :state AND i.sale.id = :id_sale")
+    Page<ProductInfo>SearchByNameAndSale(Pageable pageable, String Name, Integer state, Integer id_sale);
 }
