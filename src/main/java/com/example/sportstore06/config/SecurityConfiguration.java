@@ -80,7 +80,7 @@ public class SecurityConfiguration {
                                 )
                                 .permitAll()
 
-                                .requestMatchers(POST, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
+                                .requestMatchers(POST, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN, ROLE_CUSTOMER")
                                 .requestMatchers(PUT, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
                                 .requestMatchers(DELETE, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
 
