@@ -112,7 +112,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(PUT, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
                                 .requestMatchers(DELETE, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
 
-                                .requestMatchers(POST, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN")
+                                .requestMatchers(POST, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN","ROLE_CUSTOMER")
                                 .requestMatchers(PUT, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS","ROLE_CUSTOMER")
                                 .requestMatchers(DELETE, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
 
