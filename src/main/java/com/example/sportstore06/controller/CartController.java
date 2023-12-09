@@ -36,7 +36,7 @@ public class CartController {
     private final BillService billService;
     private final MomoPaymentService momoPaymentService;
 
-    @GetMapping("/momo")
+    @PostMapping("/momo")
     public ResponseEntity<?> momo(@RequestParam(value = "id_user", required = true) Integer id_user,
                                   HttpServletRequest request) {
         String baseUrl = UrlUtil.getBaseUrl(request);
