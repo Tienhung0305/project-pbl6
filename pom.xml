@@ -102,7 +102,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <finalName>sport-app</finalName>
                 </configuration>
             </plugin>
         </plugins>
