@@ -65,15 +65,15 @@ public class SecurityConfiguration {
                 "/swagger-resources",
                 "/swagger-resources/**",
                 "/swagger-ui/**",
-                "/swagger-ui.html"
+                "/swagger-ui.html",
+                "/**"
         };
 
         http
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                        .requestMatchers(WHITE_LIST_URL).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, WHITE_LIST_URL).permitAll()
                         .requestMatchers(GET,
                                 "/api/v1/bill/**",
                                 "/api/v1/cart/**",
