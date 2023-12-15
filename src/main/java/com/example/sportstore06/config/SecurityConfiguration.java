@@ -2,17 +2,16 @@ package com.example.sportstore06.config;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import com.example.sportstore06.model.Permission;
 import com.example.sportstore06.repository.IPermissionRepository;
 import com.example.sportstore06.security.UserService;
-import com.example.sportstore06.service.RoleService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.config.Customizer;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -40,7 +38,6 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
@@ -49,12 +46,14 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.addAllowedOriginPattern("*");
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowCredentials(false);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         String[] WHITE_LIST_URL = {
@@ -70,71 +69,71 @@ public class SecurityConfiguration {
         };
 
         http
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(WHITE_LIST_URL)
-                                .permitAll()
-                                .requestMatchers(GET,
-                                        "/api/v1/bill/**",
-                                        "/api/v1/cart/**",
-                                        "/api/v1/business/**",
-                                        "/api/v1/category/**",
-                                        "/api/v1/comment/**",
-                                        "/api/v1/image/**",
-                                        "/api/v1/role/**",
-                                        "/api/v1/sale/**",
-                                        "/api/v1/user/**",
-                                        "/api/v1/product-information/**",
-                                        "/api/v1/product/**"
-                                )
-                                .permitAll()
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                        .requestMatchers(WHITE_LIST_URL).permitAll()
+                        .requestMatchers(GET,
+                                "/api/v1/bill/**",
+                                "/api/v1/cart/**",
+                                "/api/v1/business/**",
+                                "/api/v1/category/**",
+                                "/api/v1/comment/**",
+                                "/api/v1/image/**",
+                                "/api/v1/role/**",
+                                "/api/v1/sale/**",
+                                "/api/v1/user/**",
+                                "/api/v1/product-information/**",
+                                "/api/v1/product/**"
+                        )
+                        .permitAll()
 
-                                .requestMatchers(POST, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN","ROLE_CUSTOMER")
-                                .requestMatchers(PUT, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
-                                .requestMatchers(DELETE, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(POST, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                        .requestMatchers(PUT, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(DELETE, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
 
-                                .requestMatchers(POST, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
-                                .requestMatchers(PUT, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
-                                .requestMatchers(DELETE, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                        .requestMatchers(POST, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                        .requestMatchers(PUT, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                        .requestMatchers(DELETE, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
 
-                                .requestMatchers(POST, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
-                                .requestMatchers(PUT, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
-                                .requestMatchers(DELETE, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(POST, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers(PUT, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers(DELETE, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN")
 
-                                .requestMatchers(POST, "/api/v1/category/**").hasAnyAuthority("ROLE_ADMIN")
-                                .requestMatchers(PUT, "/api/v1/category/**").hasAnyAuthority("ROLE_ADMIN")
-                                .requestMatchers(DELETE, "/api/v1/category/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(POST, "/api/v1/category/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(PUT, "/api/v1/category/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(DELETE, "/api/v1/category/**").hasAnyAuthority("ROLE_ADMIN")
 
-                                .requestMatchers(POST, "/api/v1/comment/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
-                                .requestMatchers(PUT, "/api/v1/comment/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
-                                .requestMatchers(DELETE, "/api/v1/comment/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
+                        .requestMatchers(POST, "/api/v1/comment/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
+                        .requestMatchers(PUT, "/api/v1/comment/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
+                        .requestMatchers(DELETE, "/api/v1/comment/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
 
-                                .requestMatchers(POST, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
-                                .requestMatchers(PUT, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
-                                .requestMatchers(DELETE, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
+                        .requestMatchers(POST, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
+                        .requestMatchers(PUT, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
+                        .requestMatchers(DELETE, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
 
-                                .requestMatchers(POST, "/api/v1/role/**").hasAnyAuthority("ROLE_ADMIN")
-                                .requestMatchers(PUT, "/api/v1/role/**").hasAnyAuthority("ROLE_ADMIN")
-                                .requestMatchers(DELETE, "/api/v1/role/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(POST, "/api/v1/role/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(PUT, "/api/v1/role/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(DELETE, "/api/v1/role/**").hasAnyAuthority("ROLE_ADMIN")
 
-                                .requestMatchers(POST, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-                                .requestMatchers(PUT, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-                                .requestMatchers(DELETE, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
+                        .requestMatchers(POST, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers(PUT, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers(DELETE, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
 
-                                .requestMatchers(POST, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN","ROLE_CUSTOMER")
-                                .requestMatchers(PUT, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS","ROLE_CUSTOMER")
-                                .requestMatchers(DELETE, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
+                        .requestMatchers(POST, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
+                        .requestMatchers(PUT, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
+                        .requestMatchers(DELETE, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
 
-                                .requestMatchers(POST, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-                                .requestMatchers(PUT, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-                                .requestMatchers(DELETE, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
+                        .requestMatchers(POST, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers(PUT, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers(DELETE, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
 
-                                .requestMatchers(POST, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-                                .requestMatchers(PUT, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-                                .requestMatchers(DELETE, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
-                                .anyRequest()
-                                .authenticated()
+                        .requestMatchers(POST, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers(PUT, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers(DELETE, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .anyRequest()
+                        .authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
