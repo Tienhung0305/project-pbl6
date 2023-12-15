@@ -21,7 +21,7 @@ public class Category {
     private String name;
     //private int category_group_id;
 
-    @ManyToMany(mappedBy = "categorySet", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "categorySet", fetch = FetchType.EAGER)
     @JsonBackReference
     private Set<ProductInfo> productInfoSet = new HashSet<>();
 

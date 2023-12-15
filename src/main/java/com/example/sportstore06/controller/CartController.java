@@ -51,7 +51,6 @@ public class CartController {
                 }
             }
         }
-        total = total / 100;
         BigDecimal amount = new BigDecimal(total);
         System.out.println(amount);
         LocalDateTime currentDateTime = LocalDateTime.now();
