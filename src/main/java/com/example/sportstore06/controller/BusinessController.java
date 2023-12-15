@@ -3,7 +3,10 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.BusinessRequest;
 import com.example.sportstore06.dao.response.BusinessResponse;
+import com.example.sportstore06.dao.response.CategoryResponse;
 import com.example.sportstore06.model.Business;
+import com.example.sportstore06.model.Category;
+import com.example.sportstore06.model.ProductInfo;
 import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +20,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/business")
@@ -28,11 +35,13 @@ public class BusinessController {
     private final BusinessService businessService;
     private final UserService userService;
     private final ImageService imageService;
+    private final CategoryService categoryService;
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(businessService.getCount());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {
@@ -46,7 +55,7 @@ public class BusinessController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
+    
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
                                     @RequestParam(value = "page", required = false) Optional<Integer> page,
@@ -64,9 +73,9 @@ public class BusinessController {
             }
             Page<Business> byPage;
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                byPage = businessService.SearchByName(pageable,name,state.get());
+                byPage = businessService.SearchByName(pageable, name, state.get());
             } else {
-                byPage = businessService.SearchByName(pageable,name);
+                byPage = businessService.SearchByName(pageable, name);
             }
             Page<BusinessResponse> responses = byPage.map(business -> new BusinessResponse(business));
             return ResponseEntity.status(HttpStatus.OK).body(responses);
