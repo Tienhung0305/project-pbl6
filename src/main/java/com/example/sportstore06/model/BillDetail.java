@@ -20,12 +20,12 @@ public class BillDetail {
     private Integer quantity;
     private Double price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_bill", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private Bill bill;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "id_product", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private Product product;

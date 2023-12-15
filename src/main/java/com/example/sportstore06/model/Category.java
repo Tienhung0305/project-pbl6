@@ -25,7 +25,7 @@ public class Category {
     @JsonBackReference
     private Set<ProductInfo> productInfoSet = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_group_id", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private CategoryGroup categoryGroup;

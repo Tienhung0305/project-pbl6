@@ -20,7 +20,7 @@ public class CategoryGroup {
     private int id;
     private String name;
 
-    @OneToMany(mappedBy = "categoryGroup", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "categoryGroup", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Category> categorySet = new HashSet<>();
 }

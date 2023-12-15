@@ -35,7 +35,7 @@ public class Sale {
     private String content;
     private String url;
 
-    @OneToMany(mappedBy = "sale", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<ProductInfo> productInfoSet = new HashSet<>();
 
