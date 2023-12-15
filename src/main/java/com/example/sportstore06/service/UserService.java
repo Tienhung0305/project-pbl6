@@ -1,6 +1,7 @@
 package com.example.sportstore06.service;
 
 
+import com.example.sportstore06.dao.request.UserPutRequest;
 import com.example.sportstore06.dao.request.UserRequest;
 import com.example.sportstore06.model.Business;
 import com.example.sportstore06.model.Image;
@@ -90,6 +91,41 @@ public class UserService {
                 address(request.getAddress()).
                 username(request.getUsername()).
                 password(request.getPassword()).
+                state(request.getState()).
+                remember_token(request.getRemember_token()).
+                created_at(created_at).
+                updated_at(updated_at).
+                roleSet(roles).
+                image_url(request.getImage_url()).
+                build();
+        userRepository.save(u);
+    }
+
+    public void save(int id, UserPutRequest request) {
+        Timestamp created_at;
+        Timestamp updated_at;
+        if (userRepository.findById(id).isPresent()) {
+            created_at = userRepository.findById(id).get().getCreated_at();
+            updated_at = new Timestamp(new Date().getTime());
+        } else {
+            created_at = new Timestamp(new Date().getTime());
+            updated_at = created_at;
+        }
+
+        Set<Role> roles = new HashSet<>();
+        for (String i : request.getRoles()) {
+            Optional<Role> ObRole = roleRepository.findByName(i);
+            roles.add(ObRole.get());
+        }
+
+        var u = User.builder().
+                id(id).
+                name(request.getName()).
+                email(request.getEmail()).
+                dob(request.getDob()).
+                phone(request.getPhone()).
+                cic(request.getCic()).
+                address(request.getAddress()).
                 state(request.getState()).
                 remember_token(request.getRemember_token()).
                 created_at(created_at).

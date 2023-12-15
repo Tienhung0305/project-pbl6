@@ -1,6 +1,7 @@
 package com.example.sportstore06.controller;
 
 
+import com.example.sportstore06.dao.request.UserPutRequest;
 import com.example.sportstore06.dao.request.UserRequest;
 
 import com.example.sportstore06.dao.response.UserResponse;
@@ -173,7 +174,7 @@ public class UserController {
     }
 
     @PutMapping("/save/{id}")
-    private ResponseEntity<?> changeUser(@Valid @RequestBody UserRequest request,
+    private ResponseEntity<?> changeUser(@Valid @RequestBody UserPutRequest request,
                                          @PathVariable("id") Integer id) {
         try {
             if (userService.findById(id).isEmpty()) {
@@ -187,10 +188,6 @@ public class UserController {
             }
 
             //check exits
-            if (userService.findByUsername(request.getUsername()).isPresent() &&
-                    userService.findByUsername(request.getUsername()).get().getId() != id) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("username already exists");
-            }
             if (userService.findByEmail(request.getEmail()).isPresent() &&
                     userService.findByEmail(request.getEmail()).get().getId() != id) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("email already exists");

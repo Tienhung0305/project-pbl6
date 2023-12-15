@@ -45,25 +45,25 @@ public class ProductInfo {
     @JsonManagedReference
     Set<Category> categorySet = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_business", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private Business business;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sale", referencedColumnName = "id")
     @JsonBackReference
     private Sale sale;
 
-    @OneToMany(mappedBy = "productInfo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();
 
-    @OneToMany(mappedBy = "productInfo", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Product> productSet = new HashSet<>();
 
-    @OneToMany(mappedBy = "productInfo", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Comment> commentSet = new HashSet<>();
 }
