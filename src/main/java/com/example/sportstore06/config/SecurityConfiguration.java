@@ -71,7 +71,8 @@ public class SecurityConfiguration {
         };
 
         http
-
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         .requestMatchers(GET,
