@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/cart")
 @RequiredArgsConstructor
-@CrossOrigin
 public class CartController {
     private final CartService cartService;
     private final UserService userService;
@@ -148,23 +147,6 @@ public class CartController {
         }
     }
 
-    @PostMapping("/save")
-    private ResponseEntity<?> addCart(@Valid @RequestBody CartRequest request) {
-        try {
-
-            if (userService.findById(request.getId_user()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
-            }
-            if (productService.findById(request.getId_product()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
-            }
-            cartService.save(0, request);
-            return ResponseEntity.accepted().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
     @PutMapping("/save/{id}")
     private ResponseEntity<?> changeCart(@Valid @RequestBody CartRequest request,
                                          @PathVariable("id") Integer id) {
@@ -203,6 +185,22 @@ public class CartController {
                 cartService.changeQuantity(id, quantity);
                 return ResponseEntity.accepted().build();
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/save")
+    private ResponseEntity<?> addCart(@RequestBody CartRequest request) {
+        try {
+            if (userService.findById(request.getId_user()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
+            }
+            if (productService.findById(request.getId_product()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
+            }
+            cartService.save(0, request);
+            return ResponseEntity.accepted().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

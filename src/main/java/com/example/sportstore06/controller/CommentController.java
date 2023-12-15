@@ -21,7 +21,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/comment")
 @RequiredArgsConstructor
-@CrossOrigin
 public class CommentController {
     @Value("${page_size_default}")
     private Integer page_size_default;

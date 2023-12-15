@@ -30,7 +30,7 @@ public class ProductInfo {
 
     //private int id_business;
     //private int id_sale;
-     private Timestamp created_at;
+    private Timestamp created_at;
     private Timestamp updated_at;
     @NotNull
     @Min(value = 0)

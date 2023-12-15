@@ -22,7 +22,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/business")
 @RequiredArgsConstructor
-@CrossOrigin
 public class BusinessController {
     @Value("${page_size_default}")
     private Integer page_size_default;
