@@ -29,16 +29,16 @@ public class Business {
     private String payment;
     private Integer tax;
 
-    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "business", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<ProductInfo> productInfoSet = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
     @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "business", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Sale> saleSet = new HashSet<>();
 }

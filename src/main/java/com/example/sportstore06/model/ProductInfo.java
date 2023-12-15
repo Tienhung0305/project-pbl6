@@ -37,7 +37,7 @@ public class ProductInfo {
     @Max(value = 3)
     private Integer state;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "product_categories",
             joinColumns = @JoinColumn(name = "id_product_information"),
             inverseJoinColumns = @JoinColumn(name = "id_category")
