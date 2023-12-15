@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/test")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AuthorizationController {
     @GetMapping
     public ResponseEntity<String> sayHello() {

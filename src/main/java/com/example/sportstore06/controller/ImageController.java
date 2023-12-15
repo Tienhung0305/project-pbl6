@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/image")
 @RequiredArgsConstructor
+@CrossOrigin
 public class ImageController {
     @Value("${page_size_default}")
     private Integer page_size_default;

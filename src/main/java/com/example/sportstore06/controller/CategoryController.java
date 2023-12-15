@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/category")
 @RequiredArgsConstructor
+@CrossOrigin
 public class CategoryController {
     @Value("${page_size_default}")
     private Integer page_size_default;
