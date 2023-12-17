@@ -56,7 +56,7 @@ public class BusinessController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    
+
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
                                     @RequestParam(value = "page", required = false) Optional<Integer> page,
@@ -78,7 +78,7 @@ public class BusinessController {
             } else {
                 byPage = businessService.SearchByName(pageable, name);
             }
-            Page<BusinessResponse> responses = byPage.map(business -> new BusinessResponse(business));
+            Page<BusinessResponse> responses = byPage.map(business -> business != null ? new BusinessResponse(business) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
@@ -105,7 +105,7 @@ public class BusinessController {
             } else {
                 byPage = businessService.findByPage(pageable);
             }
-            Page<BusinessResponse> responses = byPage.map(business -> new BusinessResponse(business));
+            Page<BusinessResponse> responses = byPage.map(business -> business != null ? new BusinessResponse(business) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");

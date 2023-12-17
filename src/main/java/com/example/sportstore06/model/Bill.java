@@ -24,7 +24,7 @@ public class Bill {
     private int id;
     private String name;
     private String information;
-    private Double total;
+    private double total;
     //private int id_user;
     private Timestamp created_at;
     private Timestamp updated_at;

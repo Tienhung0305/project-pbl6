@@ -28,6 +28,9 @@ public class ProductInfoResponse {
     private Set<ImageResponse> imageSet;
     private Integer state;
     private Double price_min;
+    private Integer number_like;
+    private Integer number_dislike;
+    private Integer number_comment;
     private Set<ProductResponse> productSet;
 
     public ProductInfoResponse(ProductInfo productInfo) {
@@ -64,5 +67,20 @@ public class ProductInfoResponse {
         List<Double> l = new ArrayList<>();
         productInfo.getProductSet().forEach(product -> l.add(product.getPrice()));
         this.price_min = l.isEmpty() ? null : Collections.min(l);
+
+        Integer number_like = 0;
+        Integer number_dislike = 0;
+        List<Comment> commentList = productInfo.getCommentSet().stream().toList();
+
+        for (Comment c : commentList) {
+            if (c.getIs_like()) {
+                number_like += 1;
+            } else {
+                number_dislike += 1;
+            }
+        }
+        this.number_comment = commentList.size();
+        this.number_like = number_like;
+        this.number_dislike = number_dislike;
     }
 }

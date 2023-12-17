@@ -18,7 +18,7 @@ public class BillDetail {
     //private int id_bill;
     //private int id_product;
     private Integer quantity;
-    private Double price;
+    private double price;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_bill", nullable = false, referencedColumnName = "id")
