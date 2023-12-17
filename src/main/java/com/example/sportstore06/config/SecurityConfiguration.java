@@ -67,7 +67,6 @@ public class SecurityConfiguration {
                 "/swagger-resources/**",
                 "/swagger-ui/**",
                 "/swagger-ui.html",
-                "/**"
         };
 
         http
