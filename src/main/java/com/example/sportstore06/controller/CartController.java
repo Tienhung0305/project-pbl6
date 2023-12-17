@@ -48,7 +48,7 @@ public class CartController {
                     Set<BillDetailRequest> set = new HashSet<>();
                     BillRequest bill = new BillRequest();
                     for (Cart cart : carts) {
-                        if (cart.getProduct().getProductInfo().getState() != 0) {
+                        if (cart.getProduct().getProductInfo().getState() != 0 || cart.getProduct().getQuantity() <= 0) {
                             cartService.deleteById(cart.getId());
                             //409
                             return ResponseEntity.status(HttpStatus.GONE).body("product does not exist or has been deleted");
