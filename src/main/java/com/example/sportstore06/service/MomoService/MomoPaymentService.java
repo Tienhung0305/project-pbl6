@@ -18,7 +18,7 @@ public class MomoPaymentService {
 
     public String initiatePayment(BigDecimal amount, String orderId, String baseUrl) {
         String REDIRECT_URL = baseUrl + "/api/v1/cart/momo-payment_save";
-        String IPN_URL = baseUrl + "/api/v1/cart/momo-payment_save";
+        String IPN_URL = baseUrl + "/";
 
         String PARTNER_CODE = "MOMOBKUN20180529";
         String ACCESS_KEY = "klm05TvNBzhg7h7j";

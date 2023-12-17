@@ -4,10 +4,7 @@ import com.example.sportstore06.dao.request.BillDetailRequest;
 import com.example.sportstore06.dao.request.BillRequest;
 import com.example.sportstore06.dao.request.CartRequest;
 import com.example.sportstore06.dao.response.*;
-import com.example.sportstore06.model.BillDetail;
-import com.example.sportstore06.model.Business;
-import com.example.sportstore06.model.Cart;
-import com.example.sportstore06.model.Sale;
+import com.example.sportstore06.model.*;
 import com.example.sportstore06.service.*;
 import com.example.sportstore06.service.MomoService.MomoPaymentService;
 import com.example.sportstore06.service.MomoService.UrlUtil;
@@ -39,63 +36,76 @@ public class CartController {
     @PostMapping("/momo")
     public ResponseEntity<?> momo(@RequestParam(value = "id_user", required = true) Integer id_user,
                                   HttpServletRequest request) {
-        String baseUrl = UrlUtil.getBaseUrl(request);
-        List<Cart> carts = cartService.GetAllByIdUser(id_user);
-        Double total = 0.0;
-        if (carts.size() != 0) {
-            for (Cart cart : carts) {
-                Sale sale = cart.getProduct().getProductInfo().getSale();
-                if (sale != null) {
-                    total = total + cart.getProduct().getPrice() * cart.getQuantity() * (100 - sale.getDiscount());
-                } else {
-                    total = total + cart.getProduct().getPrice() * cart.getQuantity();
+        if (userService.findById(id_user).isPresent()) {
+            String baseUrl = UrlUtil.getBaseUrl(request);
+            List<Cart> carts = cartService.GetAllByIdUser(id_user);
+            double total = 0.0;
+            if (!carts.isEmpty()) {
+                Set<BillDetailRequest> set = new HashSet<>();
+                BillRequest bill = new BillRequest();
+                for (Cart cart : carts) {
+                    BillDetailRequest bill_detail = new BillDetailRequest();
+
+                    bill_detail.setId_product(cart.getProduct().getId());
+                    bill_detail.setQuantity(cart.getQuantity());
+
+                    Sale sale = cart.getProduct().getProductInfo().getSale();
+                    if (sale != null) {
+                        total = total + cart.getProduct().getPrice() * cart.getQuantity() * (100 - sale.getDiscount());
+                    } else {
+                        total = total + cart.getProduct().getPrice() * cart.getQuantity();
+                    }
+
+                    bill_detail.setPrice(total);
+                    set.add(bill_detail);
+
+                    //remove cart
+                    cartService.deleteById(cart.getId());
                 }
+                // 0 : đang giao
+                // 1 : đã giao thành công
+                // 2 : chưa thanh toán
+
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                String username = userService.findById(id_user).get().getUsername();
+                String orderId = username + "_" + currentDateTime.toString();
+                BigDecimal amount = new BigDecimal(total);
+                String payUrl = momoPaymentService.initiatePayment(amount, orderId, baseUrl);
+
+                bill.setTotal(total);
+                bill.setId_user(id_user);
+                bill.setState(2);
+                bill.setBill_detailSet(set);
+                int id = billService.save(0, bill);
+                billService.findById(id).get().setName(orderId + "_" + String.valueOf(id));
+                billService.findById(id).get().setInformation(orderId + "_" + String.valueOf(id));
+
+                return ResponseEntity.status(HttpStatus.OK).body(payUrl);
             }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        BigDecimal amount = new BigDecimal(total);
-        System.out.println(amount);
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        String username = userService.findById(id_user).get().getUsername();
-        String orderId = username + "_" + currentDateTime.toString();
-        String payUrl = momoPaymentService.initiatePayment(amount, orderId, baseUrl);
-        return ResponseEntity.status(HttpStatus.OK).body(payUrl);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
 
-    @GetMapping("/momo-payment_save")
+    @PostMapping("/momo-payment_save")
     public ResponseEntity<?> momoSave(@RequestParam(value = "orderId") String orderId,
                                       @RequestParam(value = "amount") Integer amount) {
         String[] split = orderId.split("_");
         String username = split[0];
-        Integer id_user = userService.findByUsername(username).get().getId();
-        BillRequest billRequest = new BillRequest();
-        Set<BillDetailRequest> set = new HashSet<>();
-        List<Cart> carts = cartService.GetAllByIdUser(id_user);
-        for (Cart cart : carts)
-        {
-            BillDetailRequest bill_detail =  new BillDetailRequest();
-            bill_detail.setId_product(cart.getProduct().getId());
-            bill_detail.setQuantity(cart.getQuantity());
-
-            Sale sale = cart.getProduct().getProductInfo().getSale();
-            Double total = 0.0;
-            if (sale != null) {
-                total = total + cart.getProduct().getPrice() * cart.getQuantity() * (100 - sale.getDiscount());
-            } else {
-                total = total + cart.getProduct().getPrice() * cart.getQuantity();
-            }
-            bill_detail.setPrice(total);
-            set.add(bill_detail);
-            cartService.deleteById(cart.getId());
+        String time = split[1];
+        Timestamp time_convert = Timestamp.valueOf(time);
+        int id_bill = Integer.parseInt(split[2]);
+        if (billService.findById(id_bill).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+        } else if (userService.findByUsername(username).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found");
+        } else {
+            Bill bill = billService.findById(id_bill).get();
+            bill.setState(0);
+            bill.setUpdated_at(time_convert);
+            return ResponseEntity.status(HttpStatus.OK).body(username);
         }
-        billRequest.setName(orderId);
-        billRequest.setInformation(orderId);
-        billRequest.setTotal((double)amount);
-        billRequest.setId_user(id_user);
-        billRequest.setState(0);
-        billRequest.setBill_detailSet(set);
-        billService.save(0, billRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(username);
     }
 
     @GetMapping("/get-count")

@@ -4,6 +4,7 @@ import com.example.sportstore06.dao.response.JwtAuthenticationResponse;
 import com.example.sportstore06.dao.request.SignUpRequest;
 import com.example.sportstore06.dao.request.SignInRequest;
 import com.example.sportstore06.model.Role;
+import com.example.sportstore06.model.User;
 import com.example.sportstore06.security.AuthenticationService;
 import com.example.sportstore06.service.RoleService;
 import com.example.sportstore06.service.UserService;
@@ -49,7 +50,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtAuthenticationResponse> SignIn(@Valid @RequestBody SignInRequest request) {
-        return ResponseEntity.ok(authenticationService.signin(request));
+    public ResponseEntity<?> SignIn(@Valid @RequestBody SignInRequest request) {
+        if (userService.findByUsername(request.getUsername()).isPresent()) {
+            if (userService.findByUsername(request.getUsername()).get().getState() != 0) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("your account is temporarily locked");
+            }
+            return ResponseEntity.ok(authenticationService.signin(request));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("your account not found");
     }
 }

@@ -55,7 +55,7 @@ public class BillService {
         }
     }
 
-    public void save(int id, BillRequest request) {
+    public int save(int id, BillRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
         if (billRepository.findById(id).isPresent()) {
@@ -87,6 +87,7 @@ public class BillService {
                         build()).collect(Collectors.toSet());
         u.setBill_detailSet(set);
         billRepository.save(u);
+        return u.getId();
     }
     public void changeState(int id, int state) {
         Bill bill = billRepository.findById(id).get();
