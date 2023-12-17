@@ -423,6 +423,7 @@ public class ProductInfoController {
             } else if (state < 0 || state > 3) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("state not found");
             } else {
+
                 productInfoService.changeState(id, state);
                 return ResponseEntity.accepted().build();
             }

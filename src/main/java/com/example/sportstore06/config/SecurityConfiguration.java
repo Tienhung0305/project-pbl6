@@ -134,6 +134,8 @@ public class SecurityConfiguration {
                         .requestMatchers(POST, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(PUT, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(DELETE, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers( "/api/v1/product-information/change-state/**").hasAnyAuthority("ROLE_ADMIN")
+
                         .anyRequest()
                         .authenticated()
                 )
