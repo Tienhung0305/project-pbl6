@@ -55,7 +55,7 @@ public class BillService {
         }
     }
 
-    public int save(int id, BillRequest request) {
+    public int save(int id, BillRequest request, Integer state) {
         Timestamp created_at;
         Timestamp updated_at;
         if (billRepository.findById(id).isPresent()) {
@@ -74,7 +74,7 @@ public class BillService {
                 user(userRepository.findById(request.getId_user()).get()).
                 created_at(created_at).
                 updated_at(updated_at).
-                state(request.getState()).
+                state(state).
                 build();
 
         Set<BillDetail> set = request.getBill_detailSet()

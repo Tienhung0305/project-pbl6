@@ -113,7 +113,7 @@ public class SecurityConfiguration {
 
                         .requestMatchers(POST, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
                         .requestMatchers(PUT, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
-                        .requestMatchers(DELETE, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
+                        .requestMatchers(DELETE, "/api/v1/image/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
 
                         .requestMatchers(POST, "/api/v1/role/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(PUT, "/api/v1/role/**").hasAnyAuthority("ROLE_ADMIN")
@@ -125,7 +125,7 @@ public class SecurityConfiguration {
 
                         .requestMatchers(POST, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(PUT, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
-                        .requestMatchers(DELETE, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
+                        .requestMatchers(DELETE, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN")
 
                         .requestMatchers(POST, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(PUT, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")

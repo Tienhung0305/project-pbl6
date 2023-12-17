@@ -22,8 +22,6 @@ public class CommentRequest {
     @NotBlank
     @Length(min = 1, max = 200)
     private String content;
-    @NotNull(message = "report must not be null")
-    private Boolean report;
     private Integer reply;
     @NotNull(message = "id user must not be null")
     private Integer id_user;

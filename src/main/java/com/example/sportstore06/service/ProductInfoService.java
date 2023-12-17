@@ -28,12 +28,16 @@ public class ProductInfoService {
         return productInfoRepository.findById(id);
     }
 
+    public Page<ProductInfo> findByPage(Pageable pageable) {
+        return productInfoRepository.findByPage(pageable);
+    }
+
     public Page<ProductInfo> findByPage(Pageable pageable, Integer state) {
         return productInfoRepository.findByPage(pageable, state);
     }
 
-    public Page<ProductInfo> findByPage(Pageable pageable) {
-        return productInfoRepository.findByPage(pageable);
+    public Page<ProductInfo> findByPage(Pageable pageable, Integer state, Integer state_business) {
+        return productInfoRepository.findByPage(pageable, state, state_business);
     }
 
     //begin update
@@ -43,6 +47,10 @@ public class ProductInfoService {
 
     public Page<ProductInfo> findByCategory(Pageable pageable, Integer state, List<Integer> categoryIds) {
         return productInfoRepository.findByCategory(pageable, state, categoryIds);
+    }
+
+    public Page<ProductInfo> findByCategory(Pageable pageable, Integer state, List<Integer> categoryIds, Integer state_business) {
+        return productInfoRepository.findByCategory(pageable, state, categoryIds, state_business);
     }
 
     public Page<ProductInfo> findByBusiness(Pageable pageable, Integer id_business) {
@@ -61,12 +69,18 @@ public class ProductInfoService {
         return productInfoRepository.findBySaleDiscount(pageable, state, discount);
     }
 
+    public Page<ProductInfo> findBySaleDiscount(Pageable pageable, Integer state, Double discount, Integer state_business) {
+        return productInfoRepository.findBySaleDiscount(pageable, state, discount, state_business);
+    }
+
     public Page<ProductInfo> findBySale(Pageable pageable, Integer id_sale) {
         return productInfoRepository.findBySale(pageable, id_sale);
     }
-
     public Page<ProductInfo> findBySale(Pageable pageable, Integer state, Integer id_sale) {
         return productInfoRepository.findBySale(pageable, state, id_sale);
+    }
+    public Page<ProductInfo> findBySale(Pageable pageable, Integer state, Integer id_sale, Integer state_business) {
+        return productInfoRepository.findBySale(pageable, state, id_sale, state_business);
     }
 
     public Page<ProductInfo> SearchByName(Pageable pageable, String name) {
@@ -77,6 +91,10 @@ public class ProductInfoService {
         return productInfoRepository.SearchByName(pageable, name, state);
     }
 
+    public Page<ProductInfo> SearchByName(Pageable pageable, String name, Integer state, Integer state_business) {
+        return productInfoRepository.SearchByName(pageable, name, state, state_business);
+    }
+
     public Page<ProductInfo> SearchByNameAndBusiness(Pageable pageable, String name, Integer id_business) {
         return productInfoRepository.SearchByNameAndBusiness(pageable, name, id_business);
     }
@@ -85,7 +103,7 @@ public class ProductInfoService {
         return productInfoRepository.SearchByNameAndBusiness(pageable, name, state, id_business);
     }
 
-    public Page<ProductInfo> SearchByNameAndSale(Pageable pageable, String name, Integer id_sale){
+    public Page<ProductInfo> SearchByNameAndSale(Pageable pageable, String name, Integer id_sale) {
         return productInfoRepository.SearchByNameAndSale(pageable, name, id_sale);
     }
 
@@ -93,7 +111,9 @@ public class ProductInfoService {
         return productInfoRepository.SearchByNameAndSale(pageable, name, state, id_sale);
     }
 
-
+    public Page<ProductInfo> SearchByNameAndSale(Pageable pageable, String name, Integer state, Integer id_sale, Integer state_business) {
+        return productInfoRepository.SearchByNameAndSale(pageable, name, state, id_sale, state_business);
+    }
 
     public boolean deleteById(int id) {
         try {
@@ -136,7 +156,7 @@ public class ProductInfoService {
                 sale(request.getId_sale() == null ? null : saleRepository.findById(request.getId_sale()).get()).
                 created_at(created_at).
                 updated_at(updated_at).
-                state(request.getState()).
+                state(1).
                 categorySet(categories).
                 imageSet(setImage).
                 build();

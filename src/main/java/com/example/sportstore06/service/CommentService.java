@@ -66,7 +66,7 @@ public class CommentService {
                 id(id).
                 productInfo(productInfoRepository.findById(request.getId_product_information()).get()).
                 content(request.getContent()).
-                report(request.getReport()).
+                report(false).
                 is_like(request.getIs_like()).
                 reply(request.getReply() == null ? null : request.getReply()).
                 user(request.getId_user() != null ? userRepository.findById(request.getId_user()).get() : null).

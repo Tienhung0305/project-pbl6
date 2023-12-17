@@ -4,6 +4,8 @@ package com.example.sportstore06.controller;
 import com.example.sportstore06.dao.request.ProductInfoRequest;
 import com.example.sportstore06.dao.response.ProductInfoResponse;
 import com.example.sportstore06.model.ProductInfo;
+import com.example.sportstore06.model.Role;
+import com.example.sportstore06.model.User;
 import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -32,6 +35,7 @@ public class ProductInfoController {
     private final BusinessService businessService;
     private final SaleService saleService;
     private final CategoryService categoryService;
+    private final RoleService roleService;
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
@@ -58,7 +62,8 @@ public class ProductInfoController {
                                     @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                     @RequestParam(value = "sort", required = false) String sort,
                                     @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
-                                    @RequestParam(value = "state", required = false) Optional<Integer> state) {
+                                    @RequestParam(value = "state", required = false) Optional<Integer> state,
+                                    @RequestParam(value = "state_business", required = false) Optional<Integer> state_business) {
         try {
             Pageable pageable;
             if (sort != null) {
@@ -69,7 +74,11 @@ public class ProductInfoController {
             }
             Page<ProductInfo> byPage;
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                byPage = productInfoService.SearchByName(pageable, name, state.get());
+                if (state_business.isEmpty()) {
+                    byPage = productInfoService.SearchByName(pageable, name, state.get());
+                } else {
+                    byPage = productInfoService.SearchByName(pageable, name, state.get(), state_business.get());
+                }
             } else {
                 byPage = productInfoService.SearchByName(pageable, name);
             }
@@ -85,7 +94,10 @@ public class ProductInfoController {
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
                                         @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
-                                        @RequestParam(value = "state", required = false) Optional<Integer> state) {
+                                        @RequestParam(value = "state", required = false) Optional<Integer> state,
+                                        @RequestParam(value = "state_business", required = false) Optional<Integer> state_business) {
+
+
         try {
             Pageable pageable;
             if (sort != null) {
@@ -96,7 +108,11 @@ public class ProductInfoController {
             }
             Page<ProductInfo> byPage;
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                byPage = productInfoService.findByPage(pageable, state.get());
+                if (state_business.isEmpty()) {
+                    byPage = productInfoService.findByPage(pageable, state.get());
+                } else {
+                    byPage = productInfoService.findByPage(pageable, state.get(), state_business.get());
+                }
             } else {
                 byPage = productInfoService.findByPage(pageable);
             }
@@ -114,7 +130,8 @@ public class ProductInfoController {
                                             @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                             @RequestParam(value = "sort", required = false) String sort,
                                             @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
-                                            @RequestParam(value = "state", required = false) Optional<Integer> state) {
+                                            @RequestParam(value = "state", required = false) Optional<Integer> state,
+                                            @RequestParam(value = "state_business", required = false) Optional<Integer> state_business) {
         try {
             for (Integer id : set_id_category) {
                 if (categoryService.findById(id).isEmpty()) {
@@ -130,7 +147,11 @@ public class ProductInfoController {
             }
             Page<ProductInfo> byPage;
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                byPage = productInfoService.findByCategory(pageable, state.get(), set_id_category);
+                if (state_business.isEmpty()) {
+                    byPage = productInfoService.findByCategory(pageable, state.get(), set_id_category);
+                } else {
+                    byPage = productInfoService.findByCategory(pageable, state.get(), set_id_category, state_business.get());
+                }
             } else {
                 byPage = productInfoService.findByCategory(pageable, set_id_category);
             }
@@ -152,7 +173,7 @@ public class ProductInfoController {
             if (businessService.findById(id_business).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             }
-            Pageable pageable= null;
+            Pageable pageable = null;
             if (sort != null) {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
                         desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
@@ -185,7 +206,7 @@ public class ProductInfoController {
             if (businessService.findById(id_business).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             }
-            Pageable pageable= null;
+            Pageable pageable = null;
             if (sort != null) {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
                         desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
@@ -196,7 +217,7 @@ public class ProductInfoController {
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
                 byPage = productInfoService.SearchByNameAndBusiness(pageable, name, state.get(), id_business);
             } else {
-                byPage = productInfoService.SearchByNameAndBusiness(pageable, name , id_business);
+                byPage = productInfoService.SearchByNameAndBusiness(pageable, name, id_business);
             }
             Page<ProductInfoResponse> responses = byPage.map(product -> product != null ? new ProductInfoResponse(product) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
@@ -208,17 +229,18 @@ public class ProductInfoController {
 
     @GetMapping("/search-with-sale/{id_sale}")
     public ResponseEntity<?> searchBySale(@PathVariable("id_sale") Integer id_sale,
-                                              @RequestParam(value = "name", required = true) String name,
-                                              @RequestParam(value = "page", required = false) Optional<Integer> page,
-                                              @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
-                                              @RequestParam(value = "sort", required = false) String sort,
-                                              @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
-                                              @RequestParam(value = "state", required = false) Optional<Integer> state) {
+                                          @RequestParam(value = "name", required = true) String name,
+                                          @RequestParam(value = "page", required = false) Optional<Integer> page,
+                                          @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+                                          @RequestParam(value = "sort", required = false) String sort,
+                                          @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+                                          @RequestParam(value = "state", required = false) Optional<Integer> state,
+                                          @RequestParam(value = "state_business", required = false) Optional<Integer> state_business) {
         try {
             if (saleService.findById(id_sale).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
             }
-            Pageable pageable= null;
+            Pageable pageable = null;
             if (sort != null) {
                 pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
                         desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
@@ -227,9 +249,13 @@ public class ProductInfoController {
             }
             Page<ProductInfo> byPage;
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                byPage = productInfoService.SearchByNameAndSale(pageable, name, state.get(), id_sale);
+                if (state_business.isEmpty()) {
+                    byPage = productInfoService.SearchByNameAndSale(pageable, name, state.get(), id_sale);
+                } else {
+                    byPage = productInfoService.SearchByNameAndSale(pageable, name, state.get(), id_sale, state_business.get());
+                }
             } else {
-                byPage = productInfoService.SearchByNameAndSale(pageable, name , id_sale);
+                byPage = productInfoService.SearchByNameAndSale(pageable, name, id_sale);
             }
             Page<ProductInfoResponse> responses = byPage.map(product -> product != null ? new ProductInfoResponse(product) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
@@ -244,7 +270,8 @@ public class ProductInfoController {
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
                                         @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
-                                        @RequestParam(value = "state", required = false) Optional<Integer> state) {
+                                        @RequestParam(value = "state", required = false) Optional<Integer> state,
+                                        @RequestParam(value = "state_business", required = false) Optional<Integer> state_business) {
         try {
             if (saleService.findById(id_sale).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
@@ -258,7 +285,11 @@ public class ProductInfoController {
             }
             Page<ProductInfo> byPage;
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                byPage = productInfoService.findBySale(pageable, state.get(), id_sale);
+                if (state_business.isEmpty()) {
+                    byPage = productInfoService.findBySale(pageable, state.get(), id_sale);
+                } else {
+                    byPage = productInfoService.findBySale(pageable, state.get(), id_sale, state_business.get());
+                }
             } else {
                 byPage = productInfoService.findBySale(pageable, id_sale);
             }
@@ -275,7 +306,8 @@ public class ProductInfoController {
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,
                                         @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
-                                        @RequestParam(value = "state", required = false) Optional<Integer> state) {
+                                        @RequestParam(value = "state", required = false) Optional<Integer> state,
+                                        @RequestParam(value = "state_business", required = false) Optional<Integer> state_business) {
         try {
             if (discount < 1 || discount > 100) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("discount must be between 1 and 100");
@@ -289,7 +321,11 @@ public class ProductInfoController {
             }
             Page<ProductInfo> byPage;
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
-                byPage = productInfoService.findBySaleDiscount(pageable, state.get(), discount);
+                if (state_business.isEmpty()) {
+                    byPage = productInfoService.findBySaleDiscount(pageable, state.get(), discount);
+                } else {
+                    byPage = productInfoService.findBySaleDiscount(pageable, state.get(), discount, state_business.get());
+                }
             } else {
                 byPage = productInfoService.findBySaleDiscount(pageable, discount);
             }
@@ -303,7 +339,8 @@ public class ProductInfoController {
 
     //end
     @PostMapping("/save")
-    private ResponseEntity<?> addProduct(@Valid @RequestBody ProductInfoRequest request) {
+    private ResponseEntity<?> addProduct(@Valid @RequestBody ProductInfoRequest request,
+                                         @AuthenticationPrincipal User user) {
         try {
             for (Integer id_image : request.getId_imageSet()) {
                 if (imageService.findById(id_image).isEmpty()) {
@@ -323,6 +360,12 @@ public class ProductInfoController {
             if (request.getId_sale() != null && saleService.findById(request.getId_sale()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
             }
+            Role role_admin = roleService.findByName("ROLE_ADMIN").get();
+            if (!user.getRoleSet().contains(role_admin)) {
+                if (user.getId() != request.getId_business()) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to edit");
+                }
+            }
 
             productInfoService.save(0, request);
             return ResponseEntity.accepted().build();
@@ -333,7 +376,8 @@ public class ProductInfoController {
 
     @PutMapping("/save/{id}")
     private ResponseEntity<?> changeProduct(@Valid @RequestBody ProductInfoRequest request,
-                                            @PathVariable("id") Integer id) {
+                                            @PathVariable("id") Integer id,
+                                            @AuthenticationPrincipal User user) {
         try {
             if (productInfoService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found");
@@ -343,7 +387,7 @@ public class ProductInfoController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
                 }
             }
-            if(request.getId_categorySet() != null) {
+            if (request.getId_categorySet() != null) {
                 for (Integer id_category : request.getId_categorySet()) {
                     if (categoryService.findById(id_category).isEmpty()) {
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
@@ -356,6 +400,12 @@ public class ProductInfoController {
             if (request.getId_sale() != null && saleService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
             }
+            Role role_admin = roleService.findByName("ROLE_ADMIN").get();
+            if (!user.getRoleSet().contains(role_admin)) {
+                if (user.getId() != request.getId_business()) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to edit");
+                }
+            }
             productInfoService.save(id, request);
             return ResponseEntity.accepted().build();
         } catch (Exception e) {
@@ -365,7 +415,8 @@ public class ProductInfoController {
 
     @PutMapping("/change-state/{id}")
     private ResponseEntity<?> changeState(@PathVariable("id") Integer id,
-                                          @RequestParam(value = "state", required = true) Integer state) {
+                                          @RequestParam(value = "state", required = true) Integer state,
+                                          @AuthenticationPrincipal User user) {
         try {
             if (productInfoService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found");
@@ -373,6 +424,27 @@ public class ProductInfoController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("state not found");
             } else {
                 productInfoService.changeState(id, state);
+                return ResponseEntity.accepted().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/hide-product-information/{id}")
+    private ResponseEntity<?> hide(@PathVariable("id") Integer id,
+                                   @RequestParam(value = "hide", required = true) Boolean hide,
+                                   @AuthenticationPrincipal User user) {
+        try {
+            if (productInfoService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found");
+            } else {
+                if (hide == true) {
+                    productInfoService.changeState(id, 2);
+                } else {
+                    Integer state = productInfoService.findById(id).get().getState();
+                    productInfoService.changeState(id,state);
+                }
                 return ResponseEntity.accepted().build();
             }
         } catch (Exception e) {

@@ -24,33 +24,43 @@ public class UserService {
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
     private final IImageRepository iImageRepository;
+
     public Long getCount() {
         return userRepository.count();
     }
+
     public Optional<User> findById(int id) {
         return userRepository.findById(id);
     }
+
     public Optional<User> findByUsername(String userName) {
         return userRepository.findByUsername(userName);
     }
+
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
     public Optional<User> findByPhone(String phone_number) {
         return userRepository.findByPhone(phone_number);
     }
+
     public Optional<User> findByCic(String cic) {
         return userRepository.findByCic(cic);
     }
+
     public Page<User> findByPage(Pageable pageable) {
         return userRepository.findByPage(pageable);
     }
+
     public Page<User> findByPage(Pageable pageable, Integer state) {
         return userRepository.findByPage(pageable, state);
     }
+
     public Page<User> SearchByName(Pageable pageable, String name) {
         return userRepository.SearchByName(pageable, name);
     }
+
     public Page<User> SearchByName(Pageable pageable, String name, Integer state) {
         return userRepository.SearchByName(pageable, name, state);
     }
@@ -80,6 +90,11 @@ public class UserService {
             Optional<Role> ObRole = roleRepository.findByName(i);
             roles.add(ObRole.get());
         }
+        Role role_business = roleRepository.findByName("ROLE_BUSINESS").get();
+        Integer state = 0;
+        if (roles.contains(role_business)) {
+            state = 1;
+        }
 
         var u = User.builder().
                 id(id).
@@ -91,7 +106,7 @@ public class UserService {
                 address(request.getAddress()).
                 username(request.getUsername()).
                 password(request.getPassword()).
-                state(request.getState()).
+                state(state).
                 remember_token(request.getRemember_token()).
                 created_at(created_at).
                 updated_at(updated_at).
@@ -118,6 +133,12 @@ public class UserService {
             roles.add(ObRole.get());
         }
 
+        Role role_business = roleRepository.findByName("ROLE_BUSINESS").get();
+        Integer state = 0;
+        if (roles.contains(role_business)) {
+            state = 1;
+        }
+
         var u = User.builder().
                 id(id).
                 name(request.getName()).
@@ -126,7 +147,7 @@ public class UserService {
                 phone(request.getPhone()).
                 cic(request.getCic()).
                 address(request.getAddress()).
-                state(request.getState()).
+                state(state).
                 remember_token(request.getRemember_token()).
                 created_at(created_at).
                 updated_at(updated_at).

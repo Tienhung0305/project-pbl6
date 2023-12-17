@@ -25,11 +25,6 @@ public class ProductInfoRequest {
     private Integer id_sale;
     private Timestamp created_at;
     private Timestamp updated_at;
-    @NotNull(message = "state must not be null")
-    @Min(value = 0, message = "state must is (0,1,2)")
-    @Max(value = 3, message = "state must is (0,1,2)")
-    private Integer state;
-
     private Set<Integer> id_categorySet;
     private Set<Integer> id_imageSet;
 }

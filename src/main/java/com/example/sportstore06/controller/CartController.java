@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -31,6 +32,7 @@ public class CartController {
     private final BusinessService businessService;
     private final ProductService productService;
     private final BillService billService;
+    private final RoleService roleService;
     private final MomoPaymentService momoPaymentService;
 
     @PostMapping("/momo")
@@ -46,6 +48,11 @@ public class CartController {
                     Set<BillDetailRequest> set = new HashSet<>();
                     BillRequest bill = new BillRequest();
                     for (Cart cart : carts) {
+                        if (cart.getProduct().getProductInfo().getState() != 0) {
+                            cartService.deleteById(cart.getId());
+                            //409
+                            return ResponseEntity.status(HttpStatus.GONE).body("product does not exist or has been deleted");
+                        }
                         BillDetailRequest bill_detail = new BillDetailRequest();
 
                         bill_detail.setId_product(cart.getProduct().getId());
@@ -78,9 +85,8 @@ public class CartController {
 
                     bill.setTotal(total);
                     bill.setId_user(id_user);
-                    bill.setState(2);
                     bill.setBill_detailSet(set);
-                    int id = billService.save(0, bill);
+                    int id = billService.save(0, bill, 2);
                     billService.findById(id).get().setName(orderId + "_" + String.valueOf(id));
                     billService.findById(id).get().setInformation(orderId + "_" + String.valueOf(id));
 
@@ -93,7 +99,6 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
 
     @PostMapping("/momo-payment_save")
     public ResponseEntity<?> momoSave(@RequestParam(value = "orderId") String orderId,
@@ -166,7 +171,8 @@ public class CartController {
 
     @PutMapping("/save/{id}")
     private ResponseEntity<?> changeCart(@Valid @RequestBody CartRequest request,
-                                         @PathVariable("id") Integer id) {
+                                         @PathVariable("id") Integer id,
+                                         @AuthenticationPrincipal User user) {
         try {
             if (cartService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id cart not found ");
@@ -177,6 +183,15 @@ public class CartController {
             if (productService.findById(request.getId_product()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found");
             }
+
+            //check role
+            Role role_admin = roleService.findByName("ROLE_ADMIN").get();
+            if (!user.getRoleSet().contains(role_admin)) {
+                if (user.getId() != id) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to edit");
+                }
+            }
+
             cartService.save(id, request);
             return ResponseEntity.accepted().build();
         } catch (Exception e) {

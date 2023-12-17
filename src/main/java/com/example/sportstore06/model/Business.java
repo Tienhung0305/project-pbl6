@@ -29,7 +29,7 @@ public class Business {
     private String payment;
     private Integer tax;
 
-    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<ProductInfo> productInfoSet = new HashSet<>();
 

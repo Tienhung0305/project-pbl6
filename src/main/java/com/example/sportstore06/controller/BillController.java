@@ -113,46 +113,6 @@ public class BillController {
         }
     }
 
-    @PostMapping("/save")
-    private ResponseEntity<?> addBill(@Valid @RequestBody BillRequest request) {
-        try {
-            if (userService.findById(request.getId_user()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
-            }
-            for (BillDetailRequest b : request.getBill_detailSet()) {
-                if (productService.findById(b.getId_product()).isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found ");
-                }
-            }
-            billService.save(0, request);
-            return ResponseEntity.accepted().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/save/{id}")
-    private ResponseEntity<?> addBill(@Valid @RequestBody BillRequest request,
-                                      @PathVariable("id") Integer id) {
-        try {
-            if (billService.findById(id).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found ");
-            }
-            if (userService.findById(request.getId_user()).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found ");
-            }
-            for (BillDetailRequest b : request.getBill_detailSet()) {
-                if (productService.findById(b.getId_product()).isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product not found ");
-                }
-            }
-            billService.save(id, request);
-            return ResponseEntity.accepted().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
     @PutMapping("/change-state/{id}")
     private ResponseEntity<?> changeState(@PathVariable("id") Integer id,
                                           @RequestParam(value = "state", required = true) Integer state) {

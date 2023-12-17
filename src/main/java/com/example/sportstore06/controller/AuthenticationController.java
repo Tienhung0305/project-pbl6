@@ -26,7 +26,7 @@ public class AuthenticationController {
     private final RoleService roleService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> SignUp(@Valid @RequestBody SignUpRequest request) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest request) {
         Boolean checkRole = true;
         for (String i : request.getRoles()) {
             Optional<Role> ObRole = roleService.findByName(i);
@@ -50,13 +50,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> SignIn(@Valid @RequestBody SignInRequest request) {
+    public ResponseEntity<?> signIn(@Valid @RequestBody SignInRequest request) {
         if (userService.findByUsername(request.getUsername()).isPresent()) {
             if (userService.findByUsername(request.getUsername()).get().getState() != 0) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("your account is temporarily locked");
+                return ResponseEntity.status(HttpStatus.GONE).body("your account does not exist or has been deleted.");
             }
             return ResponseEntity.ok(authenticationService.signin(request));
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("your account not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("your account does not exist");
     }
 }

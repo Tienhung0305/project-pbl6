@@ -72,7 +72,7 @@ public class User implements UserDetails {
     @JsonManagedReference
     Set<Role> roleSet = new HashSet<>();
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Business business;
 

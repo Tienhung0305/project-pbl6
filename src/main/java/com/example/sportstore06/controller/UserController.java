@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @GetMapping("get-by-username/{username}")
-    public ResponseEntity<?> findByUsername(@PathVariable("username") String username, @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> findByUsername(@PathVariable("username") String username) {
         try {
             if (userService.findByUsername(username).isPresent()) {
                 UserResponse u = new UserResponse(userService.findByUsername(username).get());
@@ -108,7 +108,7 @@ public class UserController {
             } else {
                 byPage = userService.SearchByName(pageable, name);
             }
-            Page<UserResponse> responses = byPage.map(user -> new UserResponse(user));
+            Page<UserResponse> responses = byPage.map(user -> user != null ? new UserResponse(user) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
@@ -135,7 +135,7 @@ public class UserController {
             } else {
                 byPage = userService.findByPage(pageable);
             }
-            Page<UserResponse> responses = byPage.map(user -> new UserResponse(user));
+            Page<UserResponse> responses = byPage.map(user -> user != null ? new UserResponse(user) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
@@ -176,10 +176,17 @@ public class UserController {
 
     @PutMapping("/save/{id}")
     private ResponseEntity<?> changeUser(@Valid @RequestBody UserPutRequest request,
-                                         @PathVariable("id") Integer id) {
+                                         @PathVariable("id") Integer id,
+                                         @AuthenticationPrincipal User user) {
         try {
             if (userService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
+            }
+            Role role_admin = roleService.findByName("ROLE_ADMIN").get();
+            if (!user.getRoleSet().contains(role_admin)) {
+                if (user.getId() != id) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to edit");
+                }
             }
             for (String i : request.getRoles()) {
                 Optional<Role> ObRole = roleService.findByName(i);
@@ -228,7 +235,8 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    private ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
+    private ResponseEntity<?> deleteById(@PathVariable("id") Integer id,
+                                         @AuthenticationPrincipal User user) {
         try {
             if (userService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
