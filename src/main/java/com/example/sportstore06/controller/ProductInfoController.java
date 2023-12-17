@@ -439,11 +439,19 @@ public class ProductInfoController {
             if (productInfoService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found");
             } else {
+                //check role
+                Role role_admin = roleService.findByName("ROLE_ADMIN").get();
+                if (!user.getRoleSet().contains(role_admin)) {
+                    if (user.getId() != id) {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to edit");
+                    }
+                }
+
                 if (hide == true) {
                     productInfoService.changeState(id, 2);
                 } else {
                     Integer state = productInfoService.findById(id).get().getState();
-                    productInfoService.changeState(id,state);
+                    productInfoService.changeState(id, state);
                 }
                 return ResponseEntity.accepted().build();
             }
