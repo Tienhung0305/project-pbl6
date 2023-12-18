@@ -137,7 +137,8 @@ public class ProductInfoService {
 
         Set<Image> setImage = new HashSet<>();
         for (Integer i : request.getId_imageSet()) {
-            setImage.add(iImageRepository.findById(i).get());
+            Image image = iImageRepository.findById(i).get();
+            setImage.add(image);
         }
         request.getId_categorySet();
 

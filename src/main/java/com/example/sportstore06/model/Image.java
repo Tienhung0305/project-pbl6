@@ -27,13 +27,12 @@ public class Image {
     @NotBlank
     private String url;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_product_information", referencedColumnName = "id")
     @JsonBackReference
     private ProductInfo productInfo;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_comment", referencedColumnName = "id")
     @JsonBackReference
