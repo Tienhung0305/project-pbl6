@@ -347,13 +347,11 @@ public class ProductInfoController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
                 }
             }
-
             for (Integer id_category : request.getId_categorySet()) {
                 if (categoryService.findById(id_category).isEmpty()) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id category not found");
                 }
             }
-
             if (businessService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             }
@@ -366,7 +364,6 @@ public class ProductInfoController {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to edit");
                 }
             }
-
             int id = productInfoService.save(0, request);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(String.valueOf(id));
         } catch (Exception e) {
