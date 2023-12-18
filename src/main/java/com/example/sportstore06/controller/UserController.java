@@ -60,6 +60,20 @@ public class UserController {
         }
     }
 
+    @GetMapping("/get-role/{id}")
+    public ResponseEntity<?> getRole(@PathVariable("id") Integer id) {
+        try {
+            if (userService.findById(id).isPresent()) {
+                UserResponse u = new UserResponse(userService.findById(id).get());
+                return ResponseEntity.status(HttpStatus.OK).body(u.getRoles());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @GetMapping("get-by-username/{username}")
     public ResponseEntity<?> findByUsername(@PathVariable("username") String username) {
         try {
