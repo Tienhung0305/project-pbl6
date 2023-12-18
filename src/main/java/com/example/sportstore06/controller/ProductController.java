@@ -85,7 +85,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/save/{id}")
+    @PutMapping("/save/{id}")
     private ResponseEntity<?> changeProduct(@Valid @RequestBody ProductRequest request,
                                             @PathVariable("id") Integer id) {
         try {
