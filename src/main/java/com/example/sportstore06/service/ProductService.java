@@ -33,6 +33,7 @@ public class ProductService {
                 productInfo(productInfoRepository.findById(request.getId_product_information()).get()).
                 quantity(request.getQuantity()).
                 size(request.getSize()).
+                price(request.getPrice()).
                 build();
         productRepository.save(u);
     }
