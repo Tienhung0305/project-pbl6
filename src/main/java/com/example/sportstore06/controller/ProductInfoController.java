@@ -367,8 +367,8 @@ public class ProductInfoController {
                 }
             }
 
-            productInfoService.save(0, request);
-            return ResponseEntity.accepted().build();
+            int id = productInfoService.save(0, request);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(String.valueOf(id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

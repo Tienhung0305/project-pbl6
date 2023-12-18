@@ -124,7 +124,7 @@ public class ProductInfoService {
         }
     }
 
-    public void save(int id, ProductInfoRequest request) {
+    public int save(int id, ProductInfoRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
         if (productInfoRepository.findById(id).isPresent()) {
@@ -161,6 +161,7 @@ public class ProductInfoService {
                 imageSet(setImage).
                 build();
         productInfoRepository.save(u);
+        return u.getId();
     }
 
     public void changeState(int id, int state) {
