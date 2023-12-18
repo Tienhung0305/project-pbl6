@@ -138,6 +138,7 @@ public class ProductInfoService {
         Set<Image> setImage = new HashSet<>();
         for (Integer i : request.getId_imageSet()) {
             Image image = iImageRepository.findById(i).get();
+            //fix
             setImage.add(image);
         }
         request.getId_categorySet();
@@ -162,6 +163,14 @@ public class ProductInfoService {
                 imageSet(setImage).
                 build();
         productInfoRepository.save(u);
+
+        for (Integer i : request.getId_imageSet()) {
+            Image image = iImageRepository.findById(i).get();
+            //fix
+            image.setProductInfo(u);
+            iImageRepository.save(image);
+        }
+
         return u.getId();
     }
 

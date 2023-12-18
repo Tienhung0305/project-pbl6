@@ -55,7 +55,7 @@ public class ProductInfo {
     @JsonBackReference
     private Sale sale;
 
-    @OneToMany(mappedBy = "productInfo", fetch = FetchType.EAGER, cascade = CascadeType.MERGE )
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();
 
@@ -63,7 +63,7 @@ public class ProductInfo {
     @JsonManagedReference
     private Set<Product> productSet = new HashSet<>();
 
-        @OneToMany(mappedBy = "productInfo", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Comment> commentSet = new HashSet<>();
 }
