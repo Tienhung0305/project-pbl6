@@ -26,7 +26,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/v1/product-information")
 @RequiredArgsConstructor
-@CrossOrigin
 public class ProductInfoController {
     @Value("${page_size_default}")
     private Integer page_size_default;

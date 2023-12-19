@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/role")
 @RequiredArgsConstructor
-@CrossOrigin
 public class RoleController {
     @Value("${page_size_default}")
     private Integer page_size_default;

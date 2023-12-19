@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/bill")
 @RequiredArgsConstructor
-@CrossOrigin
 public class BillController {
     @Value("${page_size_default}")
     private Integer page_size_default;
