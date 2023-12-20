@@ -72,7 +72,8 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(WHITE_LIST_URL).permitAll()
+                        .requestMatchers(WHITE_LIST_URL)
+                        .permitAll()
                         .requestMatchers(GET,
                                 "/api/v1/bill/**",
                                 "/api/v1/cart/**",
