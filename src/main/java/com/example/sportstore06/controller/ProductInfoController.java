@@ -449,8 +449,13 @@ public class ProductInfoController {
                     productInfoService.changeState(id, 2);
                     productInfoService.changeStateBefore(id, productInfoService.findById(id).get().getState());
                 } else {
-                    Integer state = productInfoService.findById(id).get().getState_before();
-                    productInfoService.changeState(id, state);
+                    Integer state_before = productInfoService.findById(id).get().getState_before();
+                    if (state_before == null) {
+                        Integer state = productInfoService.findById(id).get().getState();
+                        productInfoService.changeState(id, state);
+                    } else {
+                        productInfoService.changeState(id, state_before);
+                    }
                 }
                 return ResponseEntity.accepted().build();
             }
