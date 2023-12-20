@@ -179,6 +179,12 @@ public class ProductInfoService {
         productInfo.setState(state);
         productInfoRepository.save(productInfo);
     }
+
+    public void changeStateBefore(int id, int state) {
+        ProductInfo productInfo = productInfoRepository.findById(id).get();
+        productInfo.setState_before(state);
+        productInfoRepository.save(productInfo);
+    }
 }
 
 

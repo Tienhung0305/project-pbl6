@@ -447,8 +447,9 @@ public class ProductInfoController {
 
                 if (hide) {
                     productInfoService.changeState(id, 2);
+                    productInfoService.changeStateBefore(id, productInfoService.findById(id).get().getState());
                 } else {
-                    Integer state = productInfoService.findById(id).get().getState();
+                    Integer state = productInfoService.findById(id).get().getState_before();
                     productInfoService.changeState(id, state);
                 }
                 return ResponseEntity.accepted().build();

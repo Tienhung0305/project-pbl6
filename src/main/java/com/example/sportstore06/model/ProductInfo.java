@@ -36,6 +36,7 @@ public class ProductInfo {
     @Min(value = 0)
     @Max(value = 3)
     private Integer state;
+    private Integer state_before;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "product_categories",
