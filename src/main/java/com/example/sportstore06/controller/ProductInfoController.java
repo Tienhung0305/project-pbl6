@@ -433,18 +433,19 @@ public class ProductInfoController {
                                    @RequestParam(value = "hide", required = true) Boolean hide,
                                    @AuthenticationPrincipal User user) {
         try {
+
             if (productInfoService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found");
             } else {
                 //check role
                 Role role_admin = roleService.findByName("ROLE_ADMIN").get();
                 if (!user.getRoleSet().contains(role_admin)) {
-                    if (user.getId() != id) {
+                    if (user.getId() != productInfoService.findById(id).get().getBusiness().getId()) {
                         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to edit");
                     }
                 }
 
-                if (hide == true) {
+                if (hide) {
                     productInfoService.changeState(id, 2);
                 } else {
                     Integer state = productInfoService.findById(id).get().getState();
