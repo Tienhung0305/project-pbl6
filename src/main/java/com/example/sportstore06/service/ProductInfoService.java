@@ -76,9 +76,11 @@ public class ProductInfoService {
     public Page<ProductInfo> findBySale(Pageable pageable, Integer id_sale) {
         return productInfoRepository.findBySale(pageable, id_sale);
     }
+
     public Page<ProductInfo> findBySale(Pageable pageable, Integer state, Integer id_sale) {
         return productInfoRepository.findBySale(pageable, state, id_sale);
     }
+
     public Page<ProductInfo> findBySale(Pageable pageable, Integer state, Integer id_sale, Integer state_business) {
         return productInfoRepository.findBySale(pageable, state, id_sale, state_business);
     }
@@ -174,17 +176,25 @@ public class ProductInfoService {
         return u.getId();
     }
 
+    public void addSaleProductInfo(Integer id_product_inf, Integer id_sale) {
+        ProductInfo productInfo = productInfoRepository.findById(id_product_inf).get();
+        productInfo.setSale(saleRepository.findById(id_sale).get());
+        productInfoRepository.save(productInfo);
+    }
+
     public void changeState(int id, int state) {
         ProductInfo productInfo = productInfoRepository.findById(id).get();
         productInfo.setState(state);
         productInfoRepository.save(productInfo);
     }
 
-    public void changeStateBefore(int id, int state) {
+    public void changeStateBefore(int id, Integer state) {
         ProductInfo productInfo = productInfoRepository.findById(id).get();
         productInfo.setState_before(state);
         productInfoRepository.save(productInfo);
     }
+
+
 }
 
 
