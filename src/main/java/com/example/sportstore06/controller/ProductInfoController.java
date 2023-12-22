@@ -1,6 +1,7 @@
 package com.example.sportstore06.controller;
 
 
+import com.example.sportstore06.dao.request.ListIdRequest;
 import com.example.sportstore06.dao.request.ProductInfoRequest;
 import com.example.sportstore06.dao.response.ProductInfoResponse;
 import com.example.sportstore06.model.ProductInfo;
@@ -486,7 +487,7 @@ public class ProductInfoController {
 
     @PostMapping("/add-sale-product-information/{id_sale}")
     private ResponseEntity<?> addSaleProductInfo(
-            @RequestParam(value = "set_id_product_inf", required = true) List<Integer> set_id_product_inf,
+            @RequestBody List<Integer> set_id_product_inf,
             @PathVariable(value = "id_sale", required = true) Integer id_sale) {
         try {
             if (saleService.findById(id_sale).isEmpty()) {
@@ -497,6 +498,22 @@ public class ProductInfoController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found");
                 }else {
                     productInfoService.addSaleProductInfo(id, id_sale);
+                }
+            }
+            return ResponseEntity.accepted().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/remove-sale-product-information")
+    private ResponseEntity<?> addSaleProductInfo(@RequestBody List<Integer> set_id_product_inf){
+        try {
+            for (Integer id : set_id_product_inf) {
+                if (productInfoService.findById(id).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found");
+                }else {
+                    productInfoService.removeSaleProductInfo(id);
                 }
             }
             return ResponseEntity.accepted().build();

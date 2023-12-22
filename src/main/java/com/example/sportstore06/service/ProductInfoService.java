@@ -182,6 +182,14 @@ public class ProductInfoService {
         productInfoRepository.save(productInfo);
     }
 
+    public void removeSaleProductInfo(Integer id_product_inf) {
+        ProductInfo productInfo = productInfoRepository.findById(id_product_inf).get();
+        if(productInfo.getSale() != null) {
+            productInfo.setSale(null);
+            productInfoRepository.save(productInfo);
+        }
+    }
+
     public void changeState(int id, int state) {
         ProductInfo productInfo = productInfoRepository.findById(id).get();
         productInfo.setState(state);
