@@ -38,6 +38,10 @@ public class BillController {
     private final UserService userService;
     private final ProductService productService;
 
+    // 0 : đang giao
+    // 1 : đã giao thành công
+    // 2 : chưa thanh toán
+
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(billService.getCount());
@@ -150,9 +154,6 @@ public class BillController {
     @PutMapping("/confirm/{id}")
     private ResponseEntity<?> confirm(@PathVariable("id") Integer id,
                                       @RequestParam(value = "state", required = true) Integer state) {
-        // 0 : đang giao
-        // 1 : đã giao thành công
-        // 2 : chưa thanh toán
         try {
             if (billService.findById(id).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");

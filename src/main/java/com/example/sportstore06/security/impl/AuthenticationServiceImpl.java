@@ -1,5 +1,7 @@
 package com.example.sportstore06.security.impl;
 
+import com.example.sportstore06.dao.request.SignUpBusinessRequest;
+import com.example.sportstore06.dao.request.SignUpCustomerRequest;
 import com.example.sportstore06.dao.response.JwtAuthenticationResponse;
 import com.example.sportstore06.dao.request.SignUpRequest;
 import com.example.sportstore06.dao.request.SignInRequest;
@@ -29,16 +31,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final IRoleRepository roleRepository;
 
     @Override
-    public JwtAuthenticationResponse signup(SignUpRequest request) {
+    public JwtAuthenticationResponse signUpBusiness(SignUpBusinessRequest request) {
         Set<Role> roles = new HashSet<>();
-        for (String i : request.getRoles()) {
-            Optional<Role> ObRole = roleRepository.findByName(i);
-            if (ObRole.isPresent()) {
-                roles.add(ObRole.get());
-            } else {
-                return null;
-            }
-        }
+        roles.add(roleRepository.findByName("ROLE_BUSINESS").get());
         var user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -48,8 +43,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .phone(request.getPhone())
                 .cic(request.getCic())
                 .address(request.getAddress())
-                .state(0).
+                .state(1).
                  build();
+        userRepository.save(user);
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthenticationResponse.builder().token(jwt).build();
+    }
+
+    @Override
+    public JwtAuthenticationResponse signupCustomer(SignUpCustomerRequest request) {
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleRepository.findByName("ROLE_CUSTOMER").get());
+        var user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .roleSet(roles)
+                .email(request.getEmail())
+                .name(request.getName())
+                .phone(request.getPhone())
+                .state(0).
+                build();
         userRepository.save(user);
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();

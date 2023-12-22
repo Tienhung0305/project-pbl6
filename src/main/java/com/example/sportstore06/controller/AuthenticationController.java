@@ -1,5 +1,7 @@
 package com.example.sportstore06.controller;
 
+import com.example.sportstore06.dao.request.SignUpBusinessRequest;
+import com.example.sportstore06.dao.request.SignUpCustomerRequest;
 import com.example.sportstore06.dao.response.JwtAuthenticationResponse;
 import com.example.sportstore06.dao.request.SignUpRequest;
 import com.example.sportstore06.dao.request.SignInRequest;
@@ -24,15 +26,21 @@ public class AuthenticationController {
     private final UserService userService;
     private final RoleService roleService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest request) {
-        Boolean checkRole = true;
-        for (String i : request.getRoles()) {
-            Optional<Role> ObRole = roleService.findByName(i);
-            if (ObRole.isEmpty()) {
-                checkRole = false;
-            }
+    @PostMapping("/signup-customer")
+    public ResponseEntity<?> signUpCustomer(@Valid @RequestBody SignUpCustomerRequest request) {
+        if (userService.findByUsername(request.getUsername()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("username already exists");
+        } else if (userService.findByPhone(request.getPhone()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("phone number already exists");
+        } else if (userService.findByEmail(request.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("email already exists");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(authenticationService.signupCustomer(request));
         }
+    }
+
+    @PostMapping("/signup-business")
+    public ResponseEntity<?> signUpBusiness(@Valid @RequestBody SignUpBusinessRequest request) {
         if (userService.findByUsername(request.getUsername()).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("username already exists");
         } else if (userService.findByEmail(request.getEmail()).isPresent()) {
@@ -41,10 +49,8 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("citizen identification card already exists");
         } else if (userService.findByPhone(request.getPhone()).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("phone number already exists");
-        } else if (!checkRole) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("role not found");
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body(authenticationService.signup(request));
+            return ResponseEntity.status(HttpStatus.OK).body(authenticationService.signUpBusiness(request));
         }
     }
 

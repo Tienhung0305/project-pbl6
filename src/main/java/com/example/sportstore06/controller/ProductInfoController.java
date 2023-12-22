@@ -37,6 +37,9 @@ public class ProductInfoController {
     private final CategoryService categoryService;
     private final RoleService roleService;
 
+    // 0 : sản phẩm bình thường
+    // 1 : sản phẩm bị ẩn - khóa - đang chờ xem xét
+    // 2 : sản phẩm đã bị xóa
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(productInfoService.getCount());

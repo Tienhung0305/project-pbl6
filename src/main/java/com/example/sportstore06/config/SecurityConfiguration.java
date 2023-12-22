@@ -6,13 +6,10 @@ import com.example.sportstore06.repository.IPermissionRepository;
 import com.example.sportstore06.security.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,7 +34,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
@@ -46,8 +42,6 @@ import java.util.stream.Collectors;
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
-    private final IPermissionRepository permissionRepository;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         String[] WHITE_LIST_URL = {
@@ -63,7 +57,7 @@ public class SecurityConfiguration {
         };
         http
                 .cors(withDefaults())
-                .csrf((csrf) -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(WHITE_LIST_URL)
                         .permitAll()
@@ -122,6 +116,7 @@ public class SecurityConfiguration {
                         .requestMatchers(POST, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(PUT, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
                         .requestMatchers(DELETE, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/v1/user/change-state/**").hasAnyAuthority("ROLE_ADMIN")
 
                         .requestMatchers(POST, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(PUT, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
@@ -137,16 +132,17 @@ public class SecurityConfiguration {
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .httpBasic(withDefaults());
         return http.build();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("POST", "PUT", "GET", "OPTIONS", "DELETE", "PATCH")); // or simply "*"
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

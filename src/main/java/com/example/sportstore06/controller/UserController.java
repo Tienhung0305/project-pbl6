@@ -40,6 +40,10 @@ public class UserController {
     private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
 
+    // 0 : tài khoản bình thường
+    // 1 : tài khoản đang xem xét (cho business)
+    // 2 : tài khoản bị khóa
+
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCount());
