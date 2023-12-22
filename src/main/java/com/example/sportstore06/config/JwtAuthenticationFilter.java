@@ -62,6 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Handle the exception and send an error response
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("SC_BAD_REQUEST: " + e.getMessage());
+            throw e;
         }
     }
 }

@@ -26,17 +26,23 @@ public class BillService {
     public Long getCount() {
         return billRepository.count();
     }
+
     public Optional<Bill> findById(int id) {
         return billRepository.findById(id);
     }
 
     public Page<Bill> SearchByName(Pageable pageable, String name) {
-        return billRepository.SearchByName(pageable,name);
+        return billRepository.SearchByName(pageable, name);
     }
 
     public Page<Bill> findByPage(Pageable pageable) {
         return billRepository.findByPage(pageable);
     }
+
+    public List<Bill> findByIdUser(Integer id_user) {
+        return billRepository.findByIdUser(id_user);
+    }
+
 
     public Page<Bill> SearchByName(Pageable pageable, String name, Integer state) {
         return billRepository.SearchByName(pageable, name, state);
@@ -89,6 +95,7 @@ public class BillService {
         billRepository.save(u);
         return u.getId();
     }
+
     public void changeState(int id, int state) {
         Bill bill = billRepository.findById(id).get();
         bill.setState(state);

@@ -57,6 +57,24 @@ public class BillController {
         }
     }
 
+    @GetMapping("get-by-id-user/{id_user}")
+    public ResponseEntity<?> findByIdUser(@PathVariable("id_user") Integer id_user) {
+        try {
+            if (userService.findById(id_user).isPresent()) {
+                List<Bill> byIdUser = billService.findByIdUser(id_user);
+                List<BillResponse> responses = new ArrayList<>();
+                for (Bill bill : byIdUser) {
+                    responses.add(new BillResponse(bill));
+                }
+                return ResponseEntity.status(HttpStatus.OK).body(responses);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam(value = "name", required = true) String name,
                                     @RequestParam(value = "page", required = false) Optional<Integer> page,

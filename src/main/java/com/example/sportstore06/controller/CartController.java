@@ -214,6 +214,9 @@ public class CartController {
                 }
                 return ResponseEntity.accepted().build();
             } else {
+                if (quantity > cartService.findById(id).get().getProduct().getQuantity()) {
+                    quantity = cartService.findById(id).get().getProduct().getQuantity();
+                }
                 cartService.changeQuantity(id, quantity);
                 return ResponseEntity.accepted().build();
             }
