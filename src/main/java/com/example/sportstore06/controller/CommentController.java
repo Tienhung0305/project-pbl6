@@ -2,7 +2,7 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.CommentRequest;
 import com.example.sportstore06.dao.response.CommentResponse;
-import com.example.sportstore06.model.Comment;
+import com.example.sportstore06.entity.Comment;
 import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

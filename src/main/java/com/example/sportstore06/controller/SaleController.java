@@ -2,10 +2,9 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.SaleRequest;
 import com.example.sportstore06.dao.response.SaleResponse;
-import com.example.sportstore06.dao.response.UserResponse;
-import com.example.sportstore06.model.Role;
-import com.example.sportstore06.model.Sale;
-import com.example.sportstore06.model.User;
+import com.example.sportstore06.entity.Role;
+import com.example.sportstore06.entity.Sale;
+import com.example.sportstore06.entity.User;
 import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/sale")

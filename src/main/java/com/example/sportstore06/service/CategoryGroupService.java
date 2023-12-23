@@ -1,6 +1,6 @@
 package com.example.sportstore06.service;
 
-import com.example.sportstore06.model.CategoryGroup;
+import com.example.sportstore06.entity.CategoryGroup;
 import com.example.sportstore06.repository.ICategoryGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

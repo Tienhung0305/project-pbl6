@@ -1,7 +1,6 @@
 package com.example.sportstore06.repository;
 
-import com.example.sportstore06.model.Business;
-import com.example.sportstore06.model.ProductInfo;
+import com.example.sportstore06.entity.ProductInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

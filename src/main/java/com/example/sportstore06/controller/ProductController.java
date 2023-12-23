@@ -1,10 +1,8 @@
 package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.ProductRequest;
-import com.example.sportstore06.dao.response.ProductInfoResponse;
 import com.example.sportstore06.dao.response.ProductResponse;
-import com.example.sportstore06.model.Product;
-import com.example.sportstore06.model.ProductInfo;
+import com.example.sportstore06.entity.Product;
 import com.example.sportstore06.service.ImageService;
 import com.example.sportstore06.service.ProductInfoService;
 import com.example.sportstore06.service.ProductService;

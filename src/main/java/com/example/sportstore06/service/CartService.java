@@ -1,7 +1,7 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.CartRequest;
-import com.example.sportstore06.model.Cart;
+import com.example.sportstore06.entity.Cart;
 import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

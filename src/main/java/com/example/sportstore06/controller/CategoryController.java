@@ -2,13 +2,9 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.CategoryRequest;
 import com.example.sportstore06.dao.response.CategoryResponse;
-import com.example.sportstore06.dao.response.UserResponse;
-import com.example.sportstore06.model.Category;
-import com.example.sportstore06.model.User;
-import com.example.sportstore06.service.BusinessService;
+import com.example.sportstore06.entity.Category;
 import com.example.sportstore06.service.CategoryGroupService;
 import com.example.sportstore06.service.CategoryService;
-import com.example.sportstore06.service.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,9 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/category")

@@ -2,7 +2,7 @@ package com.example.sportstore06.service;
 
 
 import com.example.sportstore06.dao.request.CommentRequest;
-import com.example.sportstore06.model.Comment;
+import com.example.sportstore06.entity.Comment;
 import com.example.sportstore06.repository.ICommentRepository;
 import com.example.sportstore06.repository.IProductInfoRepository;
 import com.example.sportstore06.repository.IUserRepository;

@@ -1,8 +1,8 @@
 package com.example.sportstore06.dao.response;
 
-import com.example.sportstore06.model.Business;
-import com.example.sportstore06.model.ProductInfo;
-import com.example.sportstore06.model.Comment;
+import com.example.sportstore06.entity.Business;
+import com.example.sportstore06.entity.ProductInfo;
+import com.example.sportstore06.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

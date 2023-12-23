@@ -1,16 +1,13 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.RoleRequest;
-import com.example.sportstore06.dao.request.UserRequest;
-import com.example.sportstore06.model.Role;
-import com.example.sportstore06.model.Sale;
+import com.example.sportstore06.entity.Role;
 import com.example.sportstore06.repository.IRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

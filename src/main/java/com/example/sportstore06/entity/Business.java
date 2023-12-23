@@ -1,4 +1,4 @@
-package com.example.sportstore06.model;
+package com.example.sportstore06.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -41,4 +41,8 @@ public class Business {
     @OneToMany(mappedBy = "business", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Sale> saleSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<Bill> billSet = new HashSet<>();
 }

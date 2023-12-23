@@ -1,7 +1,7 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.ProductInfoRequest;
-import com.example.sportstore06.model.*;
+import com.example.sportstore06.entity.*;
 import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

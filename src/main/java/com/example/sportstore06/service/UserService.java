@@ -3,10 +3,8 @@ package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.UserPutRequest;
 import com.example.sportstore06.dao.request.UserRequest;
-import com.example.sportstore06.model.Business;
-import com.example.sportstore06.model.Image;
-import com.example.sportstore06.model.Role;
-import com.example.sportstore06.model.User;
+import com.example.sportstore06.entity.Role;
+import com.example.sportstore06.entity.User;
 import com.example.sportstore06.repository.IImageRepository;
 import com.example.sportstore06.repository.IRoleRepository;
 import com.example.sportstore06.repository.IUserRepository;

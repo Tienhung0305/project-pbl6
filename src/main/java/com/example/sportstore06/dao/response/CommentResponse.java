@@ -1,7 +1,7 @@
 package com.example.sportstore06.dao.response;
 
-import com.example.sportstore06.model.Comment;
-import com.example.sportstore06.model.Image;
+import com.example.sportstore06.entity.Comment;
+import com.example.sportstore06.entity.Image;
 import lombok.*;
 
 import java.sql.Timestamp;

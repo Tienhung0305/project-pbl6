@@ -1,7 +1,5 @@
 package com.example.sportstore06.dao.request;
 
-import com.example.sportstore06.model.BillDetail;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -23,6 +21,7 @@ public class BillRequest {
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
+    private Integer id_business;
     @NotNull(message = "bill details must not be null")
     private Set<BillDetailRequest> bill_detailSet = new HashSet<>();
 }

@@ -2,11 +2,7 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.SignUpBusinessRequest;
 import com.example.sportstore06.dao.request.SignUpCustomerRequest;
-import com.example.sportstore06.dao.response.JwtAuthenticationResponse;
-import com.example.sportstore06.dao.request.SignUpRequest;
 import com.example.sportstore06.dao.request.SignInRequest;
-import com.example.sportstore06.model.Role;
-import com.example.sportstore06.model.User;
 import com.example.sportstore06.security.AuthenticationService;
 import com.example.sportstore06.service.RoleService;
 import com.example.sportstore06.service.UserService;
@@ -15,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/auth")

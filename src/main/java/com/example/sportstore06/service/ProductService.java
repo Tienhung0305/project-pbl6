@@ -1,8 +1,7 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.ProductRequest;
-import com.example.sportstore06.model.Product;
-import com.example.sportstore06.model.ProductInfo;
+import com.example.sportstore06.entity.Product;
 import com.example.sportstore06.repository.IImageRepository;
 import com.example.sportstore06.repository.IProductInfoRepository;
 import com.example.sportstore06.repository.IProductRepository;
@@ -36,6 +35,10 @@ public class ProductService {
                 price(request.getPrice()).
                 build();
         productRepository.save(u);
+    }
+
+    public void save(Product product) {
+        productRepository.save(product);
     }
 
     public boolean deleteById(int id) {

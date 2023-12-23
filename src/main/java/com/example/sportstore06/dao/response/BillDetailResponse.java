@@ -1,6 +1,6 @@
 package com.example.sportstore06.dao.response;
 
-import com.example.sportstore06.model.BillDetail;
+import com.example.sportstore06.entity.BillDetail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

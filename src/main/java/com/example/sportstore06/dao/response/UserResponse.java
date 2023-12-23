@@ -1,16 +1,9 @@
 package com.example.sportstore06.dao.response;
 
-import com.example.sportstore06.model.Image;
-import com.example.sportstore06.model.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.sportstore06.entity.User;
 import lombok.*;
 
-import jakarta.validation.constraints.NotBlank;
-
 import java.sql.Timestamp;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 

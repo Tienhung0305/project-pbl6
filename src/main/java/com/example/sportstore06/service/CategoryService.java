@@ -1,7 +1,7 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.CategoryRequest;
-import com.example.sportstore06.model.Category;
+import com.example.sportstore06.entity.Category;
 import com.example.sportstore06.repository.ICategoryGroupRepository;
 import com.example.sportstore06.repository.ICategoryRepository;
 import com.example.sportstore06.repository.IImageRepository;

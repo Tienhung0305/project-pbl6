@@ -5,8 +5,8 @@ import com.example.sportstore06.dao.request.UserPutRequest;
 import com.example.sportstore06.dao.request.UserRequest;
 
 import com.example.sportstore06.dao.response.UserResponse;
-import com.example.sportstore06.model.Role;
-import com.example.sportstore06.model.User;
+import com.example.sportstore06.entity.Role;
+import com.example.sportstore06.entity.User;
 import com.example.sportstore06.service.ImageService;
 import com.example.sportstore06.service.RoleService;
 import com.example.sportstore06.service.UserService;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @RestController

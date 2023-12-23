@@ -1,6 +1,6 @@
 package com.example.sportstore06.dao.response;
 
-import com.example.sportstore06.model.*;
+import com.example.sportstore06.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

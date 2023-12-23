@@ -1,12 +1,11 @@
 package com.example.sportstore06.controller;
 
 
-import com.example.sportstore06.dao.request.ListIdRequest;
 import com.example.sportstore06.dao.request.ProductInfoRequest;
 import com.example.sportstore06.dao.response.ProductInfoResponse;
-import com.example.sportstore06.model.ProductInfo;
-import com.example.sportstore06.model.Role;
-import com.example.sportstore06.model.User;
+import com.example.sportstore06.entity.ProductInfo;
+import com.example.sportstore06.entity.Role;
+import com.example.sportstore06.entity.User;
 import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

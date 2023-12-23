@@ -1,10 +1,9 @@
-package com.example.sportstore06.model;
+package com.example.sportstore06.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -26,6 +25,7 @@ public class Bill {
     private String information;
     private double total;
     //private int id_user;
+    //private int id_business;
     private Timestamp created_at;
     private Timestamp updated_at;
     private Integer state;
@@ -34,6 +34,11 @@ public class Bill {
     @JoinColumn(name = "id_user", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_business", nullable = false, referencedColumnName = "id")
+    @JsonBackReference
+    private Business business;
 
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference

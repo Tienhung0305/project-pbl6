@@ -2,7 +2,7 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.RoleRequest;
 import com.example.sportstore06.dao.response.RoleResponse;
-import com.example.sportstore06.model.Role;
+import com.example.sportstore06.entity.Role;
 import com.example.sportstore06.service.RoleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/role")

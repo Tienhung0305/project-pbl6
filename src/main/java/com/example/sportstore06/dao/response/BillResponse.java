@@ -1,7 +1,7 @@
 package com.example.sportstore06.dao.response;
 
-import com.example.sportstore06.model.Bill;
-import com.example.sportstore06.model.BillDetail;
+import com.example.sportstore06.entity.Bill;
+import com.example.sportstore06.entity.BillDetail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +26,7 @@ public class BillResponse {
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
+    private BusinessResponse business;
     private Integer state;
     private Set<BillDetailResponse> bill_detailSet = new HashSet<>();
 
@@ -43,5 +44,6 @@ public class BillResponse {
                 .stream()
                 .map(billDetail -> billDetail != null ? new BillDetailResponse(billDetail) : null);
         this.bill_detailSet = response.collect(Collectors.toSet());
+        this.business = bill.getBusiness() != null ? new BusinessResponse(bill.getBusiness()): null;
     }
 }

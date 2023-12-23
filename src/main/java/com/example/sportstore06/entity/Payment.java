@@ -1,4 +1,4 @@
-package com.example.sportstore06.model;
+package com.example.sportstore06.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,13 +1,8 @@
 package com.example.sportstore06.controller;
 
-import com.example.sportstore06.dao.request.CommentRequest;
 import com.example.sportstore06.dao.request.ImageRequest;
-import com.example.sportstore06.dao.response.CommentResponse;
 import com.example.sportstore06.dao.response.ImageResponse;
-import com.example.sportstore06.dao.response.UserResponse;
-import com.example.sportstore06.model.Comment;
-import com.example.sportstore06.model.Image;
-import com.example.sportstore06.model.User;
+import com.example.sportstore06.entity.Image;
 import com.example.sportstore06.service.ImageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/image")

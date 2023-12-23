@@ -2,7 +2,7 @@ package com.example.sportstore06.service;
 
 
 import com.example.sportstore06.dao.request.BusinessRequest;
-import com.example.sportstore06.model.Business;
+import com.example.sportstore06.entity.Business;
 import com.example.sportstore06.repository.IBusinessRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

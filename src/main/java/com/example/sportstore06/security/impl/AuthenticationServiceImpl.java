@@ -3,10 +3,9 @@ package com.example.sportstore06.security.impl;
 import com.example.sportstore06.dao.request.SignUpBusinessRequest;
 import com.example.sportstore06.dao.request.SignUpCustomerRequest;
 import com.example.sportstore06.dao.response.JwtAuthenticationResponse;
-import com.example.sportstore06.dao.request.SignUpRequest;
 import com.example.sportstore06.dao.request.SignInRequest;
-import com.example.sportstore06.model.Role;
-import com.example.sportstore06.model.User;
+import com.example.sportstore06.entity.Role;
+import com.example.sportstore06.entity.User;
 import com.example.sportstore06.repository.IRoleRepository;
 import com.example.sportstore06.repository.IUserRepository;
 import com.example.sportstore06.security.AuthenticationService;
@@ -18,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service

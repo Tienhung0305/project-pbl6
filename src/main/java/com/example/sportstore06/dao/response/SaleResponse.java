@@ -1,8 +1,6 @@
 package com.example.sportstore06.dao.response;
 
-import com.example.sportstore06.model.Sale;
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.Min;
+import com.example.sportstore06.entity.Sale;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

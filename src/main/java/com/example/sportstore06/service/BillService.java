@@ -2,9 +2,8 @@ package com.example.sportstore06.service;
 
 
 import com.example.sportstore06.dao.request.BillRequest;
-import com.example.sportstore06.model.Bill;
-import com.example.sportstore06.model.BillDetail;
-import com.example.sportstore06.model.User;
+import com.example.sportstore06.entity.Bill;
+import com.example.sportstore06.entity.BillDetail;
 import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,7 @@ public class BillService {
     private final IBillRepository billRepository;
     private final IUserRepository userRepository;
     private final IProductRepository productRepository;
-    private final IBillDetailRepository billDetailRepository;
+    private final IBusinessRepository businessRepository;
 
     public Long getCount() {
         return billRepository.count();
@@ -42,7 +41,6 @@ public class BillService {
     public List<Bill> findByIdUser(Integer id_user) {
         return billRepository.findByIdUser(id_user);
     }
-
 
     public Page<Bill> SearchByName(Pageable pageable, String name, Integer state) {
         return billRepository.SearchByName(pageable, name, state);
@@ -78,6 +76,7 @@ public class BillService {
                 information(request.getInformation()).
                 total(request.getTotal()).
                 user(userRepository.findById(request.getId_user()).get()).
+                business(businessRepository.findById(request.getId_business()).get()).
                 created_at(created_at).
                 updated_at(updated_at).
                 state(state).

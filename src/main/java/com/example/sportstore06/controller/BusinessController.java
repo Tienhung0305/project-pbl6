@@ -3,10 +3,7 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.BusinessRequest;
 import com.example.sportstore06.dao.response.BusinessResponse;
-import com.example.sportstore06.dao.response.CategoryResponse;
-import com.example.sportstore06.model.Business;
-import com.example.sportstore06.model.Category;
-import com.example.sportstore06.model.ProductInfo;
+import com.example.sportstore06.entity.Business;
 import com.example.sportstore06.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/business")

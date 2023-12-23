@@ -1,14 +1,13 @@
 package com.example.sportstore06.dao.response;
 
-import com.example.sportstore06.model.Image;
-import com.example.sportstore06.model.Product;
+import com.example.sportstore06.entity.Image;
+import com.example.sportstore06.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter

@@ -1,6 +1,5 @@
 package com.example.sportstore06.security.impl;
 
-import com.example.sportstore06.model.User;
 import com.example.sportstore06.repository.IUserRepository;
 import com.example.sportstore06.security.UserService;
 import org.springframework.security.core.userdetails.UserDetails;

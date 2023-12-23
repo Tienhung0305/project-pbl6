@@ -1,7 +1,7 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.ImageRequest;
-import com.example.sportstore06.model.Image;
+import com.example.sportstore06.entity.Image;
 import com.example.sportstore06.repository.IImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
