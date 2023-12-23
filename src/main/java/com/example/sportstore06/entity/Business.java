@@ -42,7 +42,7 @@ public class Business {
     @JsonManagedReference
     private Set<Sale> saleSet = new HashSet<>();
 
-    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER)
-    @JsonManagedReference
-    private Set<Bill> billSet = new HashSet<>();
+//    @OneToMany(mappedBy = "business", fetch = FetchType.EAGER)
+//    @JsonBackReference
+//    private Set<Bill> billSet = new HashSet<>();
 }

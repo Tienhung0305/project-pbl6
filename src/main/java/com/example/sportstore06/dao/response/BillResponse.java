@@ -26,7 +26,7 @@ public class BillResponse {
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
-    private BusinessResponse business;
+    private Integer id_business;
     private Integer state;
     private Set<BillDetailResponse> bill_detailSet = new HashSet<>();
 
@@ -44,6 +44,6 @@ public class BillResponse {
                 .stream()
                 .map(billDetail -> billDetail != null ? new BillDetailResponse(billDetail) : null);
         this.bill_detailSet = response.collect(Collectors.toSet());
-        this.business = bill.getBusiness() != null ? new BusinessResponse(bill.getBusiness()): null;
+        this.id_business = bill.getId_business();
     }
 }

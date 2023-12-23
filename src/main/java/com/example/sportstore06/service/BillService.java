@@ -76,7 +76,7 @@ public class BillService {
                 information(request.getInformation()).
                 total(request.getTotal()).
                 user(userRepository.findById(request.getId_user()).get()).
-                business(businessRepository.findById(request.getId_business()).get()).
+                id_business(request.getId_business()).
                 created_at(created_at).
                 updated_at(updated_at).
                 state(state).
