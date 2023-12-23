@@ -128,6 +128,20 @@ public class ImageController {
         }
     }
 
+    @PutMapping("/change-is-main/{id}")
+    private ResponseEntity<?> changeIsMain(@PathVariable("id") Integer id) {
+        try {
+            if (imageService.findById(id).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id image not found");
+            }
+            imageService.change_is_main(id);
+            return ResponseEntity.accepted().build();
+        } catch (
+                Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/delete/{id}")
     private ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
         try {

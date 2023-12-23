@@ -9,7 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,6 @@ public class ImageService {
             return false;
         }
     }
-
     public Integer save(Integer id, ImageRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
@@ -65,6 +66,20 @@ public class ImageService {
             Image image = iImageRepository.findById(id).get();
             image.setUrl(url);
             iImageRepository.save(image);
+        }
+    }
+
+    public void change_is_main(Integer id) {
+        Optional<Image> Ob = iImageRepository.findById(id);
+        if (Ob.isPresent()) {
+            Image image = Ob.get();
+            Set<Image> imageSet = image.getProductInfo().getImageSet();
+            imageSet.forEach(im -> {
+                if (im.getId().equals(image.getId())) {
+                    im.setIs_main(true);
+                }
+                im.setIs_main(false);
+            });
         }
     }
 }
