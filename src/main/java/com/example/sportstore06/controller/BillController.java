@@ -2,7 +2,6 @@ package com.example.sportstore06.controller;
 
 
 import com.example.sportstore06.dao.Statistic;
-import com.example.sportstore06.dao.StatisticDate;
 import com.example.sportstore06.dao.response.BillResponse;
 import com.example.sportstore06.entity.Bill;
 import com.example.sportstore06.service.BillService;
@@ -20,10 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.Year;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -221,30 +218,60 @@ public class BillController {
         return yearMonthMap;
     }
 
+    public Timestamp convertTime(Optional<String> time) {
+        LocalDate localDate = LocalDate.parse(time.orElseGet(() -> LocalDate.now().toString()), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
+        return Timestamp.valueOf(localDateTime);
+    }
+
+    public static boolean isValidFormat(String dateStr) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            LocalDate.parse(dateStr, dateFormatter);
+            return true; // Parsing successful, valid format
+        } catch (Exception e) {
+            return false; // Parsing failed, invalid format
+        }
+    }
+
+    public static boolean isStartDateBeforeEndDate(Timestamp startDateGet, Timestamp endDateGet) {
+        return !startDateGet.before(endDateGet);
+    }
+
 
     @GetMapping("/statistic")
     public ResponseEntity<?> statistic(
-            @RequestParam(value = "state", required = false) Optional<Integer> state, 
-            @RequestParam(value = "idBusiness", required = false) Optional<Integer> idBusiness, 
-            @RequestBody(required = false) Optional<StatisticDate> statisticDate) {
+            @RequestParam(value = "state", required = false) Optional<Integer> state,
+            @RequestParam(value = "idBusiness", required = false) Optional<Integer> idBusiness,
+            @RequestParam(value = "startDate", required = false) Optional<String> startDate,
+            @RequestParam(value = "endDate", required = false) Optional<String> endDate) {
         try {
             HashMap<String, Object> map = new HashMap<>();
             double billCountAll = 0;
             double billTotalAll = 0;
             Timestamp earliestUpdate = billService.getEarliestUpdateAt();
             Timestamp latestUpdate = billService.getLatestUpdateAt();
-
             Set<Statistic> setStatistic = new TreeSet<>(Comparator.comparing(Statistic::getYear).thenComparing(Statistic::getMonth));
             Map<Integer, List<Integer>> yearMonthMap = new HashMap<>();
-
-
             if (idBusiness.isPresent()) {
-                if (statisticDate.isPresent()) {
-                    StatisticDate statisticDateGet = statisticDate.get();
-                    billCountAll = billService.getAllCountBusiness(statisticDateGet.getStartDate(), statisticDateGet.getEndDate(), state.orElse(null), idBusiness.get());
-                    billTotalAll = billService.getAllTotalBusiness(statisticDateGet.getStartDate(), statisticDateGet.getEndDate(), state.orElse(null), idBusiness.get());
+                if (startDate.isPresent() || endDate.isPresent()) {
+                    //check convert
+                    if (!isValidFormat(startDate.get()) || !isValidFormat(endDate.get())) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't convert {startDate} & {endDate} to DateTime");
+                    }
+                    //convert time
+                    Timestamp endDateGet = convertTime(startDate);
+                    Timestamp startDateGet = convertTime(endDate);
 
-                    yearMonthMap = caculaterYearMonthMapAll(statisticDateGet.getStartDate(), statisticDateGet.getEndDate());
+                    //check startDate and endDate
+                    if (!isStartDateBeforeEndDate(startDateGet, endDateGet)) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("start date can't be after end date");
+                    }
+
+                    billCountAll = billService.getAllCountBusiness(startDateGet, endDateGet, state.orElse(null), idBusiness.get());
+                    billTotalAll = billService.getAllTotalBusiness(startDateGet, endDateGet, state.orElse(null), idBusiness.get());
+
+                    yearMonthMap = caculaterYearMonthMap(startDateGet, endDateGet);
                     for (Integer year : yearMonthMap.keySet()) {
                         List<Integer> months = yearMonthMap.get(year);
                         for (Integer month : months) {
@@ -282,12 +309,24 @@ public class BillController {
                 }
             }
             else {
-                if (statisticDate.isPresent()) {
-                    StatisticDate statisticDateGet = statisticDate.get();
-                    billCountAll = billService.getAllCount(statisticDateGet.getStartDate(), statisticDateGet.getEndDate(), state.orElse(null));
-                    billTotalAll = billService.getAllTotal(statisticDateGet.getStartDate(), statisticDateGet.getEndDate(), state.orElse(null));
+                if (startDate.isPresent() || endDate.isPresent()) {
+                    //check convert
+                    if (!isValidFormat(startDate.get()) || !isValidFormat(endDate.get())) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't convert {startDate} & {endDate} to DateTime");
+                    }
+                    //convert time
+                    Timestamp endDateGet = convertTime(startDate);
+                    Timestamp startDateGet = convertTime(endDate);
 
-                    yearMonthMap = caculaterYearMonthMapAll(statisticDateGet.getStartDate(), statisticDateGet.getEndDate());
+                    //check startDate and endDate
+                    if (!isStartDateBeforeEndDate(startDateGet, endDateGet)) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("start date can't be after end date");
+                    }
+
+                    billCountAll = billService.getAllCount(startDateGet, endDateGet, state.orElse(null));
+                    billTotalAll = billService.getAllTotal(startDateGet, endDateGet, state.orElse(null));
+
+                    yearMonthMap = caculaterYearMonthMap(startDateGet, endDateGet);
                     for (Integer year : yearMonthMap.keySet()) {
                         List<Integer> months = yearMonthMap.get(year);
                         for (Integer month : months) {
