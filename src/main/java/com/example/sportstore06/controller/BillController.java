@@ -1,11 +1,14 @@
 package com.example.sportstore06.controller;
 
 
+import com.example.sportstore06.dao.Statistic;
+import com.example.sportstore06.dao.StatisticDate;
 import com.example.sportstore06.dao.response.BillResponse;
 import com.example.sportstore06.entity.Bill;
 import com.example.sportstore06.service.BillService;
 import com.example.sportstore06.service.ProductService;
 import com.example.sportstore06.service.UserService;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -17,9 +20,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
+import java.time.ZoneId;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/bill")
@@ -175,6 +181,155 @@ public class BillController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    public Map<Integer, List<Integer>> caculaterYearMonthMap(Timestamp startDate, Timestamp endDate) {
+        Map<Integer, List<Integer>> yearMonthMap = new HashMap<>();
+        int startYear = Year.from(startDate.toInstant().atZone(ZoneId.systemDefault())).getValue();
+        int endYear = Year.from(endDate.toInstant().atZone(ZoneId.systemDefault())).getValue();
+        for (int year = startYear; year <= endYear; year++) {
+            List<Integer> months = new ArrayList<>();
+            int startMonth = (year == startYear) ? Month.from(startDate.toInstant().atZone(ZoneId.systemDefault())).getValue() : 1;
+            int endMonth = (year == endYear) ? Month.from(endDate.toInstant().atZone(ZoneId.systemDefault())).getValue() : 12;
+            for (int month = startMonth; month <= endMonth; month++) {
+                months.add(month);
+            }
+            yearMonthMap.put(year, months);
+        }
+        return yearMonthMap;
+    }
+
+    public Map<Integer, List<Integer>> caculaterYearMonthMapAll(Timestamp startDate, Timestamp endDate) {
+
+        Map<Integer, List<Integer>> yearMonthMap = new HashMap<>();
+        Set<Integer> setYear = new HashSet<>();
+        List<Integer> months = new ArrayList<>();
+
+        int earlyear = Year.from(startDate.toInstant().atZone(ZoneId.systemDefault())).getValue();
+        int lateyear = Year.from(endDate.toInstant().atZone(ZoneId.systemDefault())).getValue();
+        int than = lateyear - earlyear;
+        for (int i = 0; i <= than; i++) {
+            setYear.add(earlyear);
+            earlyear += 1;
+        }
+        for (int i = 1; i <= 12; i++) {
+            months.add(i);
+        }
+        for (Integer year : setYear) {
+            yearMonthMap.put(year, months);
+        }
+        return yearMonthMap;
+    }
+
+
+    @GetMapping("/statistic")
+    public ResponseEntity<?> statistic(
+            @RequestParam(value = "state", required = false) Optional<Integer> state, 
+            @RequestParam(value = "idBusiness", required = false) Optional<Integer> idBusiness, 
+            @RequestBody(required = false) Optional<StatisticDate> statisticDate) {
+        try {
+            HashMap<String, Object> map = new HashMap<>();
+            double billCountAll = 0;
+            double billTotalAll = 0;
+            Timestamp earliestUpdate = billService.getEarliestUpdateAt();
+            Timestamp latestUpdate = billService.getLatestUpdateAt();
+
+            Set<Statistic> setStatistic = new TreeSet<>(Comparator.comparing(Statistic::getYear).thenComparing(Statistic::getMonth));
+            Map<Integer, List<Integer>> yearMonthMap = new HashMap<>();
+
+
+            if (idBusiness.isPresent()) {
+                if (statisticDate.isPresent()) {
+                    StatisticDate statisticDateGet = statisticDate.get();
+                    billCountAll = billService.getAllCountBusiness(statisticDateGet.getStartDate(), statisticDateGet.getEndDate(), state.orElse(null), idBusiness.get());
+                    billTotalAll = billService.getAllTotalBusiness(statisticDateGet.getStartDate(), statisticDateGet.getEndDate(), state.orElse(null), idBusiness.get());
+
+                    yearMonthMap = caculaterYearMonthMapAll(statisticDateGet.getStartDate(), statisticDateGet.getEndDate());
+                    for (Integer year : yearMonthMap.keySet()) {
+                        List<Integer> months = yearMonthMap.get(year);
+                        for (Integer month : months) {
+                            LocalDate localDateStart = LocalDate.of(year, month, 1);
+                            LocalDate localDateEnd = LocalDate.of(year, month, localDateStart.lengthOfMonth());
+                            Timestamp dateStart = Timestamp.valueOf(localDateStart.atStartOfDay());
+                            Timestamp dateEnd = Timestamp.valueOf(localDateEnd.atStartOfDay());
+
+                            double billCountMonth = billService.getAllCountBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
+                            double billTotalMonth = billService.getAllTotalBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
+                            Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
+                            setStatistic.add(statistic);
+                        }
+                    }
+                } else {
+                    billCountAll = billService.getAllCountBusiness(state.orElse(null), idBusiness.get());
+                    billTotalAll = billService.getAllTotalBusiness(state.orElse(null), idBusiness.get());
+
+                    yearMonthMap = caculaterYearMonthMapAll(earliestUpdate, latestUpdate);
+                    for (Integer year : yearMonthMap.keySet()) {
+                        List<Integer> months = yearMonthMap.get(year);
+                        for (Integer month : months) {
+                            LocalDate localDateStart = LocalDate.of(year, month, 1);
+                            LocalDate localDateEnd = LocalDate.of(year, month, localDateStart.lengthOfMonth());
+                            Timestamp dateStart = Timestamp.valueOf(localDateStart.atStartOfDay());
+                            Timestamp dateEnd = Timestamp.valueOf(localDateEnd.atStartOfDay());
+
+                            double billCountMonth = billService.getAllCountBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
+                            double billTotalMonth = billService.getAllTotalBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
+                            Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
+                            setStatistic.add(statistic);
+                        }
+                    }
+                }
+            } else {
+                if (statisticDate.isPresent()) {
+                    StatisticDate statisticDateGet = statisticDate.get();
+                    billCountAll = billService.getAllCount(statisticDateGet.getStartDate(), statisticDateGet.getEndDate(), state.orElse(null));
+                    billTotalAll = billService.getAllTotal(statisticDateGet.getStartDate(), statisticDateGet.getEndDate(), state.orElse(null));
+
+                    yearMonthMap = caculaterYearMonthMapAll(statisticDateGet.getStartDate(), statisticDateGet.getEndDate());
+                    for (Integer year : yearMonthMap.keySet()) {
+                        List<Integer> months = yearMonthMap.get(year);
+                        for (Integer month : months) {
+                            LocalDate localDateStart = LocalDate.of(year, month, 1);
+                            LocalDate localDateEnd = LocalDate.of(year, month, localDateStart.lengthOfMonth());
+                            Timestamp dateStart = Timestamp.valueOf(localDateStart.atStartOfDay());
+                            Timestamp dateEnd = Timestamp.valueOf(localDateEnd.atStartOfDay());
+
+                            double billCountMonth = billService.getAllCount(dateStart, dateEnd, state.orElse(null));
+                            double billTotalMonth = billService.getAllTotal(dateStart, dateEnd, state.orElse(null));
+                            Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
+                            setStatistic.add(statistic);
+                        }
+                    }
+                } else {
+                    billCountAll = billService.getAllCount(state.orElse(null));
+                    billTotalAll = billService.getAllTotal(state.orElse(null));
+
+                    yearMonthMap = caculaterYearMonthMapAll(earliestUpdate, latestUpdate);
+                    for (Integer year : yearMonthMap.keySet()) {
+                        List<Integer> months = yearMonthMap.get(year);
+                        for (Integer month : months) {
+                            LocalDate localDateStart = LocalDate.of(year, month, 1);
+                            LocalDate localDateEnd = LocalDate.of(year, month, localDateStart.lengthOfMonth());
+                            Timestamp dateStart = Timestamp.valueOf(localDateStart.atStartOfDay());
+                            Timestamp dateEnd = Timestamp.valueOf(localDateEnd.atStartOfDay());
+
+                            double billCountMonth = billService.getAllCount(dateStart, dateEnd, state.orElse(null));
+                            double billTotalMonth = billService.getAllTotal(dateStart, dateEnd, state.orElse(null));
+                            Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
+                            setStatistic.add(statistic);
+                        }
+                    }
+                }
+            }
+
+            map.put("bill_count_all", billCountAll);
+            map.put("bill_total_all", billTotalAll);
+            map.put("setStatistic", setStatistic);
+
+            return ResponseEntity.status(HttpStatus.OK).body(map);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
     }
 }
