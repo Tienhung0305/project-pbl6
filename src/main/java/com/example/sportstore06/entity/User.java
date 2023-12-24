@@ -52,6 +52,7 @@ public class User implements UserDetails {
     @NotBlank
     @Size(min = 1, max = 50)
     private String username;
+    @JsonIgnore
     @NotBlank
     @Size(min = 1, max = 100)
     private String password;
@@ -64,30 +65,32 @@ public class User implements UserDetails {
     @Max(value = 3)
     private Integer state;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonManagedReference
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_role")
     )
-    @JsonManagedReference
     Set<Role> roleSet = new HashSet<>();
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Business business;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Comment> commentSet = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Bill> billSet = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Cart> cartSet = new HashSet<>();
 

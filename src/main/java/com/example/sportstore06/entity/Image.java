@@ -25,12 +25,12 @@ public class Image {
     @NotBlank
     private String url;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product_information", referencedColumnName = "id")
     @JsonBackReference
     private ProductInfo productInfo;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_comment", referencedColumnName = "id")
     @JsonBackReference
     private Comment comment;

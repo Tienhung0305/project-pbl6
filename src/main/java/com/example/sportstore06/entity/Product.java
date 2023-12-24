@@ -27,16 +27,16 @@ public class Product {
     private Integer quantity;
     private String size;
 
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product_information", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private ProductInfo productInfo;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     @JsonBackReference
     private Set<Cart> cartSet = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<BillDetail> billDetailSet = new HashSet<>();
 }

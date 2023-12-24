@@ -30,12 +30,12 @@ public class Bill {
     private Timestamp updated_at;
     private Integer state;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<BillDetail> bill_detailSet = new HashSet<>();
 }

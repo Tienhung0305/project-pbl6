@@ -21,11 +21,11 @@ public class Category {
     private String name;
     //private int category_group_id;
 
-    @ManyToMany(mappedBy = "categorySet", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "categorySet", fetch = FetchType.LAZY)
     @JsonBackReference
     private Set<ProductInfo> productInfoSet = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_group_id", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private CategoryGroup categoryGroup;
