@@ -1,7 +1,7 @@
 package com.example.sportstore06.security.impl;
 
 import com.example.sportstore06.repository.IUserRepository;
-import com.example.sportstore06.security.UserService;
+import com.example.sportstore06.security.UserSecurityService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserSecurityServiceImpl implements UserSecurityService {
     private final IUserRepository userRepository;
     @Override
     public UserDetailsService userDetailsService() {

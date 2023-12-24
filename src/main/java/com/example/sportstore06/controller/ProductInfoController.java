@@ -20,7 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -357,7 +358,7 @@ public class ProductInfoController {
             if (businessService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             }
-            if (request.getId_sale() != null && saleService.findById(request.getId_sale()).isEmpty()) {
+            if (saleService.findById(request.getId_sale()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
             }
             Role role_admin = roleService.findByName("ROLE_ADMIN").get();
@@ -396,7 +397,7 @@ public class ProductInfoController {
             if (businessService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             }
-            if (request.getId_sale() != null && saleService.findById(request.getId_business()).isEmpty()) {
+            if (request.getId_sale() != null && saleService.findById(request.getId_sale()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
             }
             Role role_admin = roleService.findByName("ROLE_ADMIN").get();

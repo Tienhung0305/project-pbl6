@@ -14,6 +14,21 @@ import lombok.RequiredArgsConstructor;
 public class AuthorizationController {
     @GetMapping
     public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("Here is your resource");
+        return ResponseEntity.ok("Hi Visiter");
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<String> sayHelloAdmin() {
+        return ResponseEntity.ok("Hi Admin");
+    }
+
+    @GetMapping("/business")
+    public ResponseEntity<String> sayHelloBusiness() {
+        return ResponseEntity.ok("Hi Business");
+    }
+
+    @GetMapping("/customer")
+    public ResponseEntity<String> sayHelloCustomer() {
+        return ResponseEntity.ok("Hi Customer");
     }
 }

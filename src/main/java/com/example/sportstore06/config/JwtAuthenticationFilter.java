@@ -1,11 +1,15 @@
 package com.example.sportstore06.config;
 
-import java.io.IOException;
-
+import com.example.sportstore06.entity.User;
+import com.example.sportstore06.repository.IUserRepository;
 import com.example.sportstore06.security.JwtService;
-import com.example.sportstore06.security.UserService;
+import com.example.sportstore06.security.UserSecurityService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -13,19 +17,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.filter.OncePerRequestFilter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserService userService;
+    private final UserSecurityService userSecurityService;
+    private final IUserRepository userRepository;
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
@@ -45,9 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (StringUtils.isNotEmpty(userName)
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userService.userDetailsService()
-                        .loadUserByUsername(userName);
-
+                UserDetails userDetails = userSecurityService.userDetailsService().loadUserByUsername(userName);
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     SecurityContext context = SecurityContextHolder.createEmptyContext();
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -57,11 +57,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.setContext(context);
                 }
             }
-            filterChain.doFilter(request, response);
+            Optional<User> byRememberToken = userRepository.getByRememberToken(jwt);
+            if (byRememberToken.isPresent() && !byRememberToken.get().getRevoked_token()) {
+                filterChain.doFilter(request, response);
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("The access token has been revoked");
+            }
         } catch (Exception e) {
             // Handle the exception and send an error response
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("SC_BAD_REQUEST: " + e.getMessage());
+            response.getWriter().write(e.getMessage());
             throw e;
         }
     }

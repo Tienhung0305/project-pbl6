@@ -1,7 +1,9 @@
 package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.ProductInfoRequest;
-import com.example.sportstore06.entity.*;
+import com.example.sportstore06.entity.Category;
+import com.example.sportstore06.entity.Image;
+import com.example.sportstore06.entity.ProductInfo;
 import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -150,7 +152,10 @@ public class ProductInfoService {
             Optional<Category> Ob = categoryRepository.findById(i);
             categories.add(Ob.get());
         }
-
+        Integer state = 1;
+        if (id != 0) {
+            state = productInfoRepository.findById(id).get().getState();
+        }
         var u = ProductInfo.builder().
                 id(id).
                 name(request.getName()).
@@ -160,7 +165,7 @@ public class ProductInfoService {
                 sale(request.getId_sale() == null ? null : saleRepository.findById(request.getId_sale()).get()).
                 created_at(created_at).
                 updated_at(updated_at).
-                state(1).
+                state(state).
                 categorySet(categories).
                 imageSet(setImage).
                 build();

@@ -43,8 +43,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .address(request.getAddress())
                 .state(1).
                  build();
-        userRepository.save(user);
         var jwt = jwtService.generateToken(user);
+        user.setRemember_token(jwt);
+        user.setRevoked_token(false);
+        userRepository.save(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
 
@@ -61,8 +63,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .phone(request.getPhone())
                 .state(0).
                 build();
-        userRepository.save(user);
         var jwt = jwtService.generateToken(user);
+        user.setRemember_token(jwt);
+        user.setRevoked_token(false);
+        userRepository.save(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
 
@@ -73,6 +77,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid username or password."));
         var jwt = jwtService.generateToken(user);
+        user.setRemember_token(jwt);
+        user.setRevoked_token(false);
+        userRepository.save(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
 }
