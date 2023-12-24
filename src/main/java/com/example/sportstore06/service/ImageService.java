@@ -80,6 +80,8 @@ public class ImageService {
                 }
                 im.setIs_main(false);
             });
+            iImageRepository.save(image);
         }
+
     }
 }
