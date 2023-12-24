@@ -8,7 +8,6 @@ import com.example.sportstore06.entity.Bill;
 import com.example.sportstore06.service.BillService;
 import com.example.sportstore06.service.ProductService;
 import com.example.sportstore06.service.UserService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -260,7 +259,8 @@ public class BillController {
                             setStatistic.add(statistic);
                         }
                     }
-                } else {
+                }
+                else {
                     billCountAll = billService.getAllCountBusiness(state.orElse(null), idBusiness.get());
                     billTotalAll = billService.getAllTotalBusiness(state.orElse(null), idBusiness.get());
 
@@ -280,7 +280,8 @@ public class BillController {
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 if (statisticDate.isPresent()) {
                     StatisticDate statisticDateGet = statisticDate.get();
                     billCountAll = billService.getAllCount(statisticDateGet.getStartDate(), statisticDateGet.getEndDate(), state.orElse(null));
@@ -301,7 +302,8 @@ public class BillController {
                             setStatistic.add(statistic);
                         }
                     }
-                } else {
+                }
+                else {
                     billCountAll = billService.getAllCount(state.orElse(null));
                     billTotalAll = billService.getAllTotal(state.orElse(null));
 
