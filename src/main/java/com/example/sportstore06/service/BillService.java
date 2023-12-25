@@ -65,6 +65,9 @@ public class BillService {
         }
     }
 
+    public void save(Bill bill) {
+        billRepository.save(bill);
+    }
     public int save(int id, BillRequest request, Integer state) {
         Timestamp created_at;
         Timestamp updated_at;

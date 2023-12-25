@@ -99,8 +99,6 @@ public class ProductInfoController {
                                         @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
                                         @RequestParam(value = "state", required = false) Optional<Integer> state,
                                         @RequestParam(value = "state_business", required = false) Optional<Integer> state_business) {
-
-
         try {
             Pageable pageable;
             if (sort != null) {

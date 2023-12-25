@@ -34,18 +34,21 @@ public class CartController {
     private final RoleService roleService;
     private final MomoPaymentService momoPaymentService;
 
-//  NGUYEN VAN A
-//  9704 0000 0000 0018
-//  03/07
-//  OTP
+    //  NGUYEN VAN A
+    //  9704 0000 0000 0018
+    //  03/07
+    //  OTP
+    // requestType : payWithATM,captureWallet
 
-    @PostMapping("/momo")
-    public ResponseEntity<?> momo(@RequestBody(required = true) Set<Integer> set_id_cart,
-                                  @RequestParam(required = true) String requestType,
-                                  HttpServletRequest request) {
-        User user = null;
-        String username = "";
-        String orderId = "";
+
+    @PostMapping("/buy-with-momo")
+    public ResponseEntity<?> PayWithMomo(
+            @RequestBody(required = true) Set<Integer> set_id_cart,
+            @RequestParam(required = true) String requestType,
+            @AuthenticationPrincipal User user,
+            HttpServletRequest request) {
+
+        String username = user.getUsername();
         String baseUrl = UrlUtil.getBaseUrl(request);
         String payUrl = "";
         if (!requestType.equals("payWithATM") && !requestType.equals("captureWallet")) {
@@ -60,9 +63,8 @@ public class CartController {
             if (Op.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("id cart not found");
             }
-            if (user == null) {
-                user = Op.get().getUser();
-                username = user.getUsername();
+            if (Op.get().getUser().getId() != user.getId()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to buy");
             }
             set_cart.add(Op.get());
             set_business.add(Op.get().getProduct().getProductInfo().getBusiness());
@@ -106,7 +108,7 @@ public class CartController {
             bill.setId_user(user.getId());
             bill.setBill_detailSet(set);
             bill.setName("Business :" + cartBusiness.getBusiness().getName());
-            bill.setInformation("Business :" + cartBusiness.getBusiness().getName());
+            bill.setInformation("Address :" + user.getAddress());
             int id = billService.save(0, bill, 2);
             set_id_bill.add(id);
             total_all += total;
@@ -129,15 +131,9 @@ public class CartController {
             }
             for (Integer id : set_id_bill) {
                 Bill bill = billService.findById(id).get();
-                bill.setState(0);
+                bill.setState(3);
                 bill.setUpdated_at(new Timestamp(new Date().getTime()));
-                bill.getBill_detailSet().forEach(billDetail -> {
-                    Product product = billDetail.getProduct();
-                    Integer quantity = product.getQuantity();
-                    Integer quantity_change = quantity - billDetail.getQuantity();
-                    product.setQuantity(quantity_change);
-                    productService.save(product);
-                });
+                billService.save(bill);
             }
             return ResponseEntity.status(HttpStatus.OK).body(set_id_bill.toString());
         } else {

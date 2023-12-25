@@ -86,7 +86,8 @@ public class SecurityConfiguration {
                         .requestMatchers(PUT, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(DELETE, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers("/api/v1/cart/change-state/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/v1/cart/confirm/**").hasAnyAuthority("ROLE_CUSTOMER")
+                        .requestMatchers("/api/v1/cart/confirm-receive/**").hasAnyAuthority("ROLE_CUSTOMER")
+                        .requestMatchers("/api/v1/cart/confirm-sell/**").hasAnyAuthority("ROLE_BUSINESS")
 
                         .requestMatchers(POST, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(PUT, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")

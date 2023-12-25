@@ -4,6 +4,7 @@ package com.example.sportstore06.controller;
 import com.example.sportstore06.dao.Statistic;
 import com.example.sportstore06.dao.response.BillResponse;
 import com.example.sportstore06.entity.Bill;
+import com.example.sportstore06.entity.Product;
 import com.example.sportstore06.service.BillService;
 import com.example.sportstore06.service.ProductService;
 import com.example.sportstore06.service.UserService;
@@ -36,6 +37,10 @@ public class BillController {
     // 0 : đang giao
     // 1 : đã giao thành công
     // 2 : chưa thanh toán
+    // 3 : đã thanh toán
+    // 4 : hủy đơn hàng
+
+    // 2 -> 3 -> 0 -> 1
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
@@ -146,18 +151,63 @@ public class BillController {
         }
     }
 
-    @PutMapping("/confirm/{id}")
-    private ResponseEntity<?> confirm(@PathVariable("id") Integer id,
-                                      @RequestParam(value = "state", required = true) Integer state) {
+    @PutMapping("/confirm-sell/{sell}")
+    private ResponseEntity<?> confirmSell(@RequestBody(required = true) Set<Integer> set_id_bill,
+                                          @PathVariable(value = "sell", required = true) Boolean sell) {
         try {
-            if (billService.findById(id).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
-            } else if (state != 1) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("state confirm not found");
-            } else {
-                billService.changeState(id, state);
-                return ResponseEntity.accepted().build();
+            for (Integer id : set_id_bill) {
+                if (billService.findById(id).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+                }
+                if (billService.findById(id).get().getState() == 3) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The bill status needs confirmation from the business");
+                } else {
+                    if (sell) {
+                        Bill bill = billService.findById(id).get();
+                        bill.setState(0);
+                        bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                        bill.getBill_detailSet().forEach(billDetail -> {
+                            Product product = billDetail.getProduct();
+                            Integer quantity = product.getQuantity();
+                            Integer quantity_change = quantity - billDetail.getQuantity();
+                            product.setQuantity(quantity_change);
+                            productService.save(product);
+                        });
+                        billService.save(bill);
+                    } else {
+                        Bill bill = billService.findById(id).get();
+                        bill.setState(4);
+                        bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                        billService.save(bill);
+                    }
+                }
             }
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/confirm-receive/{receive}")
+    private ResponseEntity<?> confirmReceive(@RequestBody(required = true) Set<Integer> set_id_bill,
+                                             @PathVariable(value = "receive", required = true) Boolean receive) {
+        try {
+            for (Integer id : set_id_bill) {
+                if (billService.findById(id).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+                }
+                if (billService.findById(id).get().getState() == 0) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must be shipping");
+                } else {
+                    if (receive) {
+                        Bill bill = billService.findById(id).get();
+                        bill.setState(1);
+                        bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                        billService.save(bill);
+                    }
+                }
+            }
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -235,7 +285,7 @@ public class BillController {
     }
 
     public static boolean isStartDateBeforeEndDate(Timestamp startDateGet, Timestamp endDateGet) {
-        return !startDateGet.before(endDateGet);
+        return startDateGet.before(endDateGet);
     }
 
 
@@ -260,17 +310,14 @@ public class BillController {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't convert {startDate} & {endDate} to DateTime");
                     }
                     //convert time
-                    Timestamp endDateGet = convertTime(startDate);
-                    Timestamp startDateGet = convertTime(endDate);
+                    Timestamp startDateGet = convertTime(startDate);
+                    Timestamp endDateGet = convertTime(endDate);
+
 
                     //check startDate and endDate
                     if (!isStartDateBeforeEndDate(startDateGet, endDateGet)) {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("start date can't be after end date");
                     }
-
-                    billCountAll = billService.getAllCountBusiness(startDateGet, endDateGet, state.orElse(null), idBusiness.get());
-                    billTotalAll = billService.getAllTotalBusiness(startDateGet, endDateGet, state.orElse(null), idBusiness.get());
-
                     yearMonthMap = caculaterYearMonthMap(startDateGet, endDateGet);
                     for (Integer year : yearMonthMap.keySet()) {
                         List<Integer> months = yearMonthMap.get(year);
@@ -284,13 +331,12 @@ public class BillController {
                             double billTotalMonth = billService.getAllTotalBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
                             Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
                             setStatistic.add(statistic);
+                            billCountAll += billCountMonth;
+                            billTotalAll += billTotalMonth;
                         }
                     }
                 }
                 else {
-                    billCountAll = billService.getAllCountBusiness(state.orElse(null), idBusiness.get());
-                    billTotalAll = billService.getAllTotalBusiness(state.orElse(null), idBusiness.get());
-
                     yearMonthMap = caculaterYearMonthMapAll(earliestUpdate, latestUpdate);
                     for (Integer year : yearMonthMap.keySet()) {
                         List<Integer> months = yearMonthMap.get(year);
@@ -304,28 +350,26 @@ public class BillController {
                             double billTotalMonth = billService.getAllTotalBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
                             Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
                             setStatistic.add(statistic);
+                            billCountAll += billCountMonth;
+                            billTotalAll += billTotalMonth;
                         }
                     }
                 }
             }
             else {
-                if (startDate.isPresent() || endDate.isPresent()) {
+                if (startDate.isPresent() || endDate.isPresent()) {;
                     //check convert
                     if (!isValidFormat(startDate.get()) || !isValidFormat(endDate.get())) {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't convert {startDate} & {endDate} to DateTime");
                     }
                     //convert time
-                    Timestamp endDateGet = convertTime(startDate);
-                    Timestamp startDateGet = convertTime(endDate);
+                    Timestamp startDateGet = convertTime(startDate);
+                    Timestamp endDateGet = convertTime(endDate);
 
                     //check startDate and endDate
                     if (!isStartDateBeforeEndDate(startDateGet, endDateGet)) {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("start date can't be after end date");
                     }
-
-                    billCountAll = billService.getAllCount(startDateGet, endDateGet, state.orElse(null));
-                    billTotalAll = billService.getAllTotal(startDateGet, endDateGet, state.orElse(null));
-
                     yearMonthMap = caculaterYearMonthMap(startDateGet, endDateGet);
                     for (Integer year : yearMonthMap.keySet()) {
                         List<Integer> months = yearMonthMap.get(year);
@@ -339,13 +383,12 @@ public class BillController {
                             double billTotalMonth = billService.getAllTotal(dateStart, dateEnd, state.orElse(null));
                             Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
                             setStatistic.add(statistic);
+                            billCountAll += billCountMonth;
+                            billTotalAll += billTotalMonth;
                         }
                     }
                 }
                 else {
-                    billCountAll = billService.getAllCount(state.orElse(null));
-                    billTotalAll = billService.getAllTotal(state.orElse(null));
-
                     yearMonthMap = caculaterYearMonthMapAll(earliestUpdate, latestUpdate);
                     for (Integer year : yearMonthMap.keySet()) {
                         List<Integer> months = yearMonthMap.get(year);
@@ -359,15 +402,15 @@ public class BillController {
                             double billTotalMonth = billService.getAllTotal(dateStart, dateEnd, state.orElse(null));
                             Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
                             setStatistic.add(statistic);
+                            billCountAll += billCountMonth;
+                            billTotalAll += billTotalMonth;
                         }
                     }
                 }
             }
-
             map.put("bill_count_all", billCountAll);
             map.put("bill_total_all", billTotalAll);
             map.put("setStatistic", setStatistic);
-
             return ResponseEntity.status(HttpStatus.OK).body(map);
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
