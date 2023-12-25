@@ -91,7 +91,7 @@ public class SecurityConfiguration {
 
                         .requestMatchers(POST, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(PUT, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
-                        .requestMatchers(DELETE, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(DELETE, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN","ROLE_BUSINESS")
 
                         .requestMatchers(POST, "/api/v1/category/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(PUT, "/api/v1/category/**").hasAnyAuthority("ROLE_ADMIN")

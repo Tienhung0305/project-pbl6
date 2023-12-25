@@ -38,7 +38,7 @@ public class CartController {
     //  9704 0000 0000 0018
     //  03/07
     //  OTP
-    // requestType : payWithATM,captureWallet
+    //  requestType : payWithATM,captureWallet
 
 
     @PostMapping("/buy-with-momo")
