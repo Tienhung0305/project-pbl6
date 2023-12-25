@@ -38,9 +38,10 @@ public class BillController {
     // 1 : đã giao thành công
     // 2 : chưa thanh toán
     // 3 : đã thanh toán
-    // 4 : hủy đơn hàng
+    // 4 : hủy đơn hàng bên business
 
     // 2 -> 3 -> 0 -> 1
+    // 2 -> 3 -> 4 -> (hoàn tiền)
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {

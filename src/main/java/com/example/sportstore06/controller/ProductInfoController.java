@@ -356,7 +356,7 @@ public class ProductInfoController {
             if (businessService.findById(request.getId_business()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
             }
-            if (saleService.findById(request.getId_sale()).isEmpty()) {
+            if (request.getId_sale() != null && saleService.findById(request.getId_sale()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
             }
             Role role_admin = roleService.findByName("ROLE_ADMIN").get();
