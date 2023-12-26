@@ -25,6 +25,15 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     @Query("SELECT i FROM Bill i WHERE i.user.id = :id_user")
     List<Bill> findByIdUser(Integer id_user);
 
+    @Query("SELECT i FROM Bill i WHERE i.user.id = :id_user AND i.state = :state")
+    List<Bill> findByIdUser(Integer id_user, Integer state);
+
+    @Query("SELECT i FROM Bill i WHERE i.id_business = :id_business")
+    Page<Bill> findByIdBusiness(Pageable pageable, Integer id_business);
+
+    @Query("SELECT i FROM Bill i WHERE i.id_business = :id_business AND i.state = :state")
+    Page<Bill> findByIdBusiness(Pageable pageable, Integer id_business, Integer state);
+
     // thong ke
     //admin
     @Query("SELECT COALESCE(SUM(b.total), 0) FROM Bill b")

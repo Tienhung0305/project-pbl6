@@ -44,7 +44,18 @@ public class BillService {
         return billRepository.findByPage(pageable);
     }
 
-    public List<Bill> findByIdUser(Integer id_user) {
+    public Page<Bill> findByIdBusiness(Pageable pageable, Integer id_business, Integer state) {
+        if (state != null) {
+            return billRepository.findByIdBusiness(pageable, id_business, state);
+        }
+        return billRepository.findByIdBusiness(pageable, id_business);
+    }
+
+
+    public List<Bill> findByIdUser(Integer id_user, Integer state) {
+        if (state != null) {
+            return billRepository.findByIdUser(id_user, state);
+        }
         return billRepository.findByIdUser(id_user);
     }
 

@@ -6,6 +6,7 @@ import com.example.sportstore06.dao.response.BillResponse;
 import com.example.sportstore06.entity.Bill;
 import com.example.sportstore06.entity.Product;
 import com.example.sportstore06.service.BillService;
+import com.example.sportstore06.service.BusinessService;
 import com.example.sportstore06.service.ProductService;
 import com.example.sportstore06.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class BillController {
     private final BillService billService;
     private final UserService userService;
     private final ProductService productService;
+    private final BusinessService businessService;
 
     // 0 : đang giao
     // 1 : đã giao thành công
@@ -63,10 +65,11 @@ public class BillController {
     }
 
     @GetMapping("get-by-id-user/{id_user}")
-    public ResponseEntity<?> findByIdUser(@PathVariable("id_user") Integer id_user) {
+    public ResponseEntity<?> findByIdUser(@PathVariable("id_user") Integer id_user,
+                                          @RequestParam(value = "state", required = false) Optional<Integer> state) {
         try {
             if (userService.findById(id_user).isPresent()) {
-                List<Bill> byIdUser = billService.findByIdUser(id_user);
+                List<Bill> byIdUser = billService.findByIdUser(id_user, state.orElse(null));
                 List<BillResponse> responses = new ArrayList<>();
                 for (Bill bill : byIdUser) {
                     responses.add(new BillResponse(bill));
@@ -128,6 +131,34 @@ public class BillController {
             } else {
                 byPage = billService.findByPage(pageable);
             }
+            Page<BillResponse> responses = byPage.map(bill -> bill != null ? new BillResponse(bill) : null);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+    }
+
+    @GetMapping("get-by-business/{id_business}")
+    public ResponseEntity<?> findByBusiness(
+            @PathVariable(value = "id_business", required = true) Integer id_business,
+            @RequestParam(value = "page", required = false) Optional<Integer> page,
+            @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+            @RequestParam(value = "state", required = false) Optional<Integer> state) {
+        try {
+            if (businessService.findById(id_business).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
+            }
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<Bill> byPage;
+            byPage = billService.findByIdBusiness(pageable, id_business, state.orElse(null));
             Page<BillResponse> responses = byPage.map(bill -> bill != null ? new BillResponse(bill) : null);
             return ResponseEntity.status(HttpStatus.OK).body(responses);
         } catch (InvalidDataAccessApiUsageException exception) {
@@ -308,7 +339,7 @@ public class BillController {
                 if (startDate.isPresent() || endDate.isPresent()) {
                     //check convert
                     if (!isValidFormat(startDate.get()) || !isValidFormat(endDate.get())) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't convert {startDate} & {endDate} to DateTime");
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't convert {startDate} & {endDate} to DateTime (yyyy-MM-dd)");
                     }
                     //convert time
                     Timestamp startDateGet = convertTime(startDate);
@@ -361,7 +392,7 @@ public class BillController {
                 if (startDate.isPresent() || endDate.isPresent()) {;
                     //check convert
                     if (!isValidFormat(startDate.get()) || !isValidFormat(endDate.get())) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't convert {startDate} & {endDate} to DateTime");
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("can't convert {startDate} & {endDate} to DateTime (yyyy-MM-dd)");
                     }
                     //convert time
                     Timestamp startDateGet = convertTime(startDate);
