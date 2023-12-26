@@ -49,6 +49,7 @@ public class ProductInfoResponse {
         this.sale = productInfo.getSale() != null ? new SaleResponse(productInfo.getSale()) : null;
         this.categorySet = categorySet
                 .stream()
+                .sorted(Comparator.comparing(Category::getId))
                 .map(category -> category != null ? new CategoryResponse(category) : null)
                 .collect(Collectors.toSet());
         this.created_at = productInfo.getCreated_at();
@@ -57,10 +58,12 @@ public class ProductInfoResponse {
         this.imageSet = productInfo
                 .getImageSet()
                 .stream()
+                .sorted(Comparator.comparing(Image::getId))
                 .map(image -> image != null ? new ImageResponse(image) : null)
                 .collect(Collectors.toSet());
         this.productSet = productInfo.getProductSet()
                 .stream()
+                .sorted(Comparator.comparing(Product::getSize))
                 .map(product -> product != null ? new ProductResponse(product) : null)
                 .collect(Collectors.toSet());
 
