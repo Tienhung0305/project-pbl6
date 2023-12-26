@@ -11,9 +11,13 @@ import java.util.Set;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CartBusiness{
     Business business;
     Set<Cart> cartSet;
+
+    public CartBusiness(Business business, Set<Cart> cartSet)
+    {
+        this.business = business;
+        this.cartSet = cartSet;
+    }
 }

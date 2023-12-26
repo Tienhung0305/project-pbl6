@@ -46,7 +46,7 @@ public class ProductInfo {
     @JsonManagedReference
     Set<Category> categorySet = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_business", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private Business business;

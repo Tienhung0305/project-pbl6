@@ -30,7 +30,7 @@ public class Bill {
     private Timestamp updated_at;
     private Integer state;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private User user;

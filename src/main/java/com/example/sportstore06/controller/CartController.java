@@ -104,7 +104,7 @@ public class CartController {
             }
 
             bill.setTotal(total);
-            bill.setId_business(cartBusiness.getBusiness().getId());
+            bill.setId_business(3);
             bill.setId_user(user.getId());
             bill.setBill_detailSet(set);
             bill.setName("Business :" + cartBusiness.getBusiness().getName());

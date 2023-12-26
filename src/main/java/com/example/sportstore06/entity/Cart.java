@@ -29,7 +29,7 @@ public class Cart {
     @JsonManagedReference
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user", nullable = false, referencedColumnName = "id")
     @JsonBackReference
     private User user;
