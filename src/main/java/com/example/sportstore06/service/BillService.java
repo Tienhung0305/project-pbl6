@@ -4,6 +4,7 @@ package com.example.sportstore06.service;
 import com.example.sportstore06.dao.request.BillRequest;
 import com.example.sportstore06.entity.Bill;
 import com.example.sportstore06.entity.BillDetail;
+import com.example.sportstore06.entity.ProductInfo;
 import com.example.sportstore06.repository.IBillRepository;
 import com.example.sportstore06.repository.IBusinessRepository;
 import com.example.sportstore06.repository.IProductRepository;
@@ -50,7 +51,6 @@ public class BillService {
         }
         return billRepository.findByIdBusiness(pageable, id_business);
     }
-
 
     public List<Bill> findByIdUser(Integer id_user, Integer state) {
         if (state != null) {
@@ -187,7 +187,22 @@ public class BillService {
             return billRepository.getAllCountBusiness(startDate, endDate, state, idBusiness);
         }
         return billRepository.getAllCountBusiness(startDate, endDate, idBusiness);
+    }
 
+    //most
+
+    public Page<ProductInfo> findMostSoldProducts(Pageable pageable, Integer state) {
+        if (state != null) {
+            return billRepository.findMostSoldProducts(pageable, state);
+        }
+        return billRepository.findMostSoldProducts(pageable);
+    }
+
+    public Page<ProductInfo> findMostSoldProductsBusiness(Pageable pageable, Integer id_business, Integer state) {
+        if (state != null) {
+            return billRepository.findMostSoldProductsBusiness(pageable, id_business, state);
+        }
+        return billRepository.findMostSoldProductsBusiness(pageable, id_business);
     }
 
 }

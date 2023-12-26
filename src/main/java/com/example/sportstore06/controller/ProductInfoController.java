@@ -36,6 +36,7 @@ public class ProductInfoController {
     private final SaleService saleService;
     private final CategoryService categoryService;
     private final RoleService roleService;
+    private final BillService billService;
 
     // 0 : sản phẩm bình thường
     // 1 : sản phẩm khóa - đang chờ xem xét
@@ -337,6 +338,39 @@ public class ProductInfoController {
         }
     }
 
+    @GetMapping("/find-most-sold-products")
+    public ResponseEntity<?> findMostSoldProducts(
+            @RequestParam(value = "page", required = false) Optional<Integer> page,
+            @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "desc", required = false) Optional<Boolean> desc,
+            @RequestParam(value = "state", required = false) Optional<Integer> state,
+            @RequestParam(value = "id_business", required = false) Optional<Integer> id_business) {
+        try {
+            Pageable pageable;
+            if (sort != null) {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default),
+                        desc.orElse(true) ? Sort.by(sort).descending() : Sort.by(sort).ascending());
+            } else {
+                pageable = PageRequest.of(page.orElse(0), page_size.orElse(page_size_default));
+            }
+            Page<ProductInfo> byPage;
+            if (id_business.isEmpty()) {
+                byPage = billService.findMostSoldProducts(pageable, state.orElse(null));
+            } else {
+                if (businessService.findById(id_business.get()).isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id business not found");
+                }
+                byPage = billService.findMostSoldProductsBusiness(pageable, id_business.get(), state.orElse(null));
+            }
+            Page<ProductInfoResponse> responses = byPage.map(product -> product != null ? new ProductInfoResponse(product) : null);
+            return ResponseEntity.status(HttpStatus.OK).body(responses);
+        } catch (
+                InvalidDataAccessApiUsageException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
+        }
+
+    }
 
     //end
     @PostMapping("/save")

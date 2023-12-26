@@ -10,6 +10,7 @@ import com.example.sportstore06.service.*;
 import com.example.sportstore06.service.MomoService.MomoPaymentService;
 import com.example.sportstore06.service.MomoService.UrlUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -104,7 +105,7 @@ public class CartController {
             }
 
             bill.setTotal(total);
-            bill.setId_business(3);
+            bill.setId_business(cartBusiness.getBusiness().getId());
             bill.setId_user(user.getId());
             bill.setBill_detailSet(set);
             bill.setName("Business :" + cartBusiness.getBusiness().getName());

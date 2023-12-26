@@ -1,6 +1,7 @@
 package com.example.sportstore06.repository;
 
 import com.example.sportstore06.entity.Bill;
+import com.example.sportstore06.entity.ProductInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +20,6 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     Page<Bill> findByPage(Pageable pageable, Integer state);
     @Query("SELECT i FROM Bill i WHERE i.name LIKE %:Name%")
     Page<Bill> SearchByName(Pageable pageable, String Name);
-
     @Query("SELECT i FROM Bill i WHERE i.name LIKE %:Name% AND i.state = :state")
     Page<Bill> SearchByName(Pageable pageable, String Name, Integer state);
     @Query("SELECT i FROM Bill i WHERE i.user.id = :id_user")
@@ -126,4 +126,31 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     @Query("SELECT MAX(b.updated_at) FROM Bill b")
     Timestamp getLatestUpdateAt();
 
+    // most product
+    @Query("SELECT bd.product.productInfo FROM BillDetail bd " +
+            "GROUP BY bd.product " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    Page<ProductInfo> findMostSoldProducts(Pageable pageable);
+
+    @Query("SELECT bd.product.productInfo FROM BillDetail bd " +
+            "WHERE bd.product.productInfo.state = :state " +
+            "AND bd.product.productInfo.business.user.state = 0" +
+            "GROUP BY bd.product " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    Page<ProductInfo> findMostSoldProducts(Pageable pageable, Integer state);
+
+    @Query("SELECT bd.product.productInfo FROM BillDetail bd " +
+            "WHERE bd.product.productInfo.business.id = :id_business " +
+            "AND bd.product.productInfo.business.user.state = 0" +
+            "GROUP BY bd.product " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    Page<ProductInfo> findMostSoldProductsBusiness(Pageable pageable, Integer id_business);
+
+    @Query("SELECT bd.product.productInfo FROM BillDetail bd " +
+            "WHERE bd.product.productInfo.business.id = :id_business " +
+            "AND bd.product.productInfo.state = :state " +
+            "AND bd.product.productInfo.business.user.state = 0" +
+            "GROUP BY bd.product " +
+            "ORDER BY SUM(bd.quantity) DESC")
+    Page<ProductInfo> findMostSoldProductsBusiness(Pageable pageable, Integer id_business, Integer state);
 }
