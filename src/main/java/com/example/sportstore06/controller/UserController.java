@@ -204,12 +204,6 @@ public class UserController {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to edit");
                 }
             }
-            for (String i : request.getRoles()) {
-                Optional<Role> ObRole = roleService.findByName(i);
-                if (ObRole.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("role not found");
-                }
-            }
 
             //check exits
             if (userService.findByEmail(request.getEmail()).isPresent() &&
@@ -224,7 +218,6 @@ public class UserController {
                     userService.findByPhone(request.getPhone()).get().getId() != id) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("phone number already exists");
             }
-            //
 
             userService.save(id, request);
             return ResponseEntity.accepted().build();

@@ -8,10 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IPaymentRepository extends JpaRepository<Payment,Integer> {
+public interface IPaymentRepository extends JpaRepository<Payment,String> {
     @Query("SELECT i FROM Payment i")
     Page<Payment> findByPage(Pageable pageable);
-
-    @Query("SELECT i FROM Payment i WHERE i.name LIKE %:Name%")
-    Page<Payment> SearchByName(Pageable pageable, String Name);
 }

@@ -31,11 +31,7 @@ public class UserPutRequest {
     @NotBlank(message = "address must not be blank")
     @Size(min = 5, max = 300, message = "address must be between 5 and 300 characters")
     private String address;
-    private String remember_token;
     private Timestamp created_at;
     private Timestamp updated_at;
     private String image_url;
-
-    @NotNull(message = "roles must not be null")
-    private Set<String> roles;
 }

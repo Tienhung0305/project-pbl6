@@ -37,7 +37,6 @@ public class UserRequest {
     @NotBlank(message = "password must not be blank")
     @Size(min = 1, max = 100, message = "password must be between 1 and 100 characters")
     private String password;
-    private String remember_token;
     private Timestamp created_at;
     private Timestamp updated_at;
     private String image_url;

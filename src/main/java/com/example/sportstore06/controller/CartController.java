@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class CartController {
     private final CartService cartService;
     private final UserService userService;
-    private final BusinessService businessService;
     private final ProductService productService;
     private final BillService billService;
     private final RoleService roleService;
@@ -121,23 +120,28 @@ public class CartController {
             );
             int id = billService.save(0, bill, 2);
             set_id_bill.add(id);
-            total_all += total;
+            total_all += total_after;
         }
-        BigDecimal amount = new BigDecimal(total_all);
-        payUrl = momoPaymentService.initiatePayment(amount, username, set_id_bill, baseUrl, requestType);
+
+
+        Transaction transaction_temp = momoPaymentService.initiatePayment(total_all, username, set_id_bill, baseUrl, requestType);
         for (Integer id : set_id_bill) {
-            Bill bill = billService.findById(id).get();
-            bill.setRefresh_payment(payUrl);
-            billService.save(bill);
+            Transaction transaction = Transaction.builder()
+                    .id(id)
+                    .orderId(transaction_temp.getOrderId())
+                    .requestId(transaction_temp.getRequestId())
+                    .url(transaction_temp.getUrl()).build();
+            billService.save_transaction(transaction);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(payUrl);
+        return ResponseEntity.status(HttpStatus.OK).body(transaction_temp.getUrl());
     }
 
     @GetMapping("/momo-payment_save")
     public ResponseEntity<?> momoSave(@RequestParam(value = "orderId", required = true) String orderId,
                                       @RequestParam(value = "extraData", required = true) String extraData,
                                       @RequestParam(value = "resultCode", required = true) String resultCode,
-                                      @RequestParam(value = "signature", required = true) String signature) {
+                                      @RequestParam(value = "signature", required = true) String signature,
+                                      @RequestParam(value = "transId", required = true) String transId) {
         if (resultCode.equals("0")) {
             String[] split_extraData = extraData.split(",");
             Set<Integer> set_id_bill = new HashSet<>();
@@ -145,9 +149,15 @@ public class CartController {
                 set_id_bill.add(Integer.valueOf(i));
             }
             for (Integer id : set_id_bill) {
+                if (!orderId.equals(billService.findById(id).get().getTransaction().getOrderId())) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("save failed");
+                }
                 Bill bill = billService.findById(id).get();
                 bill.setState(3);
                 bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                Transaction transaction = bill.getTransaction();
+                transaction.setTransId(transId);
+                bill.setTransaction(transaction);
                 billService.save(bill);
             }
             return ResponseEntity.status(HttpStatus.OK).body(set_id_bill.toString());

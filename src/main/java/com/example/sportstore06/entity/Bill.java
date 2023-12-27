@@ -2,6 +2,7 @@ package com.example.sportstore06.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +24,6 @@ public class Bill {
     private int id;
     private String name;
     private String information;
-    private String refresh_payment;
     private double total;
     //private int id_user;
     private int id_business;
@@ -39,4 +39,9 @@ public class Bill {
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<BillDetail> bill_detailSet = new HashSet<>();
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "bill", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Transaction transaction;
 }

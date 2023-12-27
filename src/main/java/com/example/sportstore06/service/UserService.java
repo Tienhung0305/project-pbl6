@@ -14,7 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -105,7 +108,6 @@ public class UserService {
                 username(request.getUsername()).
                 password(request.getPassword()).
                 state(state).
-                remember_token(request.getRemember_token()).
                 created_at(created_at).
                 updated_at(updated_at).
                 roleSet(roles).
@@ -125,17 +127,8 @@ public class UserService {
             updated_at = created_at;
         }
 
-        Set<Role> roles = new HashSet<>();
-        for (String i : request.getRoles()) {
-            Optional<Role> ObRole = roleRepository.findByName(i);
-            roles.add(ObRole.get());
-        }
-
-        Role role_business = roleRepository.findByName("ROLE_BUSINESS").get();
-        Integer state = 0;
-        if (roles.contains(role_business)) {
-            state = 1;
-        }
+        System.out.println("check");
+        User user = userRepository.findById(id).get();
 
         var u = User.builder().
                 id(id).
@@ -145,11 +138,14 @@ public class UserService {
                 phone(request.getPhone()).
                 cic(request.getCic()).
                 address(request.getAddress()).
-                state(state).
-                remember_token(request.getRemember_token()).
+                username(user.getUsername()).
+                password(user.getPassword()).
+                remember_token(user.getRemember_token()).
+                revoked_token(user.getRevoked_token()).
+                state(user.getState()).
                 created_at(created_at).
                 updated_at(updated_at).
-                roleSet(roles).
+                roleSet(user.getRoleSet()).
                 image_url(request.getImage_url()).
                 build();
         userRepository.save(u);

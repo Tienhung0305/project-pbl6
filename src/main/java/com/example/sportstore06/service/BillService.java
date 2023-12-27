@@ -5,10 +5,8 @@ import com.example.sportstore06.dao.request.BillRequest;
 import com.example.sportstore06.entity.Bill;
 import com.example.sportstore06.entity.BillDetail;
 import com.example.sportstore06.entity.ProductInfo;
-import com.example.sportstore06.repository.IBillRepository;
-import com.example.sportstore06.repository.IBusinessRepository;
-import com.example.sportstore06.repository.IProductRepository;
-import com.example.sportstore06.repository.IUserRepository;
+import com.example.sportstore06.entity.Transaction;
+import com.example.sportstore06.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +26,7 @@ public class BillService {
     private final IUserRepository userRepository;
     private final IProductRepository productRepository;
     private final IBusinessRepository businessRepository;
-
+    private final ITransactionRepository transactionRepository;
     public Long getCount() {
         return billRepository.count();
     }
@@ -78,6 +76,10 @@ public class BillService {
 
     public void save(Bill bill) {
         billRepository.save(bill);
+    }
+
+    public void save_transaction(Transaction transaction) {
+        transactionRepository.save(transaction);
     }
     public int save(int id, BillRequest request, Integer state) {
         Timestamp created_at;

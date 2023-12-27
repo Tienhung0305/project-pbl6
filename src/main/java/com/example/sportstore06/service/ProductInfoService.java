@@ -166,6 +166,7 @@ public class ProductInfoService {
                 created_at(created_at).
                 updated_at(updated_at).
                 state(state).
+                state_before(productInfoRepository.findById(id).get().getState_before()).
                 categorySet(categories).
                 imageSet(setImage).
                 build();

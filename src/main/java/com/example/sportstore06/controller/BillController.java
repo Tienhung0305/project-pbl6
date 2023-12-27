@@ -3,12 +3,14 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.Statistic;
 import com.example.sportstore06.dao.response.BillResponse;
+import com.example.sportstore06.dao.response.MomoResponse;
 import com.example.sportstore06.entity.Bill;
 import com.example.sportstore06.entity.BillDetail;
 import com.example.sportstore06.entity.Product;
 import com.example.sportstore06.entity.User;
 import com.example.sportstore06.service.BillService;
 import com.example.sportstore06.service.BusinessService;
+import com.example.sportstore06.service.MomoService.MomoPaymentService;
 import com.example.sportstore06.service.ProductService;
 import com.example.sportstore06.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,7 @@ public class BillController {
     private final UserService userService;
     private final ProductService productService;
     private final BusinessService businessService;
+    private final MomoPaymentService momoPaymentService;
 
     // 0 : đang giao
     // 1 : đã giao thành công
@@ -180,7 +183,7 @@ public class BillController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
         }
         Bill bill = billService.findById(id_bill).get();
-        return ResponseEntity.status(HttpStatus.OK).body(bill.getRefresh_payment());
+        return ResponseEntity.status(HttpStatus.OK).body(bill.getTransaction().getUrl());
     }
 
     @PutMapping("/change-state/{id}")
@@ -237,11 +240,15 @@ public class BillController {
                     } else {
                         Bill bill = billService.findById(id).get();
                         //hoan tien
-
-
-                        bill.setState(4);
-                        bill.setUpdated_at(new Timestamp(new Date().getTime()));
-                        billService.save(bill);
+                        MomoResponse momoResponse = momoPaymentService.refundTransactionStatus(bill);
+                        if (momoResponse.getResultCode().equals("0")) {
+                            bill.setState(4);
+                            bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                            billService.save(bill);
+                            return ResponseEntity.status(HttpStatus.OK).body(momoResponse);
+                        } else {
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(momoResponse);
+                        }
                     }
                 }
             }
@@ -292,10 +299,22 @@ public class BillController {
                     Bill bill = billService.findById(id_bill).get();
                     if (bill.getState() == 3) {
                         //hoan tien
+                        MomoResponse momoResponse = momoPaymentService.refundTransactionStatus(bill);
+                        if (momoResponse.getResultCode().equals("0")) {
+                            bill.setState(4);
+                            bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                            billService.save(bill);
+                            return ResponseEntity.status(HttpStatus.OK).body(momoResponse);
+                        } else {
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(momoResponse);
+                        }
                     }
-                    bill.setState(4);
-                    bill.setUpdated_at(new Timestamp(new Date().getTime()));
-                    billService.save(bill);
+                    if (bill.getState() == 2) {
+                        bill.setState(4);
+                        bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                        billService.save(bill);
+                        return ResponseEntity.status(HttpStatus.OK).build();
+                    }
                 }
             }
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
@@ -378,7 +397,6 @@ public class BillController {
     public static boolean isStartDateBeforeEndDate(Timestamp startDateGet, Timestamp endDateGet) {
         return startDateGet.before(endDateGet);
     }
-
 
     @GetMapping("/statistic")
     public ResponseEntity<?> statistic(
@@ -506,5 +524,15 @@ public class BillController {
         } catch (InvalidDataAccessApiUsageException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("filed name does not exit");
         }
+    }
+
+    @GetMapping("/check-transaction-status/{id_bill}")
+    public ResponseEntity<?> checkTransactionStatus(@PathVariable(value = "id_bill", required = true) Integer id_bill) {
+        if (billService.findById(id_bill).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+        }
+        Bill bill = billService.findById(id_bill).get();
+        MomoResponse momoResponse = momoPaymentService.checkTransactionStatus(bill);
+        return ResponseEntity.status(HttpStatus.OK).body(momoResponse);
     }
 }
