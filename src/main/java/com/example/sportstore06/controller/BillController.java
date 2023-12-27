@@ -44,15 +44,12 @@ public class BillController {
     // 2 : chưa thanh toán
     // 3 : đã thanh toán
     // 4 : hủy đơn hàng bên business
-    // 5 : xác nhận hủy đơn từ customer tới business
+
+    // check state != 0 và != 1 là không được hủy
 
     // 2 -> 3 -> 0 -> 1
     // 2 -> 3 -> 4 -> (hoàn tiền)
 
-    // 2 hoặc 3 -> hủy đơn (nếu thời gian tạo bill trong 6 tiếng)
-    // 2 hoặc 3 -> 5 (nếu thời gian tạo bill trong 12 tiếng) -> 4
-    // 2 hoặc 3 -> error (nếu thời gian quá 12 tiếng)
-    // nếu là 3 thì hoàn tiền lại còn 2 thì thôi
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
@@ -239,10 +236,12 @@ public class BillController {
                         billService.save(bill);
                     } else {
                         Bill bill = billService.findById(id).get();
+                        //hoan tien
+
+
                         bill.setState(4);
                         bill.setUpdated_at(new Timestamp(new Date().getTime()));
                         billService.save(bill);
-                        //hoan tien
                     }
                 }
             }
@@ -261,7 +260,7 @@ public class BillController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
                 }
                 if (billService.findById(id).get().getState() != 0) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must be shipping");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status not be shipping");
                 } else {
                     if (receive) {
                         Bill bill = billService.findById(id).get();
@@ -278,7 +277,7 @@ public class BillController {
     }
 
     @PutMapping("/confirm-cancel/{cancel}")
-    private ResponseEntity<?> confirmReceive(@RequestBody(required = true) Integer id_bill,
+    private ResponseEntity<?> confirmCancel(@RequestBody(required = true) Integer id_bill,
                                              @PathVariable(value = "cancel", required = true) Boolean cancel) {
         try {
 
@@ -286,39 +285,17 @@ public class BillController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
             }
             Integer state = billService.findById(id_bill).get().getState();
-            if (state != 2 || state != 3) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must be shipping");
+            if (state == 0 || state == 1) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must not be shipping");
             } else {
                 if (cancel) {
                     Bill bill = billService.findById(id_bill).get();
-                    Timestamp time_bill = bill.getUpdated_at();
-                    Instant time_now = Instant.now();
-                    Duration duration = Duration.between(time_bill.toInstant(), time_now);
-
-                    // 2 hoặc 3 -> hủy đơn (nếu thời gian tạo bill trong 6 tiếng)
-                    if (duration.toHours() <= 6) {
+                    if (bill.getState() == 3) {
                         //hoan tien
-
-                        bill.setState(4);
-                        bill.setUpdated_at(new Timestamp(new Date().getTime()));
-                        billService.save(bill);
                     }
-
-                    // 2 hoặc 3 -> 5 (nếu thời gian tạo bill trong 12 tiếng) -> 4
-                    if (duration.toHours() > 6 && duration.toHours() <= 12) {
-                        //hoan tien
-
-                        bill.setState(5);
-                        bill.setUpdated_at(new Timestamp(new Date().getTime()));
-                        billService.save(bill);
-
-                    }
-
-                    // 2 hoặc 3 -> error (nếu thời gian quá 12 tiếng)
-                    if (duration.toHours() > 12) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("you can't cancel bill");
-                    }
-
+                    bill.setState(4);
+                    bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                    billService.save(bill);
                 }
             }
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
