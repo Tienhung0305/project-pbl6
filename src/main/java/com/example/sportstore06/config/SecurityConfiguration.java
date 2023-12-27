@@ -77,17 +77,18 @@ public class SecurityConfiguration {
 
                         .requestMatchers(GET, "/api/v1/bill/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN")
                         .requestMatchers(POST, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers(PUT, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(DELETE, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/v1/bill/change-state/**").hasAnyAuthority( "ROLE_ADMIN")
                         .requestMatchers("/api/v1/bill/get-by-id-user/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_BUSINESS", "ROLE_ADMIN")
+                        .requestMatchers("/api/v1/bill/confirm-receive/**").hasAnyAuthority("ROLE_CUSTOMER")
+                        .requestMatchers("/api/v1/bill/confirm-sell/**").hasAnyAuthority("ROLE_BUSINESS")
 
                         .requestMatchers(GET, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(POST, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(PUT, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(DELETE, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers("/api/v1/cart/change-state/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/v1/cart/confirm-receive/**").hasAnyAuthority("ROLE_CUSTOMER")
-                        .requestMatchers("/api/v1/cart/confirm-sell/**").hasAnyAuthority("ROLE_BUSINESS")
+
 
                         .requestMatchers(POST, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(PUT, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")

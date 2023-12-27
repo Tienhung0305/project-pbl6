@@ -184,14 +184,14 @@ public class BillController {
     }
 
     @PutMapping("/confirm-sell/{sell}")
-    private ResponseEntity<?> confirmSell(@RequestBody(required = true) Set<Integer> set_id_bill,
-                                          @PathVariable(value = "sell", required = true) Boolean sell) {
+    private ResponseEntity<?> confirmSell(@PathVariable(value = "sell", required = true) Boolean sell,
+                                          @RequestBody(required = true) Set<Integer> set_id_bill) {
         try {
             for (Integer id : set_id_bill) {
                 if (billService.findById(id).isEmpty()) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
                 }
-                if (billService.findById(id).get().getState() == 3) {
+                if (billService.findById(id).get().getState() != 3) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The bill status needs confirmation from the business");
                 } else {
                     if (sell) {
@@ -228,7 +228,7 @@ public class BillController {
                 if (billService.findById(id).isEmpty()) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
                 }
-                if (billService.findById(id).get().getState() == 0) {
+                if (billService.findById(id).get().getState() != 0) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must be shipping");
                 } else {
                     if (receive) {
