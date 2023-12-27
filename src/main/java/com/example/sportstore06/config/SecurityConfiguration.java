@@ -78,6 +78,7 @@ public class SecurityConfiguration {
                         .requestMatchers(GET, "/api/v1/bill/get-by-id-user/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_BUSINESS", "ROLE_ADMIN")
                         .requestMatchers(PUT, "/api/v1/bill/confirm-receive/**").hasAnyAuthority("ROLE_CUSTOMER")
                         .requestMatchers(PUT, "/api/v1/bill/confirm-sell/**").hasAnyAuthority("ROLE_BUSINESS")
+                        .requestMatchers(PUT, "/api/v1/bill/confirm-cancel/**").hasAnyAuthority("ROLE_CUSTOMER")
                         .requestMatchers(GET, "/api/v1/bill/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN")
                         .requestMatchers(POST, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(PUT, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")

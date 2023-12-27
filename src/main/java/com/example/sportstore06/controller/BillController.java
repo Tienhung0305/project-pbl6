@@ -53,6 +53,7 @@ public class BillController {
     // 2 hoặc 3 -> 5 (nếu thời gian tạo bill trong 12 tiếng) -> 4
     // 2 hoặc 3 -> error (nếu thời gian quá 12 tiếng)
     // nếu là 3 thì hoàn tiền lại còn 2 thì thôi
+
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(billService.getCount());
@@ -278,7 +279,7 @@ public class BillController {
 
     @PutMapping("/confirm-cancel/{cancel}")
     private ResponseEntity<?> confirmReceive(@RequestBody(required = true) Integer id_bill,
-                                             @PathVariable(value = "receive", required = true) Boolean cancel) {
+                                             @PathVariable(value = "cancel", required = true) Boolean cancel) {
         try {
 
             if (billService.findById(id_bill).isEmpty()) {
