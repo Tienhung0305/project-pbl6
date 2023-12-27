@@ -29,13 +29,13 @@ public class ProductResponse {
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
         this.size = product.getSize();
-        this.name_product_information = product.getProductInfo().getName();
+        this.name_product_information = product.getProductInfo() != null ? product.getProductInfo().getName() : null;
         List<Image> list = product.getProductInfo().getImageSet().stream().toList();
         for (Image image : list) {
             if (image.getIs_main()) {
                 this.image_product_information = image.getUrl();
             }
         }
-        this.sale = new SaleResponse(product.getProductInfo().getSale());
+        this.sale = product.getProductInfo().getSale() != null ? new SaleResponse(product.getProductInfo().getSale()) : null;
     }
 }
