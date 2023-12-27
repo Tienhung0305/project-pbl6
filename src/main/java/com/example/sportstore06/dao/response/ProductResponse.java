@@ -19,6 +19,7 @@ public class ProductResponse {
     private String name_product_information;
     private String image_product_information;
     private Double price;
+    private SaleResponse sale;
     private Integer quantity;
     private String size;
 
@@ -35,5 +36,6 @@ public class ProductResponse {
                 this.image_product_information = image.getUrl();
             }
         }
+        this.sale = new SaleResponse(product.getProductInfo().getSale());
     }
 }

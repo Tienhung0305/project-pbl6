@@ -41,6 +41,9 @@ public class CartController {
     //  OTP
     //  requestType : payWithATM,captureWallet
 
+    public static boolean isStartDateBeforeEndDate(Timestamp startDate, Timestamp endDate) {
+        return startDate.before(endDate);
+    }
 
     @PostMapping("/buy-with-momo")
     public ResponseEntity<?> PayWithMomo(
@@ -90,7 +93,8 @@ public class CartController {
                 bill_detail.setId_product(cart.getProduct().getId());
                 bill_detail.setQuantity(cart.getQuantity());
                 Sale sale = cart.getProduct().getProductInfo().getSale();
-                if (sale != null) {
+                Timestamp time_now = new Timestamp(new Date().getTime());
+                if (sale != null && time_now.after(sale.getStarted_at()) && time_now.before(sale.getEnded_at())) {
                     price = cart.getProduct().getPrice() * cart.getQuantity() * (100 - sale.getDiscount()) / 100;
                     total = total + price;
                 } else {
