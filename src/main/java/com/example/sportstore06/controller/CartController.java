@@ -10,7 +10,6 @@ import com.example.sportstore06.service.*;
 import com.example.sportstore06.service.MomoService.MomoPaymentService;
 import com.example.sportstore06.service.MomoService.UrlUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,10 +39,6 @@ public class CartController {
     //  03/07
     //  OTP
     //  requestType : payWithATM,captureWallet
-
-    public static boolean isStartDateBeforeEndDate(Timestamp startDate, Timestamp endDate) {
-        return startDate.before(endDate);
-    }
 
     @PostMapping("/buy-with-momo")
     public ResponseEntity<?> PayWithMomo(
@@ -88,7 +83,7 @@ public class CartController {
             BillRequest bill = new BillRequest();
             Set<BillDetailRequest> set = new HashSet<>();
             for (Cart cart : cartBusiness.getCartSet()) {
-                //creat bill detail
+                //create bill detail
                 BillDetailRequest bill_detail = new BillDetailRequest();
                 bill_detail.setId_product(cart.getProduct().getId());
                 bill_detail.setQuantity(cart.getQuantity());
@@ -109,17 +104,32 @@ public class CartController {
             }
 
             bill.setTotal(total);
+            double shipping_fee_percentage = (total > 1000000) ? 0.05 : 0.025;
+            double shipping_fee = total * shipping_fee_percentage;
+            double total_after = total + shipping_fee;
+
             bill.setId_business(cartBusiness.getBusiness().getId());
             bill.setId_user(user.getId());
             bill.setBill_detailSet(set);
             bill.setName("Business :" + cartBusiness.getBusiness().getName());
-            bill.setInformation("Address :" + user.getAddress());
+            bill.setInformation(
+                    "Address : " + user.getAddress() + " | " +
+                    "Shipping Fee Percentage: " + shipping_fee_percentage + " | " +
+                    "Shipping Fee : " + shipping_fee + " | " +
+                    "Total : " + String.valueOf(total) + " | " +
+                    "Total Including Shipping: " + String.valueOf(total_after)
+            );
             int id = billService.save(0, bill, 2);
             set_id_bill.add(id);
             total_all += total;
         }
         BigDecimal amount = new BigDecimal(total_all);
         payUrl = momoPaymentService.initiatePayment(amount, username, set_id_bill, baseUrl, requestType);
+        for (Integer id : set_id_bill) {
+            Bill bill = billService.findById(id).get();
+            bill.setRefresh_payment(payUrl);
+            billService.save(bill);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(payUrl);
     }
 

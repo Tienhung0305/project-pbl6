@@ -23,6 +23,7 @@ public class Bill {
     private int id;
     private String name;
     private String information;
+    private String refresh_payment;
     private double total;
     //private int id_user;
     private int id_business;

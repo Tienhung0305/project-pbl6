@@ -4,7 +4,9 @@ package com.example.sportstore06.controller;
 import com.example.sportstore06.dao.Statistic;
 import com.example.sportstore06.dao.response.BillResponse;
 import com.example.sportstore06.entity.Bill;
+import com.example.sportstore06.entity.BillDetail;
 import com.example.sportstore06.entity.Product;
+import com.example.sportstore06.entity.User;
 import com.example.sportstore06.service.BillService;
 import com.example.sportstore06.service.BusinessService;
 import com.example.sportstore06.service.ProductService;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -41,10 +44,15 @@ public class BillController {
     // 2 : chưa thanh toán
     // 3 : đã thanh toán
     // 4 : hủy đơn hàng bên business
+    // 5 : xác nhận hủy đơn từ customer tới business
 
     // 2 -> 3 -> 0 -> 1
     // 2 -> 3 -> 4 -> (hoàn tiền)
 
+    // 2 hoặc 3 -> hủy đơn (nếu thời gian tạo bill trong 6 tiếng)
+    // 2 hoặc 3 -> 5 (nếu thời gian tạo bill trong 12 tiếng) -> 4
+    // 2 hoặc 3 -> error (nếu thời gian quá 12 tiếng)
+    // nếu là 3 thì hoàn tiền lại còn 2 thì thôi
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(billService.getCount());
@@ -166,6 +174,17 @@ public class BillController {
         }
     }
 
+    @GetMapping("/get_refresh_payment/{id_bill}")
+    public ResponseEntity<?> getRefreshPayment(
+            @PathVariable(value = "id_bill", required = true) Integer id_bill,
+            @AuthenticationPrincipal User user) {
+        if (billService.findById(id_bill).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+        }
+        Bill bill = billService.findById(id_bill).get();
+        return ResponseEntity.status(HttpStatus.OK).body(bill.getRefresh_payment());
+    }
+
     @PutMapping("/change-state/{id}")
     private ResponseEntity<?> changeState(@PathVariable("id") Integer id,
                                           @RequestParam(value = "state", required = true) Integer state) {
@@ -198,6 +217,17 @@ public class BillController {
                         Bill bill = billService.findById(id).get();
                         bill.setState(0);
                         bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                        // check quantity
+                        for (BillDetail billDetail : bill.getBill_detailSet()) {
+                            Product product = billDetail.getProduct();
+                            Integer quantity = product.getQuantity();
+                            Integer quantity_change = quantity - billDetail.getQuantity();
+                            if (quantity_change < 0) {
+                                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                        .body(String.valueOf(product.getId())+" - quantity not sufficient");
+                            }
+                        }
+                        // change quantity
                         bill.getBill_detailSet().forEach(billDetail -> {
                             Product product = billDetail.getProduct();
                             Integer quantity = product.getQuantity();
@@ -211,6 +241,7 @@ public class BillController {
                         bill.setState(4);
                         bill.setUpdated_at(new Timestamp(new Date().getTime()));
                         billService.save(bill);
+                        //hoan tien
                     }
                 }
             }
@@ -237,6 +268,56 @@ public class BillController {
                         bill.setUpdated_at(new Timestamp(new Date().getTime()));
                         billService.save(bill);
                     }
+                }
+            }
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/confirm-cancel/{cancel}")
+    private ResponseEntity<?> confirmReceive(@RequestBody(required = true) Integer id_bill,
+                                             @PathVariable(value = "receive", required = true) Boolean cancel) {
+        try {
+
+            if (billService.findById(id_bill).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+            }
+            Integer state = billService.findById(id_bill).get().getState();
+            if (state != 2 || state != 3) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must be shipping");
+            } else {
+                if (cancel) {
+                    Bill bill = billService.findById(id_bill).get();
+                    Timestamp time_bill = bill.getUpdated_at();
+                    Instant time_now = Instant.now();
+                    Duration duration = Duration.between(time_bill.toInstant(), time_now);
+
+                    // 2 hoặc 3 -> hủy đơn (nếu thời gian tạo bill trong 6 tiếng)
+                    if (duration.toHours() <= 6) {
+                        //hoan tien
+
+                        bill.setState(4);
+                        bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                        billService.save(bill);
+                    }
+
+                    // 2 hoặc 3 -> 5 (nếu thời gian tạo bill trong 12 tiếng) -> 4
+                    if (duration.toHours() > 6 && duration.toHours() <= 12) {
+                        //hoan tien
+
+                        bill.setState(5);
+                        bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                        billService.save(bill);
+
+                    }
+
+                    // 2 hoặc 3 -> error (nếu thời gian quá 12 tiếng)
+                    if (duration.toHours() > 12) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("you can't cancel bill");
+                    }
+
                 }
             }
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
