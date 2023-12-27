@@ -17,10 +17,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -75,20 +75,19 @@ public class SecurityConfiguration {
                         .requestMatchers(GET, "/api/v1/test/business/**").hasAnyAuthority("ROLE_BUSINESS")
                         .requestMatchers(GET, "/api/v1/test/customer/**").hasAnyAuthority("ROLE_CUSTOMER")
 
+                        .requestMatchers(GET, "/api/v1/bill/get-by-id-user/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_BUSINESS", "ROLE_ADMIN")
+                        .requestMatchers(PUT, "/api/v1/bill/confirm-receive/**").hasAnyAuthority("ROLE_CUSTOMER")
+                        .requestMatchers(PUT, "/api/v1/bill/confirm-sell/**").hasAnyAuthority("ROLE_BUSINESS")
                         .requestMatchers(GET, "/api/v1/bill/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_ADMIN")
                         .requestMatchers(POST, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(PUT, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(DELETE, "/api/v1/bill/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/v1/bill/change-state/**").hasAnyAuthority( "ROLE_ADMIN")
-                        .requestMatchers("/api/v1/bill/get-by-id-user/**").hasAnyAuthority("ROLE_CUSTOMER", "ROLE_BUSINESS", "ROLE_ADMIN")
-                        .requestMatchers("/api/v1/bill/confirm-receive/**").hasAnyAuthority("ROLE_CUSTOMER")
-                        .requestMatchers("/api/v1/bill/confirm-sell/**").hasAnyAuthority("ROLE_BUSINESS")
 
+                        .requestMatchers(PUT, "/api/v1/cart/change-state/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(GET, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(POST, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(PUT, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(DELETE, "/api/v1/cart/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
-                        .requestMatchers("/api/v1/cart/change-state/**").hasAnyAuthority("ROLE_ADMIN")
-
 
                         .requestMatchers(POST, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(PUT, "/api/v1/business/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
@@ -114,19 +113,19 @@ public class SecurityConfiguration {
                         .requestMatchers(PUT, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(DELETE, "/api/v1/sale/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
 
+                        .requestMatchers(PUT, "/api/v1/user/change-state/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(POST, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_CUSTOMER")
                         .requestMatchers(PUT, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS", "ROLE_CUSTOMER")
                         .requestMatchers(DELETE, "/api/v1/user/**").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/v1/user/change-state/**").hasAnyAuthority("ROLE_ADMIN")
 
                         .requestMatchers(POST, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(PUT, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(DELETE, "/api/v1/product/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
 
+                        .requestMatchers(PUT, "/api/v1/product-information/change-state/**").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(POST, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(PUT, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
                         .requestMatchers(DELETE, "/api/v1/product-information/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_BUSINESS")
-                        .requestMatchers("/api/v1/product-information/change-state/**").hasAnyAuthority("ROLE_ADMIN")
 
                         .anyRequest()
                         .authenticated()
