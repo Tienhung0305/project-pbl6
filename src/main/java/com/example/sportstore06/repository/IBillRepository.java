@@ -31,8 +31,8 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     @Query("SELECT i FROM Bill i WHERE i.id_business = :id_business")
     Page<Bill> findByIdBusiness(Pageable pageable, Integer id_business);
 
-    @Query("SELECT i FROM Bill i WHERE i.transaction.url = :url")
-    List<Bill> findByUrl(String url);
+    @Query("SELECT i FROM Bill i WHERE i.transaction.id = :transaction_id")
+    List<Bill> findByTransactionId(Integer transaction_id);
 
     @Query("SELECT i FROM Bill i WHERE i.id_business = :id_business AND i.state = :state")
     Page<Bill> findByIdBusiness(Pageable pageable, Integer id_business, Integer state);

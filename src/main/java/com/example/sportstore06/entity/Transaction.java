@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,13 +17,14 @@ import lombok.*;
 public class Transaction {
     @Id
     private int id;
-    private String url;
+    private String payUrl;
     private String orderId;
     private String requestId;
     private String transId;
+    private String payType;
+    private String orderType;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonBackReference
-    private Bill bill;
+    private Set<Bill> billSet = new HashSet<>();
 }

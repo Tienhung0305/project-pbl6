@@ -4,15 +4,9 @@ package com.example.sportstore06.controller;
 import com.example.sportstore06.dao.Statistic;
 import com.example.sportstore06.dao.response.BillResponse;
 import com.example.sportstore06.dao.response.MomoResponse;
-import com.example.sportstore06.entity.Bill;
-import com.example.sportstore06.entity.BillDetail;
-import com.example.sportstore06.entity.Product;
-import com.example.sportstore06.entity.User;
-import com.example.sportstore06.service.BillService;
-import com.example.sportstore06.service.BusinessService;
+import com.example.sportstore06.entity.*;
+import com.example.sportstore06.service.*;
 import com.example.sportstore06.service.MomoService.MomoPaymentService;
-import com.example.sportstore06.service.ProductService;
-import com.example.sportstore06.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -41,7 +35,7 @@ public class BillController {
     private final ProductService productService;
     private final BusinessService businessService;
     private final MomoPaymentService momoPaymentService;
-
+    private final TransactionService transactionService;
     // 0 : đang giao
     // 1 : đã giao thành công
     // 2 : chưa thanh toán
@@ -175,15 +169,15 @@ public class BillController {
         }
     }
 
-    @GetMapping("/get_refresh_payment/{id_bill}")
+    @GetMapping("/get_refresh_payment/{id_transaction}")
     public ResponseEntity<?> getRefreshPayment(
-            @PathVariable(value = "id_bill", required = true) Integer id_bill,
+            @PathVariable(value = "id_transaction", required = true) Integer id_transaction,
             @AuthenticationPrincipal User user) {
-        if (billService.findById(id_bill).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+        if (transactionService.findById(id_transaction).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id transaction not found");
         }
-        Bill bill = billService.findById(id_bill).get();
-        return ResponseEntity.status(HttpStatus.OK).body(bill.getTransaction().getUrl());
+        Transaction transaction = transactionService.findById(id_transaction).get();
+        return ResponseEntity.status(HttpStatus.OK).body(transaction.getPayUrl());
     }
 
     @PutMapping("/change-state/{id}")
@@ -225,7 +219,7 @@ public class BillController {
                             Integer quantity_change = quantity - billDetail.getQuantity();
                             if (quantity_change < 0) {
                                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                        .body(String.valueOf(product.getId())+" - quantity not sufficient");
+                                        .body(String.valueOf(product.getId()) + " : quantity not sufficient");
                             }
                         }
                         // change quantity
@@ -270,6 +264,10 @@ public class BillController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must be shipping");
                 } else {
                     if (receive) {
+                        //tiền chuyển về business
+
+
+                        //
                         Bill bill = billService.findById(id).get();
                         bill.setState(1);
                         bill.setUpdated_at(new Timestamp(new Date().getTime()));
@@ -284,10 +282,10 @@ public class BillController {
     }
 
     @PutMapping("/confirm-cancel/{cancel}")
-    private ResponseEntity<?> confirmCancel(@RequestBody(required = true) String pay_url,
+    private ResponseEntity<?> confirmCancel(@RequestBody(required = true) Integer id_transaction,
                                              @PathVariable(value = "cancel", required = true) Boolean cancel) {
         if (cancel) {
-            List<Bill> bills = billService.findByUrl(pay_url);
+            List<Bill> bills = billService.findByTransactionId(id_transaction);
             //check state
             for (Bill bill : bills) {
                 Integer state = bill.getState();
@@ -300,7 +298,7 @@ public class BillController {
                     if (bill.getState() == 3) {
                         //hoan tien
                         MomoResponse momoResponse = momoPaymentService.refundTransactionStatus(bill);
-                        if (momoResponse.getResultCode().equals("0")) {
+                        if (momoResponse.getResultCode().equals("0") || momoResponse.getResultCode().equals("1002")) {
                             bill.setState(4);
                             bill.setUpdated_at(new Timestamp(new Date().getTime()));
                             billService.save(bill);
@@ -524,12 +522,12 @@ public class BillController {
         }
     }
 
-    @GetMapping("/check-transaction-status/{id_bill}")
-    public ResponseEntity<?> checkTransactionStatus(@PathVariable(value = "id_bill", required = true) Integer id_bill) {
-        if (billService.findById(id_bill).isEmpty()) {
+    @GetMapping("/check-transaction-status/{id_transaction}")
+    public ResponseEntity<?> checkTransactionStatus(@PathVariable(value = "id_transaction", required = true) Integer id_transaction) {
+        if (transactionService.findById(id_transaction).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
         }
-        Bill bill = billService.findById(id_bill).get();
+        Bill bill = billService.findById(id_transaction).get();
         MomoResponse momoResponse = momoPaymentService.checkTransactionStatus(bill);
         return ResponseEntity.status(HttpStatus.OK).body(momoResponse);
     }

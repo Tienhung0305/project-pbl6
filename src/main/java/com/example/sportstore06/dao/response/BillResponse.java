@@ -28,7 +28,7 @@ public class BillResponse {
     private Timestamp updated_at;
     private Integer id_business;
     private Integer state;
-    private String pay_url;
+    private TransactionResponse transaction;
     private Set<BillDetailResponse> bill_detailSet = new HashSet<>();
 
     public BillResponse(Bill bill) {
@@ -46,6 +46,6 @@ public class BillResponse {
                 .map(billDetail -> billDetail != null ? new BillDetailResponse(billDetail) : null);
         this.bill_detailSet = response.collect(Collectors.toSet());
         this.id_business = bill.getId_business();
-        this.pay_url = bill.getTransaction() != null ? bill.getTransaction().getUrl() : null;
+        this.transaction = new TransactionResponse(bill.getTransaction());
     }
 }

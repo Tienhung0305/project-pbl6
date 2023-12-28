@@ -57,8 +57,8 @@ public class BillService {
         return billRepository.findByIdUser(id_user);
     }
 
-    public List<Bill> findByUrl(String url) {
-        return billRepository.findByUrl(url);
+    public List<Bill> findByTransactionId(Integer transaction_id) {
+        return billRepository.findByTransactionId(transaction_id);
     }
 
 
@@ -83,9 +83,7 @@ public class BillService {
         billRepository.save(bill);
     }
 
-    public void save_transaction(Transaction transaction) {
-        transactionRepository.save(transaction);
-    }
+
     public int save(int id, BillRequest request, Integer state) {
         Timestamp created_at;
         Timestamp updated_at;

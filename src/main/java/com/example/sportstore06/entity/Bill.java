@@ -2,7 +2,6 @@ package com.example.sportstore06.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +25,7 @@ public class Bill {
     private String information;
     private double total;
     //private int id_user;
+    //private int id_transaction;
     private int id_business;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -40,8 +40,8 @@ public class Bill {
     @JsonManagedReference
     private Set<BillDetail> bill_detailSet = new HashSet<>();
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "bill", fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_transaction", nullable = true, referencedColumnName = "id")
     @JsonManagedReference
     private Transaction transaction;
 }

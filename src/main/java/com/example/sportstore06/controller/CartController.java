@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class CartController {
     private final BillService billService;
     private final RoleService roleService;
     private final MomoPaymentService momoPaymentService;
-
+    private final TransactionService transactionService;
     //  NGUYEN VAN A
     //  9704 0000 0000 0018
     //  03/07
@@ -46,7 +45,6 @@ public class CartController {
             @AuthenticationPrincipal User user,
             HttpServletRequest request) {
 
-        String username = user.getUsername();
         String baseUrl = UrlUtil.getBaseUrl(request);
         String payUrl = "";
         if (!requestType.equals("payWithATM") && !requestType.equals("captureWallet")) {
@@ -103,9 +101,6 @@ public class CartController {
             }
 
             bill.setTotal(total);
-            double shipping_fee_percentage = (total > 1000000) ? 0.05 : 0.025;
-            double shipping_fee = total * shipping_fee_percentage;
-            double total_after = total + shipping_fee;
 
             bill.setId_business(cartBusiness.getBusiness().getId());
             bill.setId_user(user.getId());
@@ -113,58 +108,76 @@ public class CartController {
             bill.setName("Business :" + cartBusiness.getBusiness().getName());
             bill.setInformation(
                     "Address : " + user.getAddress() + " | " +
-                    "Shipping Fee Percentage: " + shipping_fee_percentage + " | " +
-                    "Shipping Fee : " + shipping_fee + " | " +
-                    "Total : " + String.valueOf(total) + " | " +
-                    "Total Including Shipping: " + String.valueOf(total_after)
+                            "Total : " + String.valueOf(total) + " | "
             );
             int id = billService.save(0, bill, 2);
             set_id_bill.add(id);
-            total_all += total_after;
+            total_all += total;
         }
 
 
-        Transaction transaction_temp = momoPaymentService.initiatePayment(total_all, username, set_id_bill, baseUrl, requestType);
+        Transaction transaction_temp = momoPaymentService.initiatePayment(total_all, user, set_id_bill, baseUrl, requestType);
+        Transaction transaction = Transaction
+                .builder()
+                .id(Integer.valueOf(transaction_temp.getOrderId()))
+                .orderId(transaction_temp.getOrderId())
+                .requestId(transaction_temp.getRequestId())
+                .payUrl(transaction_temp.getPayUrl())
+                .build();
+        transactionService.save(transaction);
+
+
         for (Integer id : set_id_bill) {
-            Transaction transaction = Transaction.builder()
-                    .id(id)
-                    .orderId(transaction_temp.getOrderId())
-                    .requestId(transaction_temp.getRequestId())
-                    .url(transaction_temp.getUrl()).build();
-            billService.save_transaction(transaction);
+            Bill bill = billService.findById(id).get();
+            Optional<Transaction> Ob = transactionService.findById(Integer.valueOf(transaction.getOrderId()));
+            if (Ob.isPresent()) {
+                bill.setTransaction(Ob.get());
+                billService.save(bill);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id transaction not found");
+            }
         }
-        return ResponseEntity.status(HttpStatus.OK).body(transaction_temp.getUrl());
+
+        return ResponseEntity.status(HttpStatus.OK).body(transaction.getPayUrl());
     }
 
-    @GetMapping("/momo-payment_save")
-    public ResponseEntity<?> momoSave(@RequestParam(value = "orderId", required = true) String orderId,
-                                      @RequestParam(value = "extraData", required = true) String extraData,
-                                      @RequestParam(value = "resultCode", required = true) String resultCode,
-                                      @RequestParam(value = "signature", required = true) String signature,
-                                      @RequestParam(value = "transId", required = true) String transId) {
-        if (resultCode.equals("0")) {
+    @PostMapping("/momo-ipn")
+    public ResponseEntity<?> momoSave(@RequestParam(value = "orderId", required = false) String orderId,
+                                      @RequestParam(value = "extraData", required = false) String extraData,
+                                      @RequestParam(value = "resultCode", required = false) Optional<String> resultCode,
+                                      @RequestParam(value = "transId", required = false) String transId,
+                                      @RequestParam(value = "payType", required = false) String payType,
+                                      @RequestParam(value = "orderType", required = false) String orderType) {
+        if (resultCode.isPresent() && resultCode.get().equals("0")) {
             String[] split_extraData = extraData.split(",");
             Set<Integer> set_id_bill = new HashSet<>();
             for (String i : split_extraData) {
                 set_id_bill.add(Integer.valueOf(i));
             }
+
             for (Integer id : set_id_bill) {
                 if (!orderId.equals(billService.findById(id).get().getTransaction().getOrderId())) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("save failed");
                 }
+
                 Bill bill = billService.findById(id).get();
                 bill.setState(3);
                 bill.setUpdated_at(new Timestamp(new Date().getTime()));
+
                 Transaction transaction = bill.getTransaction();
                 transaction.setTransId(transId);
+                transaction.setPayType(payType);
+                transaction.setOrderType(orderType);
                 bill.setTransaction(transaction);
+
                 billService.save(bill);
             }
-            return ResponseEntity.status(HttpStatus.OK).body(set_id_bill.toString());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
+
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
