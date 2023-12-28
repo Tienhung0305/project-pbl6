@@ -291,7 +291,7 @@ public class BillController {
             //check state
             for (Bill bill : bills) {
                 Integer state = bill.getState();
-                if (state != 3 || state != 2) {
+                if (state == 0 || state == 1) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must not be shipping");
                 }
             }
