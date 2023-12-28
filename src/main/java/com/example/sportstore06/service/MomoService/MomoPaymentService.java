@@ -36,7 +36,7 @@ public class MomoPaymentService {
 
         String api = "https://test-payment.momo.vn/v2/gateway/api/create";
         String redirectUrl = baseUrl + "/api/v1/cart/momo-ipn";
-        String ipnUrl = "";
+        String ipnUrl = baseUrl;
 
         Transaction transaction = new Transaction();
         String orderInfo = "Thanh toán qua MoMo";
