@@ -141,14 +141,14 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body(transaction.getPayUrl());
     }
 
-    @PostMapping("/momo-ipn")
+    @GetMapping("/momo-ipn")
     public ResponseEntity<?> momoSave(@RequestParam(value = "orderId", required = false) String orderId,
                                       @RequestParam(value = "extraData", required = false) String extraData,
-                                      @RequestParam(value = "resultCode", required = false) Optional<String> resultCode,
+                                      @RequestParam(value = "resultCode", required = false) String resultCode,
                                       @RequestParam(value = "transId", required = false) String transId,
                                       @RequestParam(value = "payType", required = false) String payType,
                                       @RequestParam(value = "orderType", required = false) String orderType) {
-        if (resultCode.isPresent() && resultCode.get().equals("0")) {
+        if (resultCode.equals("0")) {
             String[] split_extraData = extraData.split(",");
             Set<Integer> set_id_bill = new HashSet<>();
             for (String i : split_extraData) {
