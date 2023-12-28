@@ -284,19 +284,19 @@ public class BillController {
     }
 
     @PutMapping("/confirm-cancel/{cancel}")
-    private ResponseEntity<?> confirmCancel(@RequestBody(required = true) Integer id_bill,
+    private ResponseEntity<?> confirmCancel(@RequestBody(required = true) String pay_url,
                                              @PathVariable(value = "cancel", required = true) Boolean cancel) {
-        try {
-
-            if (billService.findById(id_bill).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+        if (cancel) {
+            List<Bill> bills = billService.findByUrl(pay_url);
+            //check state
+            for (Bill bill : bills) {
+                Integer state = bill.getState();
+                if (state != 3 || state != 2) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must not be shipping");
+                }
             }
-            Integer state = billService.findById(id_bill).get().getState();
-            if (state == 0 || state == 1) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must not be shipping");
-            } else {
-                if (cancel) {
-                    Bill bill = billService.findById(id_bill).get();
+
+            for (Bill bill : bills) {
                     if (bill.getState() == 3) {
                         //hoan tien
                         MomoResponse momoResponse = momoPaymentService.refundTransactionStatus(bill);
@@ -316,11 +316,9 @@ public class BillController {
                         return ResponseEntity.status(HttpStatus.OK).build();
                     }
                 }
-            }
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
         }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @DeleteMapping("/delete/{id}")

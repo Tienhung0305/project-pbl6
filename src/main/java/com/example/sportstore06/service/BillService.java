@@ -57,6 +57,11 @@ public class BillService {
         return billRepository.findByIdUser(id_user);
     }
 
+    public List<Bill> findByUrl(String url) {
+        return billRepository.findByUrl(url);
+    }
+
+
     public Page<Bill> SearchByName(Pageable pageable, String name, Integer state) {
         return billRepository.SearchByName(pageable, name, state);
     }
