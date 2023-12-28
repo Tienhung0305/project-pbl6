@@ -7,9 +7,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class MomoResponse {
     String resultCode;
     String message;
+    Integer state;
+    public MomoResponse() {
+    }
+    public MomoResponse (String resultCode, String message, Integer state)
+    {
+        this.resultCode = resultCode;
+        this.message = message;
+        this.state = state;
+    }
 }

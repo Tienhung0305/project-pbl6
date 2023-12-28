@@ -42,10 +42,8 @@ public class User implements UserDetails {
     @Column(unique=true)
     private String phone;
     @Column(unique=true)
-    @NotBlank
     @Size(min = 10, max = 12)
     private String cic;
-    @NotBlank
     @Size(min = 5, max = 300)
     private String address;
     @Column(unique=true)

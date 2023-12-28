@@ -267,7 +267,7 @@ public class BillController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
                 }
                 if (billService.findById(id).get().getState() != 0) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status not be shipping");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must be shipping");
                 } else {
                     if (receive) {
                         Bill bill = billService.findById(id).get();

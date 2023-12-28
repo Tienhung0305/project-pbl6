@@ -115,6 +115,7 @@ public class MomoPaymentService {
                 MomoResponse momoResponse = new MomoResponse();
                 momoResponse.setMessage(jsonResponse.get("message"));
                 momoResponse.setResultCode((jsonResponse.get("resultCode")));
+                momoResponse.setState(bill.getState());
                 return momoResponse;
             }
         }
@@ -164,6 +165,7 @@ public class MomoPaymentService {
                 MomoResponse momoResponse = new MomoResponse();
                 momoResponse.setMessage(jsonResponse.get("message"));
                 momoResponse.setResultCode(jsonResponse.get("resultCode"));
+                momoResponse.setState(bill.getState());
                 return momoResponse;
             }
         }
