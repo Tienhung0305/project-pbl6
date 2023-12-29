@@ -10,13 +10,11 @@ import lombok.Setter;
 public class MomoResponse {
     String resultCode;
     String message;
-    Integer state;
     public MomoResponse() {
     }
-    public MomoResponse (String resultCode, String message, Integer state)
+    public MomoResponse (String resultCode, String message)
     {
         this.resultCode = resultCode;
         this.message = message;
-        this.state = state;
     }
 }

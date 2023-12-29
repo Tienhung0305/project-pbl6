@@ -1,20 +1,19 @@
 package com.example.sportstore06.service.MomoService;
 
 import com.example.sportstore06.dao.response.MomoResponse;
-import com.example.sportstore06.entity.*;
+import com.example.sportstore06.entity.Bill;
+import com.example.sportstore06.entity.Transaction;
 import com.example.sportstore06.repository.IBillRepository;
 import com.example.sportstore06.repository.IPaymentRepository;
 import com.example.sportstore06.repository.IUserRepository;
-import com.example.sportstore06.service.MomoService.Model.DeliveryInfo;
-import com.example.sportstore06.service.MomoService.Model.Item;
-import com.example.sportstore06.service.MomoService.Model.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class MomoPaymentService {
 
         String api = "https://test-payment.momo.vn/v2/gateway/api/create";
         String redirectUrl = baseUrl + "/api/v1/cart/momo-ipn";
-        String ipnUrl = baseUrl;
+        String ipnUrl = baseUrl + "/";
 
         Transaction transaction = new Transaction();
         String orderInfo = "Thanh toán qua MoMo";
@@ -89,14 +88,14 @@ public class MomoPaymentService {
     }
 
 
-    public MomoResponse checkTransactionStatus(Bill bill) {
+    public MomoResponse checkTransactionStatus(Transaction transaction) {
         String PARTNER_CODE = paymentRepository.findById("momo").get().getPartner_code();
         String ACCESS_KEY = paymentRepository.findById("momo").get().getAccess_key();
         String SECRET_KEY = paymentRepository.findById("momo").get().getSecret_key();
         String API = "https://test-payment.momo.vn/v2/gateway/api/query";
 
-        String orderId = bill.getTransaction().getOrderId();
-        String requestId = bill.getTransaction().getRequestId();
+        String orderId = transaction.getOrderId();
+        String requestId = transaction.getRequestId();
 
         Map<String, Object> requestData = new HashMap<>();
         requestData.put("partnerCode", PARTNER_CODE);
@@ -121,7 +120,6 @@ public class MomoPaymentService {
                 MomoResponse momoResponse = new MomoResponse();
                 momoResponse.setMessage(jsonResponse.get("message"));
                 momoResponse.setResultCode((jsonResponse.get("resultCode")));
-                momoResponse.setState(bill.getState());
                 return momoResponse;
             }
         }
@@ -171,7 +169,6 @@ public class MomoPaymentService {
                 MomoResponse momoResponse = new MomoResponse();
                 momoResponse.setMessage(jsonResponse.get("message"));
                 momoResponse.setResultCode(jsonResponse.get("resultCode"));
-                momoResponse.setState(bill.getState());
                 return momoResponse;
             }
         }

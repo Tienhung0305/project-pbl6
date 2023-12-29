@@ -142,12 +142,13 @@ public class CartController {
     }
 
     @GetMapping("/momo-ipn")
-    public ResponseEntity<?> momoSave(@RequestParam(value = "orderId", required = false) String orderId,
-                                      @RequestParam(value = "extraData", required = false) String extraData,
-                                      @RequestParam(value = "resultCode", required = false) String resultCode,
-                                      @RequestParam(value = "transId", required = false) String transId,
-                                      @RequestParam(value = "payType", required = false) String payType,
-                                      @RequestParam(value = "orderType", required = false) String orderType) {
+    public ResponseEntity<?> momoSave(@RequestParam(value = "orderId", required = true) String orderId,
+                                      @RequestParam(value = "extraData", required = true) String extraData,
+                                      @RequestParam(value = "resultCode", required = true) String resultCode,
+                                      @RequestParam(value = "signature", required = true) String signature,
+                                      @RequestParam(value = "transId", required = true) String transId,
+                                      @RequestParam(value = "payType", required = true) String payType,
+                                      @RequestParam(value = "orderType", required = true) String orderType) {
         if (resultCode.equals("0")) {
             String[] split_extraData = extraData.split(",");
             Set<Integer> set_id_bill = new HashSet<>();
@@ -169,12 +170,11 @@ public class CartController {
                 transaction.setPayType(payType);
                 transaction.setOrderType(orderType);
                 bill.setTransaction(transaction);
-
                 billService.save(bill);
             }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).body(set_id_bill.toString());
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 

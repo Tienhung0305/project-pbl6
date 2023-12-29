@@ -527,8 +527,8 @@ public class BillController {
         if (transactionService.findById(id_transaction).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
         }
-        Bill bill = billService.findById(id_transaction).get();
-        MomoResponse momoResponse = momoPaymentService.checkTransactionStatus(bill);
+        Transaction transaction = transactionService.findById(id_transaction).get();
+        MomoResponse momoResponse = momoPaymentService.checkTransactionStatus(transaction);
         return ResponseEntity.status(HttpStatus.OK).body(momoResponse);
     }
 }
