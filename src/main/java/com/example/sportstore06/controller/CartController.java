@@ -92,7 +92,7 @@ public class CartController {
                 set.add(bill_detail);
 
                 //remove cart
-                //cartService.deleteById(cart.getId());
+                cartService.deleteById(cart.getId());
             }
 
             bill.setTotal(total);

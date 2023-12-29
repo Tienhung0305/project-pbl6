@@ -289,6 +289,9 @@ public class BillController {
     private ResponseEntity<?> confirmCancel(@RequestBody(required = true) Integer id_transaction,
                                              @PathVariable(value = "cancel", required = true) Boolean cancel) {
         if (cancel) {
+            if (transactionService.findById(id_transaction).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id transaction not found");
+            }
             List<Bill> bills = billService.findByTransactionId(id_transaction);
             //check state
             for (Bill bill : bills) {
@@ -529,7 +532,7 @@ public class BillController {
     @GetMapping("/check-transaction-status/{id_transaction}")
     public ResponseEntity<?> checkTransactionStatus(@PathVariable(value = "id_transaction", required = true) Integer id_transaction) {
         if (transactionService.findById(id_transaction).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id transaction not found");
         }
         Transaction transaction = transactionService.findById(id_transaction).get();
         MomoResponse momoResponse = momoPaymentService.checkTransactionStatus(transaction);
