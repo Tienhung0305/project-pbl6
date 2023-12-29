@@ -46,6 +46,6 @@ public class BillResponse {
                 .map(billDetail -> billDetail != null ? new BillDetailResponse(billDetail) : null);
         this.bill_detailSet = response.collect(Collectors.toSet());
         this.id_business = bill.getId_business();
-        this.transaction = new TransactionResponse(bill.getTransaction());
+        this.transaction = bill.getTransaction() != null ? new TransactionResponse(bill.getTransaction()) : null;
     }
 }

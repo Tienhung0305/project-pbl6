@@ -116,7 +116,7 @@ public class CartController {
         }
 
 
-        Transaction transaction_temp = momoPaymentService.initiatePayment(total_all, user, set_id_bill, baseUrl, requestType);
+        Transaction transaction_temp = momoPaymentService.initiatePayment(total_all, set_id_bill, baseUrl, requestType);
         Transaction transaction = Transaction
                 .builder()
                 .id(Integer.valueOf(transaction_temp.getOrderId()))
