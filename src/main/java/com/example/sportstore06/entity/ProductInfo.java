@@ -56,7 +56,7 @@ public class ProductInfo {
     @JsonBackReference
     private Sale sale;
 
-    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();
 

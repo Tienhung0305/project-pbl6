@@ -28,6 +28,7 @@ public class ProductInfoResponse {
     private Set<ImageResponse> imageSet;
     private Integer state;
     private Double price_min;
+    private Integer number_buy;
     private Integer number_like;
     private Integer number_dislike;
     private Integer number_comment;
@@ -85,5 +86,16 @@ public class ProductInfoResponse {
         this.number_comment = commentList.size();
         this.number_like = number_like;
         this.number_dislike = number_dislike;
+
+
+        Integer number_buy = 0;
+        for (Product product : productInfo.getProductSet()) {
+            for (BillDetail billDetail : product.getBillDetailSet()) {
+                if (billDetail.getProduct().getProductInfo().getId() == id) {
+                    number_buy += billDetail.getQuantity();
+                }
+            }
+        }
+        this.number_buy = number_buy;
     }
 }

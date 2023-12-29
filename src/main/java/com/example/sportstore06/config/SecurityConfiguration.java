@@ -42,6 +42,7 @@ public class SecurityConfiguration {
         String[] WHITE_LIST_URL = {
                 "/api/v1/auth/**",
                 "/api/v1/test",
+                "/api/v1/momo-ipn",
                 "/swagger-ui/**",
                 "/v3/api-docs",
                 "/v3/api-docs/**",
@@ -131,7 +132,6 @@ public class SecurityConfiguration {
                         .anyRequest()
                         .authenticated()
                 )
-                .httpBasic(withDefaults())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

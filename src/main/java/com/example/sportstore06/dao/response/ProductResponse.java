@@ -26,10 +26,10 @@ public class ProductResponse {
     public ProductResponse(Product product) {
         this.id = product.getId();
         this.id_product_information = product.getProductInfo() != null ? product.getProductInfo().getId() : null;
+        this.name_product_information = product.getProductInfo() != null ? product.getProductInfo().getName() : null;
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
         this.size = product.getSize();
-        this.name_product_information = product.getProductInfo() != null ? product.getProductInfo().getName() : null;
         List<Image> list = product.getProductInfo().getImageSet().stream().toList();
         for (Image image : list) {
             if (image.getIs_main()) {

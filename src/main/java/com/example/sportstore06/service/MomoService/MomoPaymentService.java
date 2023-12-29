@@ -24,8 +24,7 @@ public class MomoPaymentService {
     //  SECRET_KEY = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
 
     private final IPaymentRepository paymentRepository;
-    private final IBillRepository billRepository;
-    private final IUserRepository userRepository;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     public Transaction initiatePayment(double total_all, Set<Integer> set_id_bill, String baseUrl, String requestType) {

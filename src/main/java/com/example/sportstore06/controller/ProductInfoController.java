@@ -393,12 +393,14 @@ public class ProductInfoController {
             if (request.getId_sale() != null && saleService.findById(request.getId_sale()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id sale not found");
             }
+
             Role role_admin = roleService.findByName("ROLE_ADMIN").get();
             if (!user.getRoleSet().contains(role_admin)) {
                 if (user.getId() != request.getId_business()) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("you don't have the authority to edit");
                 }
             }
+
             int id = productInfoService.save(0, request);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(String.valueOf(id));
         } catch (Exception e) {
