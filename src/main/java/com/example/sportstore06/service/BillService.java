@@ -116,6 +116,7 @@ public class BillService {
                         price(billDetailRequest.getPrice()).
                         build()).collect(Collectors.toSet());
         u.setBill_detailSet(set);
+
         billRepository.save(u);
         return u.getId();
     }

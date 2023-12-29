@@ -27,8 +27,8 @@ public class ImageResponse {
         this.created_at = image.getCreated_at();
         this.updated_at = image.getUpdated_at();
         this.url = image.getUrl();
-        this.id_product_information = image.getProductInfo() == null ? null : image.getProductInfo().getId();
-        this.id_comment = image.getComment() == null ? null : image.getComment().getId();
+        this.id_product_information = image.getProductInfo() != null ? image.getProductInfo().getId() : null;
+        this.id_comment = image.getComment() != null ? image.getComment().getId() : null;
         this.is_main = image.getIs_main();
     }
 }

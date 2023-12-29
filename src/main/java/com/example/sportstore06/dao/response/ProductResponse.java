@@ -27,6 +27,7 @@ public class ProductResponse {
         this.id = product.getId();
         this.id_product_information = product.getProductInfo() != null ? product.getProductInfo().getId() : null;
         this.name_product_information = product.getProductInfo() != null ? product.getProductInfo().getName() : null;
+        this.image_product_information = "";
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
         this.size = product.getSize();

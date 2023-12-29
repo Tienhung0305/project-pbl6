@@ -87,7 +87,6 @@ public class ProductInfoResponse {
         this.number_like = number_like;
         this.number_dislike = number_dislike;
 
-
         Integer number_buy = 0;
         for (Product product : productInfo.getProductSet()) {
             for (BillDetail billDetail : product.getBillDetailSet()) {

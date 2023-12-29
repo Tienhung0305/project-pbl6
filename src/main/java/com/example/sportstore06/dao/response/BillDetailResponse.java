@@ -19,7 +19,7 @@ public class BillDetailResponse {
 
     public BillDetailResponse(BillDetail billDetail) {
         this.id = billDetail.getId();
-        this.id_bill = billDetail.getBill().getId();
+        this.id_bill = billDetail.getBill() != null ? billDetail.getBill().getId() : null;
         this.product = billDetail.getProduct() != null ? new ProductResponse(billDetail.getProduct()) : null;
         this.quantity = billDetail.getQuantity();
         this.price = billDetail.getPrice();

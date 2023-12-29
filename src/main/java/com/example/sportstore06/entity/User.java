@@ -79,7 +79,7 @@ public class User implements UserDetails {
     private Business business;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Comment> commentSet = new HashSet<>();
 

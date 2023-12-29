@@ -2,6 +2,7 @@ package com.example.sportstore06.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 @Entity
@@ -17,7 +18,9 @@ public class BillDetail {
     private int id;
     //private int id_bill;
     //private int id_product;
+    @Min(value = 0)
     private Integer quantity;
+    @Min(value = 0)
     private double price;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -38,14 +38,6 @@ public class ProductInfo {
     private Integer state;
     private Integer state_before;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "product_categories",
-            joinColumns = @JoinColumn(name = "id_product_information"),
-            inverseJoinColumns = @JoinColumn(name = "id_category")
-    )
-    @JsonManagedReference
-    Set<Category> categorySet = new HashSet<>();
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_business", nullable = false, referencedColumnName = "id")
     @JsonBackReference
@@ -56,6 +48,14 @@ public class ProductInfo {
     @JsonBackReference
     private Sale sale;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "product_categories",
+            joinColumns = @JoinColumn(name = "id_product_information"),
+            inverseJoinColumns = @JoinColumn(name = "id_category")
+    )
+    @JsonManagedReference
+    Set<Category> categorySet = new HashSet<>();
+
     @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();
@@ -64,7 +64,7 @@ public class ProductInfo {
     @JsonManagedReference
     private Set<Product> productSet = new HashSet<>();
 
-    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Comment> commentSet = new HashSet<>();
 }

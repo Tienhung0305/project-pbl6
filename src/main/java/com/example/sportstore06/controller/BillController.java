@@ -36,17 +36,21 @@ public class BillController {
     private final BusinessService businessService;
     private final MomoPaymentService momoPaymentService;
     private final TransactionService transactionService;
+
     // 0 : đang giao
     // 1 : đã giao thành công
     // 2 : chưa thanh toán
     // 3 : đã thanh toán
     // 4 : hủy đơn hàng bên business
 
-    // check state != 0 và != 1 là không được hủy
-
     // 2 -> 3 -> 0 -> 1
     // 2 -> 3 -> 4 -> (hoàn tiền)
 
+    //  NGUYEN VAN A
+    //  9704 0000 0000 0018
+    //  03/07
+    //  OTP
+    //  requestType : payWithATM,captureWallet
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {

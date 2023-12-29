@@ -2,7 +2,10 @@ package com.example.sportstore06.dao.response;
 
 import com.example.sportstore06.entity.Comment;
 import com.example.sportstore06.entity.Image;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -28,7 +31,7 @@ public class CommentResponse {
 
     public CommentResponse(Comment comment, List<Comment> commentList) {
         this.id = comment.getId();
-        this.id_product_info = comment.getProductInfo().getId();
+        this.id_product_info = comment.getProductInfo() != null ? comment.getProductInfo().getId() : null;
         this.content = comment.getContent();
         this.report = comment.getReport();
         this.is_like = comment.getIs_like();

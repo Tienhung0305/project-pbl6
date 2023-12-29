@@ -25,11 +25,9 @@ public class UserService {
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
     private final IImageRepository iImageRepository;
-
     public Long getCount() {
         return userRepository.count();
     }
-
     public Optional<User> findById(int id) {
         return userRepository.findById(id);
     }
@@ -85,7 +83,6 @@ public class UserService {
             created_at = new Timestamp(new Date().getTime());
             updated_at = created_at;
         }
-
         Set<Role> roles = new HashSet<>();
         for (String i : request.getRoles()) {
             Optional<Role> ObRole = roleRepository.findByName(i);
@@ -96,12 +93,11 @@ public class UserService {
         if (roles.contains(role_business)) {
             state = 1;
         }
-
         var u = User.builder().
                 id(id).
                 name(request.getName()).
-                email(request.getEmail()).
                 dob(request.getDob()).
+                email(request.getEmail()).
                 phone(request.getPhone()).
                 cic(request.getCic()).
                 address(request.getAddress()).

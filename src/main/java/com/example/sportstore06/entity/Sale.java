@@ -24,7 +24,6 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private Double discount;
-    //@NotNull
     //private Integer id_business;
     @NotNull
     private Timestamp started_at;

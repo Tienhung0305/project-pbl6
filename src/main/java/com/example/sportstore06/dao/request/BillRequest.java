@@ -21,6 +21,7 @@ public class BillRequest {
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
+    @NotNull(message = "id business must not be null")
     private Integer id_business;
     @NotNull(message = "bill details must not be null")
     private Set<BillDetailRequest> bill_detailSet = new HashSet<>();

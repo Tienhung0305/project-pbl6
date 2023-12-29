@@ -14,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequest {
+    @NotBlank(message = "name must not be blank")
     @Size(min = 1, max = 50, message = "name must be between 1 and 50 characters")
     private String name;
     @Size(min = 5, max = 50, message = "email must be between 5 and 50 characters")
@@ -33,7 +34,6 @@ public class UserRequest {
     private Timestamp created_at;
     private Timestamp updated_at;
     private String image_url;
-
     @NotNull(message = "roles must not be null")
     private Set<String> roles;
 }

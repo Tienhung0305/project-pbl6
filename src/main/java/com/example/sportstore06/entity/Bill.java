@@ -4,6 +4,7 @@ package com.example.sportstore06.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -26,6 +27,7 @@ public class Bill {
     private double total;
     //private int id_user;
     //private int id_transaction;
+    @NotNull
     private int id_business;
     private Timestamp created_at;
     private Timestamp updated_at;
@@ -36,12 +38,14 @@ public class Bill {
     @JsonBackReference
     private User user;
 
-    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private Set<BillDetail> bill_detailSet = new HashSet<>();
-
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_transaction", nullable = true, referencedColumnName = "id")
     @JsonManagedReference
     private Transaction transaction;
+
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<BillDetail> bill_detailSet = new HashSet<>();
+
+
 }

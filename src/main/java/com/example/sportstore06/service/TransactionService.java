@@ -12,11 +12,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TransactionService {
     private final ITransactionRepository transactionRepository;
-
     public void save(Transaction transaction) {
         transactionRepository.save(transaction);
     }
-
     public Optional<Transaction> findById(int id) {
         return transactionRepository.findById(id);
     }

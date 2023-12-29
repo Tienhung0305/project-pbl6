@@ -4,7 +4,6 @@ import com.example.sportstore06.dao.CartBusiness;
 import com.example.sportstore06.dao.request.BillDetailRequest;
 import com.example.sportstore06.dao.request.BillRequest;
 import com.example.sportstore06.dao.request.CartRequest;
-import com.example.sportstore06.dao.request.MomoIPNRequest;
 import com.example.sportstore06.dao.response.CartResponse;
 import com.example.sportstore06.entity.*;
 import com.example.sportstore06.service.*;
@@ -33,11 +32,6 @@ public class CartController {
     private final RoleService roleService;
     private final MomoPaymentService momoPaymentService;
     private final TransactionService transactionService;
-    //  NGUYEN VAN A
-    //  9704 0000 0000 0018
-    //  03/07
-    //  OTP
-    //  requestType : payWithATM,captureWallet
 
     @PostMapping("/buy-with-momo")
     public ResponseEntity<?> PayWithMomo(
@@ -116,7 +110,6 @@ public class CartController {
             total_all += total;
         }
 
-
         Transaction transaction_temp = momoPaymentService.initiatePayment(total_all, set_id_bill, baseUrl, requestType);
         Transaction transaction = Transaction
                 .builder()
@@ -126,8 +119,6 @@ public class CartController {
                 .payUrl(transaction_temp.getPayUrl())
                 .build();
         transactionService.save(transaction);
-
-
         for (Integer id : set_id_bill) {
             Bill bill = billService.findById(id).get();
             Optional<Transaction> Ob = transactionService.findById(Integer.valueOf(transaction.getOrderId()));
@@ -138,7 +129,6 @@ public class CartController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id transaction not found");
             }
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(transaction.getPayUrl());
     }
 
@@ -156,12 +146,10 @@ public class CartController {
             for (String i : split_extraData) {
                 set_id_bill.add(Integer.valueOf(i));
             }
-
             for (Integer id : set_id_bill) {
                 if (!orderId.equals(billService.findById(id).get().getTransaction().getOrderId())) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("save failed");
                 }
-
                 Bill bill = billService.findById(id).get();
                 bill.setState(3);
                 bill.setUpdated_at(new Timestamp(new Date().getTime()));

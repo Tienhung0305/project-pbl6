@@ -20,8 +20,8 @@ public class Business {
     @Id
     private int id;
     @Column(unique = true)
-    @NotBlank(message = "name must not be blank")
-    @Size(min = 1, max = 50, message = "name must be between 1 and 50 characters")
+    @NotBlank
+    @Size(min = 1, max = 50)
     private String name;
     private String about;
     @Column(unique = true)
