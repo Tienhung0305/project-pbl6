@@ -128,7 +128,7 @@ public class ProductInfoService {
         }
     }
 
-    public int save(int id, ProductInfoRequest request) {
+        public int save(int id, ProductInfoRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
         if (productInfoRepository.findById(id).isPresent()) {
@@ -182,6 +182,7 @@ public class ProductInfoService {
 
         return u.getId();
     }
+
 
     public void addSaleProductInfo(Integer id_product_inf, Integer id_sale) {
         ProductInfo productInfo = productInfoRepository.findById(id_product_inf).get();
