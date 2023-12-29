@@ -132,6 +132,7 @@ public class SecurityConfiguration {
                         .anyRequest()
                         .authenticated()
                 )
+                .httpBasic(withDefaults())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
