@@ -128,7 +128,7 @@ public class ProductInfoService {
         }
     }
 
-    public int save(int id, ProductInfoRequest request) {
+        public int save(int id, ProductInfoRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
         if (productInfoRepository.findById(id).isPresent()) {
@@ -145,7 +145,6 @@ public class ProductInfoService {
             //fix
             setImage.add(image);
         }
-        request.getId_categorySet();
 
         Set<Category> categories = new HashSet<>();
         for (Integer i : request.getId_categorySet()) {
@@ -153,23 +152,25 @@ public class ProductInfoService {
             categories.add(Ob.get());
         }
         Integer state = 1;
+        Integer state_before = null;
         if (id != 0) {
             state = productInfoRepository.findById(id).get().getState();
+            state_before = productInfoRepository.findById(id).get().getState_before();
         }
-        var u = ProductInfo.builder().
-                id(id).
-                name(request.getName()).
-                detail(request.getDetail()).
-                attribute(request.getAttribute()).
-                business(businessRepository.findById(request.getId_business()).get()).
-                sale(request.getId_sale() == null ? null : saleRepository.findById(request.getId_sale()).get()).
-                created_at(created_at).
-                updated_at(updated_at).
-                state(state).
-                state_before(productInfoRepository.findById(id).get().getState_before()).
-                categorySet(categories).
-                imageSet(setImage).
-                build();
+        var u = ProductInfo.builder()
+                .id(id)
+                .name(request.getName())
+                .detail(request.getDetail())
+                .attribute(request.getAttribute())
+                .business(businessRepository.findById(request.getId_business()).orElse(null))
+                .sale(request.getId_sale() != null ? saleRepository.findById(request.getId_sale()).get() : null)
+                .created_at(created_at)
+                .updated_at(updated_at)
+                .state(state)
+                .state_before(state_before)
+                .categorySet(categories)
+                .imageSet(setImage)
+                .build();
         productInfoRepository.save(u);
 
         for (Integer i : request.getId_imageSet()) {
@@ -181,6 +182,7 @@ public class ProductInfoService {
 
         return u.getId();
     }
+
 
     public void addSaleProductInfo(Integer id_product_inf, Integer id_sale) {
         ProductInfo productInfo = productInfoRepository.findById(id_product_inf).get();
