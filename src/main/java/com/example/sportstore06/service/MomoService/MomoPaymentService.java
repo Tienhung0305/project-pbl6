@@ -32,13 +32,9 @@ public class MomoPaymentService {
         String SECRET_KEY = paymentRepository.findById("momo").get().getSecret_key();
 
         String api = "https://test-payment.momo.vn/v2/gateway/api/create";
-<<<<<<< HEAD
-        String redirectUrl = baseUrl + "/api/v1/cart/momo_ipn";
-        String ipnUrl = baseUrl + "/api/v1/test";
-=======
+
         String ipnUrl = baseUrl + "/";
         String redirectUrl = baseUrl + "/api/v1/cart/momo-ipn";
->>>>>>> ed0def42990907c22f6a3455962707f1b2ed9ee7
 
         Transaction transaction = new Transaction();
         String orderInfo = "Thanh toán qua MoMo";
