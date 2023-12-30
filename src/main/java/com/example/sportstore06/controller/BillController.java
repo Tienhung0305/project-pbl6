@@ -210,7 +210,7 @@ public class BillController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
                 }
                 if (billService.findById(id).get().getState() != 3) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The bill status needs confirmation from the business");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The bill status needs confirmation from the business");
                 } else {
                     if (sell) {
                         Bill bill = billService.findById(id).get();
@@ -239,7 +239,7 @@ public class BillController {
                         Bill bill = billService.findById(id).get();
                         //hoan tien
                         MomoResponse momoResponse = momoPaymentService.refundTransactionStatus(bill);
-                        if (momoResponse.getResultCode().equals("0")) {
+                        if (momoResponse.getResultCode().equals("0") || momoResponse.getResultCode().equals("1002")) {
                             bill.setState(4);
                             bill.setUpdated_at(new Timestamp(new Date().getTime()));
                             billService.save(bill);
@@ -285,6 +285,35 @@ public class BillController {
         }
     }
 
+    @PutMapping("/confirm-buy/{buy}")
+    private ResponseEntity<?> confirmBuy(@RequestBody(required = true) Integer id_bill,
+                                         @PathVariable(value = "buy", required = true) Boolean buy) {
+        if (false) {
+            if (billService.findById(id_bill).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
+            }
+            Bill bill = billService.findById(id_bill).get();
+            if (bill.getState() == 3) {
+                //hoan tien
+                MomoResponse momoResponse = momoPaymentService.refundTransactionStatus(bill);
+                if (momoResponse.getResultCode().equals("0") || momoResponse.getResultCode().equals("1002")) {
+                    bill.setState(4);
+                    bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                    billService.save(bill);
+                    return ResponseEntity.status(HttpStatus.OK).body(momoResponse);
+                } else {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(momoResponse);
+                }
+            }
+            if (bill.getState() == 2) {
+                bill.setState(4);
+                bill.setUpdated_at(new Timestamp(new Date().getTime()));
+                billService.save(bill);
+                return ResponseEntity.status(HttpStatus.OK).build();
+            }
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
     @PutMapping("/confirm-cancel/{cancel}")
     private ResponseEntity<?> confirmCancel(@RequestBody(required = true) Integer id_transaction,
                                              @PathVariable(value = "cancel", required = true) Boolean cancel) {
@@ -320,8 +349,7 @@ public class BillController {
                         billService.save(bill);
                         return ResponseEntity.status(HttpStatus.OK).build();
                     }
-                }
-
+            }
         }
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

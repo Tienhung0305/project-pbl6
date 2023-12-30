@@ -3,9 +3,7 @@ package com.example.sportstore06.service.MomoService;
 import com.example.sportstore06.dao.response.MomoResponse;
 import com.example.sportstore06.entity.Bill;
 import com.example.sportstore06.entity.Transaction;
-import com.example.sportstore06.repository.IBillRepository;
 import com.example.sportstore06.repository.IPaymentRepository;
-import com.example.sportstore06.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -13,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 @Service
@@ -33,12 +32,14 @@ public class MomoPaymentService {
         String SECRET_KEY = paymentRepository.findById("momo").get().getSecret_key();
 
         String api = "https://test-payment.momo.vn/v2/gateway/api/create";
-        String redirectUrl = baseUrl + "/api/v1/test";
-        String ipnUrl = baseUrl + "/api/v1/momo_ipn";
+        String redirectUrl = baseUrl + "/api/v1/cart/momo_ipn";
+        String ipnUrl = baseUrl + "/api/v1/test";
 
         Transaction transaction = new Transaction();
         String orderInfo = "Thanh toán qua MoMo";
         long unixTime = System.currentTimeMillis() / 1000L;
+        Random random = new Random();
+        unixTime = unixTime + random.nextInt(9);
         String orderId = "" + unixTime;
         String requestId = "" + unixTime;
         Long amount = (long) total_all;
@@ -62,7 +63,7 @@ public class MomoPaymentService {
         String rawHash = "accessKey=" + ACCESS_KEY + "&amount=" + amount + "&extraData=" + extraData +
                 "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo +
                 "&partnerCode=" + PARTNER_CODE + "&redirectUrl=" + redirectUrl +
-                "&requestId=" + orderId + "&requestType=" + requestType;
+                "&requestId=" + requestId + "&requestType=" + requestType;
         String signature = HMACSHA256Util.calculateSignature(rawHash, SECRET_KEY);
         requestData.put("signature", signature);
 
@@ -132,7 +133,10 @@ public class MomoPaymentService {
 
         String API = "https://test-payment.momo.vn/v2/gateway/api/refund";
 
-        String orderId = bill.getTransaction().getTransId();
+        long unixTime = System.currentTimeMillis() / 1000L;
+        Random random = new Random();
+        unixTime = unixTime + random.nextInt(9);
+        String orderId = "" + unixTime;
         String requestId = bill.getTransaction().getRequestId();
         long transId = Long.decode(bill.getTransaction().getTransId());
         long amount = (long) bill.getTotal();

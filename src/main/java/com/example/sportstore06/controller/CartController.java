@@ -132,7 +132,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body(transaction.getPayUrl());
     }
 
-    @GetMapping("/momo-ipn")
+    @GetMapping("/momo_ipn")
     public ResponseEntity<?> momoSave(@RequestParam(value = "orderId", required = true) String orderId,
                                       @RequestParam(value = "extraData", required = true) String extraData,
                                       @RequestParam(value = "resultCode", required = true) String resultCode,
