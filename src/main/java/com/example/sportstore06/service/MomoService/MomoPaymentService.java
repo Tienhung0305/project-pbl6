@@ -33,8 +33,8 @@ public class MomoPaymentService {
         String SECRET_KEY = paymentRepository.findById("momo").get().getSecret_key();
 
         String api = "https://test-payment.momo.vn/v2/gateway/api/create";
-        String redirectUrl = baseUrl + "/api/v1/cart/momo-ipn";
-        String ipnUrl = baseUrl + "/";
+        String redirectUrl = baseUrl + "/api/v1/test";
+        String ipnUrl = baseUrl + "/api/v1/momo_ipn";
 
         Transaction transaction = new Transaction();
         String orderInfo = "Thanh toán qua MoMo";
@@ -49,7 +49,6 @@ public class MomoPaymentService {
 
         Map<String, Object> requestData = new HashMap<>();
         requestData.put("partnerCode", PARTNER_CODE);
-        requestData.put("partnerName", "Test");
         requestData.put("requestId", requestId);
         requestData.put("amount", amount);
         requestData.put("orderId", orderId);
@@ -57,7 +56,6 @@ public class MomoPaymentService {
         requestData.put("redirectUrl", redirectUrl);
         requestData.put("ipnUrl", ipnUrl);
         requestData.put("requestType", requestType);
-        requestData.put("storeId", "MomoTestStore");
         requestData.put("extraData", extraData);
         requestData.put("lang", "vi");
 

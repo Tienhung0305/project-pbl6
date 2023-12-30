@@ -1,58 +1,50 @@
 package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.MomoIPNRequest;
+import com.example.sportstore06.entity.Bill;
+import com.example.sportstore06.entity.Transaction;
+import com.example.sportstore06.service.BillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/momo_ipn")
 @RequiredArgsConstructor
 public class MomoIPNController {
-    private static final String PARTNER_SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+    //private static final String PARTNER_SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+    private final BillService billService;
+    private static final Logger logger = LoggerFactory.getLogger(MomoIPNController.class);
 
     @PostMapping
-    public ResponseEntity<String> handleMomoIPN(@RequestBody MomoIPNRequest momoIPNRequest) {
-        try {
-            System.out.println("Received MOMO IPN: " + momoIPNRequest.toString());
-            // Xử lý IPN ở đây
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+    public ResponseEntity<?> handleMomoIPN(@RequestBody MomoIPNRequest momoIPNRequest) {
+        logger.info("Received MoMo IPN: {}", momoIPNRequest.toString());
+        String[] split_extraData = momoIPNRequest.getExtraData().split(",");
+        Set<Integer> set_id_bill = new HashSet<>();
+        for (String i : split_extraData) {
+            set_id_bill.add(Integer.valueOf(i));
         }
+        for (Integer id : set_id_bill) {
+            Bill bill = billService.findById(id).get();
+            bill.setState(3);
+            bill.setUpdated_at(new Timestamp(new Date().getTime()));
+            Transaction transaction = bill.getTransaction();
+            transaction.setTransId(String.valueOf(momoIPNRequest.getTransId()));
+            transaction.setPayType(momoIPNRequest.getPayType());
+            transaction.setOrderType(momoIPNRequest.getOrderId());
+            bill.setTransaction(transaction);
+            billService.save(bill);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    private boolean isValidSignature(MomoIPNRequest momoIPNRequest) {
-        String signatureToVerify = momoIPNRequest.getSignature();
-        momoIPNRequest.setSignature(null);
 
-        String data = momoIPNRequest.toString();
-        momoIPNRequest.setSignature(signatureToVerify);
-
-        try {
-            Mac sha256Hmac = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKey = new SecretKeySpec(PARTNER_SECRET_KEY.getBytes(), "HmacSHA256");
-            sha256Hmac.init(secretKey);
-
-            byte[] signatureBytes = sha256Hmac.doFinal(data.getBytes());
-            String calculatedSignature = Base64.getEncoder().encodeToString(signatureBytes);
-
-            return calculatedSignature.equals(signatureToVerify);
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
 }

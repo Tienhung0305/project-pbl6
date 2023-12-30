@@ -13,14 +13,14 @@ public class MomoIPNRequest {
     private String partnerCode;
     private String orderId;
     private String requestId;
-    private int amount;
+    private Long amount;
     private String orderInfo;
     private String orderType;
-    private long transId;
-    private int resultCode;
+    private Long transId;
+    private Integer resultCode;
     private String message;
     private String payType;
-    private long responseTime;
+    private Long responseTime;
     private String extraData;
     private String signature;
 }
