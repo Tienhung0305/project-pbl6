@@ -37,9 +37,9 @@ public class CartController {
     public ResponseEntity<?> PayWithMomo(
             @RequestBody(required = true) Set<Integer> set_id_cart,
             @RequestParam(required = true) String requestType,
+            @RequestParam(required = false) String redirectUrl,
             @AuthenticationPrincipal User user,
             HttpServletRequest request) {
-
         String baseUrl = UrlUtil.getBaseUrl(request);
         String payUrl = "";
         if (!requestType.equals("payWithATM") && !requestType.equals("captureWallet")) {
@@ -110,7 +110,7 @@ public class CartController {
             total_all += total;
         }
 
-        Transaction transaction_temp = momoPaymentService.initiatePayment(total_all, set_id_bill, baseUrl, requestType);
+        Transaction transaction_temp = momoPaymentService.initiatePayment(total_all, set_id_bill, redirectUrl, requestType);
         Transaction transaction = Transaction
                 .builder()
                 .id(Integer.valueOf(transaction_temp.getOrderId()))
@@ -131,42 +131,6 @@ public class CartController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(transaction.getPayUrl());
     }
-
-    @GetMapping("/momo_ipn")
-    public ResponseEntity<?> momoSave(@RequestParam(value = "orderId", required = true) String orderId,
-                                      @RequestParam(value = "extraData", required = true) String extraData,
-                                      @RequestParam(value = "resultCode", required = true) String resultCode,
-                                      @RequestParam(value = "signature", required = true) String signature,
-                                      @RequestParam(value = "transId", required = true) String transId,
-                                      @RequestParam(value = "payType", required = true) String payType,
-                                      @RequestParam(value = "orderType", required = true) String orderType) {
-        if (resultCode.equals("0")) {
-            String[] split_extraData = extraData.split(",");
-            Set<Integer> set_id_bill = new HashSet<>();
-            for (String i : split_extraData) {
-                set_id_bill.add(Integer.valueOf(i));
-            }
-            for (Integer id : set_id_bill) {
-                if (!orderId.equals(billService.findById(id).get().getTransaction().getOrderId())) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("save failed");
-                }
-                Bill bill = billService.findById(id).get();
-                bill.setState(3);
-                bill.setUpdated_at(new Timestamp(new Date().getTime()));
-
-                Transaction transaction = bill.getTransaction();
-                transaction.setTransId(transId);
-                transaction.setPayType(payType);
-                transaction.setOrderType(orderType);
-                bill.setTransaction(transaction);
-                billService.save(bill);
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(set_id_bill.toString());
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
-
 
 
     @GetMapping("/get-count")

@@ -26,7 +26,7 @@ public class MomoPaymentService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public Transaction initiatePayment(double total_all, Set<Integer> set_id_bill, String baseUrl, String requestType) {
+    public Transaction initiatePayment(double total_all, Set<Integer> set_id_bill, String redirectUrl, String requestType) {
         String PARTNER_CODE = paymentRepository.findById("momo").get().getPartner_code();
         String ACCESS_KEY = paymentRepository.findById("momo").get().getAccess_key();
         String SECRET_KEY = paymentRepository.findById("momo").get().getSecret_key();
@@ -38,7 +38,9 @@ public class MomoPaymentService {
         Transaction transaction = new Transaction();
         unixTime = unixTime + random.nextInt(100);
 
-        String redirectUrl = "https://project-pbl6-production.up.railway.app/api/v1/test";
+        if (redirectUrl.isEmpty()) {
+            redirectUrl = "https://project-pbl6-production.up.railway.app/api/v1/momo";
+        }
         String ipnUrl = "https://project-pbl6-production.up.railway.app/api/v1/momo/momo_ipn";
 
         String orderId = "" + unixTime;
