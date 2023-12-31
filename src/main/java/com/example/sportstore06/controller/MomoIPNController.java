@@ -16,16 +16,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/v1/momo_ipn")
+@RequestMapping("/api/v1/momo")
 @RequiredArgsConstructor
 public class MomoIPNController {
-    //private static final String PARTNER_SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
     private final BillService billService;
-    private static final Logger logger = LoggerFactory.getLogger(MomoIPNController.class);
-
-    @PostMapping
+    @PostMapping("/momo_ipn")
     public ResponseEntity<?> handleMomoIPN(@RequestBody MomoIPNRequest momoIPNRequest) {
-        logger.info("Received MoMo IPN: {}", momoIPNRequest.toString());
         String[] split_extraData = momoIPNRequest.getExtraData().split(",");
         Set<Integer> set_id_bill = new HashSet<>();
         for (String i : split_extraData) {
@@ -44,7 +40,4 @@ public class MomoIPNController {
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
-
-
 }

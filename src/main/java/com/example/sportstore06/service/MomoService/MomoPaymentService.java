@@ -33,17 +33,18 @@ public class MomoPaymentService {
 
         String api = "https://test-payment.momo.vn/v2/gateway/api/create";
 
-        String ipnUrl = baseUrl + "/";
-        String redirectUrl = baseUrl + "/api/v1/cart/momo-ipn";
-
-        Transaction transaction = new Transaction();
-        String orderInfo = "Thanh toán qua MoMo";
         long unixTime = System.currentTimeMillis() / 1000L;
         Random random = new Random();
-        unixTime = unixTime + random.nextInt(9);
+        Transaction transaction = new Transaction();
+        unixTime = unixTime + random.nextInt(100);
+
+        String redirectUrl = "https://project-pbl6-production.up.railway.app/api/v1/test";
+        String ipnUrl = "https://project-pbl6-production.up.railway.app/api/v1/momo/momo_ipn";
+
         String orderId = "" + unixTime;
         String requestId = "" + unixTime;
         Long amount = (long) total_all;
+        String orderInfo = "Thanh toán qua MoMo";
         String extraData = "";
         for (Integer id : set_id_bill) {
             extraData = extraData + id + ",";
@@ -65,6 +66,7 @@ public class MomoPaymentService {
                 "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo +
                 "&partnerCode=" + PARTNER_CODE + "&redirectUrl=" + redirectUrl +
                 "&requestId=" + requestId + "&requestType=" + requestType;
+
         String signature = HMACSHA256Util.calculateSignature(rawHash, SECRET_KEY);
         requestData.put("signature", signature);
 

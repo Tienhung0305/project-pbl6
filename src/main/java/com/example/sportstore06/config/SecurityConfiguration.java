@@ -42,7 +42,7 @@ public class SecurityConfiguration {
         String[] WHITE_LIST_URL = {
                 "/api/v1/auth/**",
                 "/api/v1/test",
-                "/api/v1/momo_ipn",
+                "/api/v1/momo/**",
                 "/swagger-ui/**",
                 "/v3/api-docs",
                 "/v3/api-docs/**",
