@@ -276,7 +276,8 @@ public class BillController {
                         //chuyển tiền
                         Business business = businessService.findById(bill.getId_business()).get();
                         Long revenue = business.getRevenue();
-                        business.setRevenue(revenue + bill.getTotal());
+                        revenue = (long) Math.round((revenue + bill.getTotal()) * 0.95);
+                        business.setRevenue(revenue);
                         businessService.save(business);
                         //
                     }
