@@ -28,7 +28,7 @@ public class CommentController {
     private final ProductInfoService productInfoService;
     private final UserService userService;
     private final ImageService imageService;
-
+    private final BillService billService;
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getCount());
@@ -111,6 +111,8 @@ public class CommentController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found ");
             } else if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
+            } else if (billService.findById(request.getId_bill()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
             } else if (request.getReply() != null && commentService.findById(request.getReply()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id reply not found");
             } else {
@@ -136,6 +138,9 @@ public class CommentController {
             }
             if (productInfoService.findById(request.getId_product_information()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id product information not found ");
+            }
+            if (billService.findById(request.getId_bill()).isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
             }
             if (userService.findById(request.getId_user()).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id user not found");
