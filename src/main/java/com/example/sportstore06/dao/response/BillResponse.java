@@ -22,7 +22,7 @@ public class BillResponse {
     private int id;
     private String name;
     private String information;
-    private Double total;
+    private Long total;
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;

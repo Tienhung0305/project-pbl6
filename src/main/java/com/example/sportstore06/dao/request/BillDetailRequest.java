@@ -19,5 +19,5 @@ public class BillDetailRequest {
     @Min(value = 0, message = "quantity must be greater 0")
     private Integer quantity;
     @Min(value = 0, message = "price must be greater 0")
-    private Double price;
+    private Long price;
 }

@@ -15,6 +15,6 @@ import lombok.Setter;
 public class Statistic {
     private Integer year;
     private Integer month;
-    private double bill_count;
-    private double bill_total;
+    private Long bill_count;
+    private Long bill_total;
 }

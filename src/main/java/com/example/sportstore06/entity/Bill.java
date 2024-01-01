@@ -24,7 +24,7 @@ public class Bill {
     private int id;
     private String name;
     private String information;
-    private double total;
+    private Long total;
     //private int id_user;
     //private int id_transaction;
     @NotNull

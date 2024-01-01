@@ -17,7 +17,7 @@ public class SaleRequest {
     @NotNull(message = "id business must not be null")
     private Integer id_business;
     @Min(value = 0, message = "discount must be greater 0")
-    private Double discount;
+    private Long discount;
     @NotNull(message = "time start must not be null")
     private Timestamp started_at;
     @NotNull(message = "time end must not be null")

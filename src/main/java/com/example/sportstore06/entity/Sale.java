@@ -23,7 +23,7 @@ public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private Double discount;
+    private Long discount;
     //private Integer id_business;
     @NotNull
     private Timestamp started_at;

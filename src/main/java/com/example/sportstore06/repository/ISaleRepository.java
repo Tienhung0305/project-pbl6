@@ -20,14 +20,14 @@ public interface ISaleRepository extends JpaRepository<Sale, Integer> {
     Page<Sale> findByIdBusiness(Pageable pageable, Integer id_business);
 
     @Query("SELECT i FROM Sale i WHERE i.discount >= :discount_min AND i.discount <= :discount_max AND  i.business.user.state = 0")
-    Page<Sale> getByDiscount(Pageable pageable, @Param("discount_min") Double discount_min, @Param("discount_max") Double discount_max);
+    Page<Sale> getByDiscount(Pageable pageable, @Param("discount_min") Long discount_min, @Param("discount_max") Long discount_max);
 
     @Query("SELECT i FROM Sale i WHERE i.discount >= :discount_min AND i.discount <= :discount_max AND i.business.id = :id_business AND  i.business.user.state = 0")
-    Page<Sale> getByDiscount(Pageable pageable, @Param("discount_min") Double discount_min, @Param("discount_max") Double discount_max, @Param("id_business") Integer id_business);
+    Page<Sale> getByDiscount(Pageable pageable, @Param("discount_min") Long discount_min, @Param("discount_max") Long discount_max, @Param("id_business") Integer id_business);
 
     @Query("SELECT MAX(i.discount) FROM Sale i WHERE i.business.user.state = 0")
-    Double getMaxDiscount();
+    Long getMaxDiscount();
 
     @Query("SELECT MIN(i.discount) FROM Sale i WHERE i.business.user.state = 0")
-    Double getMinDiscount();
+    Long getMinDiscount();
 }

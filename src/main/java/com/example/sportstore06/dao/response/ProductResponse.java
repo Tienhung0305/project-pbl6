@@ -18,7 +18,7 @@ public class ProductResponse {
     private Integer id_product_information;
     private String name_product_information;
     private String image_product_information;
-    private Double price;
+    private Long price;
     private SaleResponse sale;
     private Integer quantity;
     private String size;

@@ -28,6 +28,7 @@ public class BusinessResponse {
     private Integer count_comment_dislike;
     private Timestamp time_start;
     private Integer count_product;
+    private Long revenue;
 
     public BusinessResponse(Business business) {
         this.id = business.getId();

@@ -1,11 +1,13 @@
 package com.example.sportstore06.security.impl;
 
+import com.example.sportstore06.dao.request.SignInRequest;
 import com.example.sportstore06.dao.request.SignUpBusinessRequest;
 import com.example.sportstore06.dao.request.SignUpCustomerRequest;
 import com.example.sportstore06.dao.response.JwtAuthenticationResponse;
-import com.example.sportstore06.dao.request.SignInRequest;
+import com.example.sportstore06.entity.Business;
 import com.example.sportstore06.entity.Role;
 import com.example.sportstore06.entity.User;
+import com.example.sportstore06.repository.IBusinessRepository;
 import com.example.sportstore06.repository.IRoleRepository;
 import com.example.sportstore06.repository.IUserRepository;
 import com.example.sportstore06.security.AuthenticationService;
@@ -18,11 +20,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final IUserRepository userRepository;
+    private final IBusinessRepository businessRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -41,12 +45,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .phone(request.getPhone())
                 .cic(request.getCic())
                 .address(request.getAddress())
-                .state(1).
-                 build();
+                .state(1)
+                .build();
         var jwt = jwtService.generateToken(user);
         user.setRemember_token(jwt);
         user.setRevoked_token(false);
-        userRepository.save(user);
+        User save = userRepository.save(user);
+
+        UUID uuid = UUID.randomUUID();
+        Business business = new Business();
+        business.setId(save.getId());
+        business.setName(request.getName());
+        business.setRevenue(0L);
+        business.setPayment(uuid.toString());
+        businessRepository.save(business);
+
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
 

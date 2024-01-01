@@ -63,15 +63,15 @@ public class ProductInfoService {
         return productInfoRepository.findByBusiness(pageable, state, id_business);
     }
 
-    public Page<ProductInfo> findBySaleDiscount(Pageable pageable, Double discount) {
+    public Page<ProductInfo> findBySaleDiscount(Pageable pageable, Long discount) {
         return productInfoRepository.findBySaleDiscount(pageable, discount);
     }
 
-    public Page<ProductInfo> findBySaleDiscount(Pageable pageable, Integer state, Double discount) {
+    public Page<ProductInfo> findBySaleDiscount(Pageable pageable, Integer state, Long discount) {
         return productInfoRepository.findBySaleDiscount(pageable, state, discount);
     }
 
-    public Page<ProductInfo> findBySaleDiscount(Pageable pageable, Integer state, Double discount, Integer state_business) {
+    public Page<ProductInfo> findBySaleDiscount(Pageable pageable, Integer state, Long discount, Integer state_business) {
         return productInfoRepository.findBySaleDiscount(pageable, state, discount, state_business);
     }
 

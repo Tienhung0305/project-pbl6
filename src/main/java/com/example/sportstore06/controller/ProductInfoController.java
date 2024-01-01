@@ -303,7 +303,7 @@ public class ProductInfoController {
     }
 
     @GetMapping("/find-by-sale-discount/{discount}")
-    public ResponseEntity<?> findBySale(@PathVariable("discount") Double discount,
+    public ResponseEntity<?> findBySale(@PathVariable("discount") Long discount,
                                         @RequestParam(value = "page", required = false) Optional<Integer> page,
                                         @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,
                                         @RequestParam(value = "sort", required = false) String sort,

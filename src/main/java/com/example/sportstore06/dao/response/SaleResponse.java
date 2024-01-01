@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 public class SaleResponse {
     private int id;
     private BusinessResponse businessResponse;
-    private Double discount;
+    private Long discount;
     private Timestamp started_at;
     private Timestamp ended_at;
     private String name;

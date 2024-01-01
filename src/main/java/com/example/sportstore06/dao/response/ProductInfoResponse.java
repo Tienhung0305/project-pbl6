@@ -27,7 +27,7 @@ public class ProductInfoResponse {
     private Timestamp updated_at;
     private Set<ImageResponse> imageSet;
     private Integer state;
-    private Double price_min;
+    private Long price_min;
     private Integer number_buy;
     private Integer number_like;
     private Integer number_dislike;
@@ -68,7 +68,7 @@ public class ProductInfoResponse {
                 .map(product -> product != null ? new ProductResponse(product) : null)
                 .collect(Collectors.toSet());
 
-        List<Double> l = new ArrayList<>();
+        List<Long> l = new ArrayList<>();
         productInfo.getProductSet().forEach(product -> l.add(product.getPrice()));
         this.price_min = l.isEmpty() ? null : Collections.min(l);
 

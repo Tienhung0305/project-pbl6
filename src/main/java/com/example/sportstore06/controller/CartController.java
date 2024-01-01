@@ -68,10 +68,10 @@ public class CartController {
             return new CartBusiness(business, cartSet);
         }).collect(Collectors.toSet());
 
-        double total_all = 0;
+        long total_all = 0;
         for (CartBusiness cartBusiness : set_cart_business) {
-            double total = 0;
-            double price = 0;
+            long total = 0;
+            long price = 0;
             BillRequest bill = new BillRequest();
             Set<BillDetailRequest> set = new HashSet<>();
             for (Cart cart : cartBusiness.getCartSet()) {
@@ -113,7 +113,7 @@ public class CartController {
         Transaction transaction_temp = momoPaymentService.initiatePayment(total_all, set_id_bill, redirectUrl, requestType);
         Transaction transaction = Transaction
                 .builder()
-                .id(Integer.valueOf(transaction_temp.getOrderId()))
+                .id(Integer.parseInt(transaction_temp.getOrderId()))
                 .orderId(transaction_temp.getOrderId())
                 .requestId(transaction_temp.getRequestId())
                 .payUrl(transaction_temp.getPayUrl())
@@ -121,7 +121,7 @@ public class CartController {
         transactionService.save(transaction);
         for (Integer id : set_id_bill) {
             Bill bill = billService.findById(id).get();
-            Optional<Transaction> Ob = transactionService.findById(Integer.valueOf(transaction.getOrderId()));
+            Optional<Transaction> Ob = transactionService.findById(Integer.parseInt(transaction.getOrderId()));
             if (Ob.isPresent()) {
                 bill.setTransaction(Ob.get());
                 billService.save(bill);

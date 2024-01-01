@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
 import java.util.Optional;
 
 
@@ -52,14 +51,22 @@ public class BusinessService {
         }
     }
     public void save(int id, BusinessRequest request) {
+        long revenue = 0;
+        if (id != 0) {
+            revenue = businessRepository.findById(request.getId_user()).get().getRevenue();
+        }
         var b = Business.builder().
                 id(request.getId_user()).
                 name(request.getName()).
                 about(request.getAbout()).
                 tax(request.getTax()).
                 payment(request.getPayment()).
+                revenue(revenue).
                 build();
         businessRepository.save(b);
     }
 
+    public void save(Business business) {
+        businessRepository.save(business);
+    }
 }

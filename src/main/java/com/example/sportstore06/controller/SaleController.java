@@ -38,9 +38,9 @@ public class SaleController {
 
     @GetMapping("/get-discount")
     public ResponseEntity<?> getDiscount() {
-        Double discount_max = saleService.getMaxDiscount();
-        Double discount_min = saleService.getMinDiscount();
-        Map<String, Double> result = new HashMap<>();
+        Long discount_max = saleService.getMaxDiscount();
+        Long discount_min = saleService.getMinDiscount();
+        Map<String, Long> result = new HashMap<>();
         result.put("discount_max", discount_max);
         result.put("discount_min", discount_min);
         return ResponseEntity.status(HttpStatus.OK).body(result);
@@ -88,8 +88,8 @@ public class SaleController {
 
     @GetMapping("/get-by-discount")
     public ResponseEntity<?> findByIdBusiness(
-            @RequestParam(value = "discount_min", required = true) Double discount_min,
-            @RequestParam(value = "discount_max", required = true) Double discount_max,
+            @RequestParam(value = "discount_min", required = true) Long discount_min,
+            @RequestParam(value = "discount_max", required = true) Long discount_max,
             @RequestParam(value = "id_business", required = false) Optional<Integer> id_business,
             @RequestParam(value = "page", required = false) Optional<Integer> page,
             @RequestParam(value = "page_size", required = false) Optional<Integer> page_size,

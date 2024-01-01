@@ -136,21 +136,21 @@ public class BillService {
     }
 
     //statistic
-    public double getAllTotal(Integer state) {
+    public Long getAllTotal(Integer state) {
         if (state != null) {
             return billRepository.getAllTotal(state);
         }
         return billRepository.getAllTotal();
     }
 
-    public double getAllTotal(Timestamp startDate, Timestamp endDate, Integer state) {
+    public Long getAllTotal(Timestamp startDate, Timestamp endDate, Integer state) {
         if (state != null) {
             return billRepository.getAllTotal(startDate, endDate, state);
         }
         return billRepository.getAllTotal(startDate, endDate);
     }
 
-    public double getAllCount(Integer state) {
+    public Long getAllCount(Integer state) {
         if (state != null) {
             return billRepository.getAllCount(state);
         } else {
@@ -158,7 +158,7 @@ public class BillService {
         }
     }
 
-    public double getAllCount(Timestamp startDate, Timestamp endDate, Integer state) {
+    public Long getAllCount(Timestamp startDate, Timestamp endDate, Integer state) {
         if (state != null) {
             return billRepository.getAllCount(startDate, endDate, state);
         }
@@ -167,28 +167,28 @@ public class BillService {
 
     // Business
 
-    public double getAllTotalBusiness(Integer state, Integer idBusiness) {
+    public Long getAllTotalBusiness(Integer state, Integer idBusiness) {
         if (state != null) {
             return billRepository.getAllTotalBusiness(state, idBusiness);
         }
         return billRepository.getAllTotalBusiness(idBusiness);
     }
 
-    public double getAllTotalBusiness(Timestamp startDate, Timestamp endDate, Integer state, Integer idBusiness) {
+    public Long getAllTotalBusiness(Timestamp startDate, Timestamp endDate, Integer state, Integer idBusiness) {
         if (state != null) {
             return billRepository.getAllTotalBusiness(startDate, endDate, state, idBusiness);
         }
         return billRepository.getAllTotalBusiness(startDate, endDate, idBusiness);
     }
 
-    public double getAllCountBusiness(Integer state, Integer idBusiness) {
+    public Long getAllCountBusiness(Integer state, Integer idBusiness) {
         if (state != null) {
             return billRepository.getAllCountBusiness(state, idBusiness);
         }
         return billRepository.getAllCountBusiness(idBusiness);
     }
 
-    public double getAllCountBusiness(Timestamp startDate, Timestamp endDate, Integer state, Integer idBusiness) {
+    public Long getAllCountBusiness(Timestamp startDate, Timestamp endDate, Integer state, Integer idBusiness) {
         if (state != null) {
             return billRepository.getAllCountBusiness(startDate, endDate, state, idBusiness);
         }

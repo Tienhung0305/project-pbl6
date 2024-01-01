@@ -23,7 +23,7 @@ public class MomoPaymentService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public Transaction initiatePayment(double total_all, Set<Integer> set_id_bill, Optional<String> redirectUrlOb, String requestType) {
+    public Transaction initiatePayment(Long amount, Set<Integer> set_id_bill, Optional<String> redirectUrlOb, String requestType) {
         String PARTNER_CODE = paymentRepository.findById("momo").get().getPartner_code();
         String ACCESS_KEY = paymentRepository.findById("momo").get().getAccess_key();
         String SECRET_KEY = paymentRepository.findById("momo").get().getSecret_key();
@@ -43,7 +43,6 @@ public class MomoPaymentService {
 
         String orderId = "" + unixTime;
         String requestId = "" + unixTime;
-        Long amount = (long) total_all;
         String orderInfo = "Thanh toán qua MoMo";
         String extraData = "";
         for (Integer id : set_id_bill) {

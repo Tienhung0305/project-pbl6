@@ -37,5 +37,4 @@ public class SignUpBusinessRequest {
     @NotBlank(message = "address must not be blank")
     @Size(min = 5, max = 300, message = "address must be between 5 and 300 characters")
     private String address;
-
 }

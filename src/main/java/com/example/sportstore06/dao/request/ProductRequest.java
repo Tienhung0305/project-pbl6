@@ -18,7 +18,7 @@ public class ProductRequest {
     @NotNull(message = "id product information must not be null")
     private Integer id_product_information;
     @Min(value = 1,message = "price must greater than 1")
-    private Double price;
+    private Long price;
     private String size;
     @Min(value = 1,message = "quantity must greater than 1")
     private Integer quantity;

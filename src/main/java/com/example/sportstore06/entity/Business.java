@@ -28,6 +28,7 @@ public class Business {
     @NotBlank(message = "payment must not be blank")
     private String payment;
     private Integer tax;
+    private Long revenue;
 
     @OneToMany(mappedBy = "business", fetch = FetchType.EAGER)
     @JsonManagedReference

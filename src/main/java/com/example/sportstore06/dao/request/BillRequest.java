@@ -16,7 +16,7 @@ public class BillRequest {
     private String name;
     private String information;
     @Min(value = 0, message = "total must be greater 0")
-    private Double total;
+    private Long total;
     @NotNull(message = "id user must not be null")
     private Integer id_user;
     private Timestamp created_at;

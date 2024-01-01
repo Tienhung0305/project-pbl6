@@ -21,7 +21,7 @@ public class BillDetail {
     @Min(value = 0)
     private Integer quantity;
     @Min(value = 0)
-    private double price;
+    private Long price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_bill", nullable = false, referencedColumnName = "id")

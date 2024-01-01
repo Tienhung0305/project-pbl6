@@ -15,7 +15,7 @@ public class BillDetailResponse {
     private Integer id_bill;
     private ProductResponse product;
     private Integer quantity;
-    private Double price;
+    private Long price;
 
     public BillDetailResponse(BillDetail billDetail) {
         this.id = billDetail.getId();

@@ -22,7 +22,7 @@ public class Product {
     private int id;
     //private Integer id_product_information;
     @Min(value = 1)
-    private double price;
+    private Long price;
     @Min(value = 1)
     private Integer quantity;
     private String size;

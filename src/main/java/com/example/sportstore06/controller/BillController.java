@@ -268,14 +268,17 @@ public class BillController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("bill status must be shipping");
                 } else {
                     if (receive) {
-                        //tiền chuyển về business
-
-
-                        //
                         Bill bill = billService.findById(id).get();
                         bill.setState(1);
                         bill.setUpdated_at(new Timestamp(new Date().getTime()));
                         billService.save(bill);
+
+                        //chuyển tiền
+                        Business business = businessService.findById(bill.getId_business()).get();
+                        Long revenue = business.getRevenue();
+                        business.setRevenue(revenue + bill.getTotal());
+                        businessService.save(business);
+                        //
                     }
                 }
             }
@@ -467,8 +470,8 @@ public class BillController {
                             Timestamp dateStart = Timestamp.valueOf(localDateStart.atStartOfDay());
                             Timestamp dateEnd = Timestamp.valueOf(localDateEnd.atStartOfDay());
 
-                            double billCountMonth = billService.getAllCountBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
-                            double billTotalMonth = billService.getAllTotalBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
+                            long billCountMonth = billService.getAllCountBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
+                            long billTotalMonth = billService.getAllTotalBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
                             Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
                             setStatistic.add(statistic);
                             billCountAll += billCountMonth;
@@ -486,8 +489,8 @@ public class BillController {
                             Timestamp dateStart = Timestamp.valueOf(localDateStart.atStartOfDay());
                             Timestamp dateEnd = Timestamp.valueOf(localDateEnd.atStartOfDay());
 
-                            double billCountMonth = billService.getAllCountBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
-                            double billTotalMonth = billService.getAllTotalBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
+                            long billCountMonth = billService.getAllCountBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
+                            long billTotalMonth = billService.getAllTotalBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
                             Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
                             setStatistic.add(statistic);
                             billCountAll += billCountMonth;
@@ -519,8 +522,8 @@ public class BillController {
                             Timestamp dateStart = Timestamp.valueOf(localDateStart.atStartOfDay());
                             Timestamp dateEnd = Timestamp.valueOf(localDateEnd.atStartOfDay());
 
-                            double billCountMonth = billService.getAllCount(dateStart, dateEnd, state.orElse(null));
-                            double billTotalMonth = billService.getAllTotal(dateStart, dateEnd, state.orElse(null));
+                            long billCountMonth = billService.getAllCount(dateStart, dateEnd, state.orElse(null));
+                            long billTotalMonth = billService.getAllTotal(dateStart, dateEnd, state.orElse(null));
                             Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
                             setStatistic.add(statistic);
                             billCountAll += billCountMonth;
@@ -538,8 +541,8 @@ public class BillController {
                             Timestamp dateStart = Timestamp.valueOf(localDateStart.atStartOfDay());
                             Timestamp dateEnd = Timestamp.valueOf(localDateEnd.atStartOfDay());
 
-                            double billCountMonth = billService.getAllCount(dateStart, dateEnd, state.orElse(null));
-                            double billTotalMonth = billService.getAllTotal(dateStart, dateEnd, state.orElse(null));
+                            long billCountMonth = billService.getAllCount(dateStart, dateEnd, state.orElse(null));
+                            long billTotalMonth = billService.getAllTotal(dateStart, dateEnd, state.orElse(null));
                             Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
                             setStatistic.add(statistic);
                             billCountAll += billCountMonth;

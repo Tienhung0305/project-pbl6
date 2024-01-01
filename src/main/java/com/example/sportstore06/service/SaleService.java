@@ -21,10 +21,10 @@ public class SaleService {
         return saleRepository.count();
     }
 
-    public Double getMaxDiscount() {
+    public Long getMaxDiscount() {
         return saleRepository.getMaxDiscount();
     }
-    public Double getMinDiscount() {
+    public Long getMinDiscount() {
         return saleRepository.getMinDiscount();
     }
 
@@ -44,11 +44,11 @@ public class SaleService {
         return saleRepository.findByIdBusiness(pageable, id_business);
     }
 
-    public Page<Sale> getByDiscount(Pageable pageable, Double discount_min, Double discount_max) {
+    public Page<Sale> getByDiscount(Pageable pageable, Long discount_min, Long discount_max) {
         return saleRepository.getByDiscount(pageable, discount_min, discount_max);
     }
 
-    public Page<Sale> getByDiscount(Pageable pageable, Double discount_min, Double discount_max, Integer id_business) {
+    public Page<Sale> getByDiscount(Pageable pageable, Long discount_min, Long discount_max, Integer id_business) {
         return saleRepository.getByDiscount(pageable, discount_min, discount_max, id_business);
     }
 
