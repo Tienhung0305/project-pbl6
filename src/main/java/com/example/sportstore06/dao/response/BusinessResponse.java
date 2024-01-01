@@ -65,7 +65,7 @@ public class BusinessResponse {
         this.count_comment_dislike = count_comment_dislike;
         this.count_comment = count_comment;
         this.count_product = count_product;
-
+        this.revenue = business.getRevenue();
         this.time_start = business.getUser().getCreated_at();
     }
 }
