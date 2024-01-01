@@ -30,6 +30,7 @@ public class BillResponse {
     private Integer state;
     private TransactionResponse transaction;
     private Set<BillDetailResponse> bill_detailSet = new HashSet<>();
+    private Boolean is_rating;
 
     public BillResponse(Bill bill) {
         this.id = bill.getId();
@@ -47,5 +48,10 @@ public class BillResponse {
         this.bill_detailSet = response.collect(Collectors.toSet());
         this.id_business = bill.getId_business();
         this.transaction = bill.getTransaction() != null ? new TransactionResponse(bill.getTransaction()) : null;
+        if (bill.getComment() == null) {
+            this.is_rating = false;
+        } else {
+            this.is_rating = true;
+        }
     }
 }

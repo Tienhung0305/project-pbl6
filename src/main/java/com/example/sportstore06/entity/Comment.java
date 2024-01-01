@@ -24,6 +24,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     //private int id_product_information;
+    //private int id_bill;
     @NotBlank
     @Length(min = 1, max = 200)
     private String content;
@@ -45,7 +46,13 @@ public class Comment {
     @JsonBackReference
     private User user;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_bill", nullable = false, referencedColumnName = "id")
+    @JsonBackReference
+    private Bill bill;
+
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();
+
 }

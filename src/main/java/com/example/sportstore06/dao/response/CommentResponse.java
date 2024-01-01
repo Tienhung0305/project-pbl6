@@ -25,6 +25,7 @@ public class CommentResponse {
     private Set<Integer> SetReply;
     private Integer id_user;
     private Boolean is_like;
+    private int id_bill;
     private Timestamp created_at;
     private Timestamp updated_at;
     private Set<Image> imageSet = new HashSet<>();

@@ -28,5 +28,6 @@ public class CommentRequest {
     private Timestamp created_at;
     private Timestamp updated_at;
     private Boolean is_like;
+    private int id_bill;
     private Set<Integer> id_imageSet = new HashSet<>();
 }

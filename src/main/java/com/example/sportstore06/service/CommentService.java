@@ -3,6 +3,7 @@ package com.example.sportstore06.service;
 
 import com.example.sportstore06.dao.request.CommentRequest;
 import com.example.sportstore06.entity.Comment;
+import com.example.sportstore06.repository.IBillRepository;
 import com.example.sportstore06.repository.ICommentRepository;
 import com.example.sportstore06.repository.IProductInfoRepository;
 import com.example.sportstore06.repository.IUserRepository;
@@ -22,6 +23,7 @@ public class CommentService {
     private final ICommentRepository commentRepository;
     private final IProductInfoRepository productInfoRepository;
     private final IUserRepository userRepository;
+    private final IBillRepository billRepository;
 
     public Long getCount() {
         return commentRepository.count();
@@ -70,6 +72,7 @@ public class CommentService {
                 is_like(request.getIs_like()).
                 reply(request.getReply() == null ? null : request.getReply()).
                 user(request.getId_user() != null ? userRepository.findById(request.getId_user()).get() : null).
+                bill(billRepository.findById(request.getId_bill()).get()).
                 created_at(created_at).
                 updated_at(updated_at).
                 build();
