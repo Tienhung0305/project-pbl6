@@ -9,10 +9,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +23,7 @@ public class MomoPaymentService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public Transaction initiatePayment(double total_all, Set<Integer> set_id_bill, String redirectUrl, String requestType) {
+    public Transaction initiatePayment(double total_all, Set<Integer> set_id_bill, Optional<String> redirectUrlOb, String requestType) {
         String PARTNER_CODE = paymentRepository.findById("momo").get().getPartner_code();
         String ACCESS_KEY = paymentRepository.findById("momo").get().getAccess_key();
         String SECRET_KEY = paymentRepository.findById("momo").get().getSecret_key();
@@ -38,8 +35,9 @@ public class MomoPaymentService {
         Transaction transaction = new Transaction();
         unixTime = unixTime + random.nextInt(100);
 
-        if (redirectUrl.isEmpty()) {
-            redirectUrl = "https://project-pbl6-production.up.railway.app/api/v1/momo";
+        String redirectUrl = "https://project-pbl6-production.up.railway.app/api/v1/momo";
+        if (redirectUrlOb.isPresent()) {
+            redirectUrl = redirectUrlOb.get();
         }
         String ipnUrl = "https://project-pbl6-production.up.railway.app/api/v1/momo/momo_ipn";
 
@@ -89,7 +87,6 @@ public class MomoPaymentService {
         // Handle error
         return null;
     }
-
 
     public MomoResponse checkTransactionStatus(Transaction transaction) {
         String PARTNER_CODE = paymentRepository.findById("momo").get().getPartner_code();

@@ -37,7 +37,7 @@ public class CartController {
     public ResponseEntity<?> PayWithMomo(
             @RequestBody(required = true) Set<Integer> set_id_cart,
             @RequestParam(required = true) String requestType,
-            @RequestParam(required = false) String redirectUrl,
+            @RequestParam(required = false) Optional<String> redirectUrl,
             @AuthenticationPrincipal User user,
             HttpServletRequest request) {
         String baseUrl = UrlUtil.getBaseUrl(request);

@@ -43,7 +43,7 @@ public class MomoIPNController {
                 billService.save(bill);
             }
         }
-        if (momoIPNRequest.getResultCode() != 0) {
+        if (momoIPNRequest.getResultCode() == 1006) {
             String[] split_extraData = momoIPNRequest.getExtraData().split(",");
             Set<Integer> set_id_bill = new HashSet<>();
             for (String i : split_extraData) {
