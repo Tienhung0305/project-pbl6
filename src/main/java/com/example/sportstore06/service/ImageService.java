@@ -79,8 +79,8 @@ public class ImageService {
                     im.setIs_main(true);
                 }
                 im.setIs_main(false);
+                iImageRepository.save(im);
             });
-            iImageRepository.save(image);
         }
 
     }
