@@ -11,12 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -58,14 +53,11 @@ public class CommentService {
     public void save(int id, CommentRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
-        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
-        ZonedDateTime currentDateTime = ZonedDateTime.now(zoneId);
-
         if (commentRepository.findById(id).isPresent()) {
             created_at = commentRepository.findById(id).get().getCreated_at();
-            updated_at = Timestamp.from(currentDateTime.toInstant());
+            updated_at = new Timestamp(new Date().getTime());
         } else {
-            created_at = Timestamp.from(currentDateTime.toInstant());
+            created_at = new Timestamp(new Date().getTime());
             updated_at = created_at;
         }
 
