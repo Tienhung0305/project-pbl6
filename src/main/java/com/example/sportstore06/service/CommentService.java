@@ -11,7 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -53,12 +58,14 @@ public class CommentService {
     public void save(int id, CommentRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
+        LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.of("UTC+7"));
+
         if (commentRepository.findById(id).isPresent()) {
             created_at = commentRepository.findById(id).get().getCreated_at();
-            updated_at = new Timestamp(new Date().getTime());
+            updated_at = Timestamp.valueOf(currentDateTime);
         } else {
-            created_at = new Timestamp(new Date().getTime());
-            updated_at = created_at;
+            created_at = Timestamp.valueOf(currentDateTime);
+            updated_at = Timestamp.valueOf(currentDateTime);
         }
 
         Set<Image> setImage = new HashSet<>();
@@ -83,7 +90,7 @@ public class CommentService {
                 build();
         commentRepository.save(c);
 
-          for (Integer i : request.getId_imageSet()) {
+        for (Integer i : request.getId_imageSet()) {
             Image image = iImageRepository.findById(i).get();
             //fix
             image.setComment(c);
