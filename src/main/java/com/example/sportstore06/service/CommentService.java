@@ -82,6 +82,13 @@ public class CommentService {
                 updated_at(updated_at).
                 build();
         commentRepository.save(c);
+
+          for (Integer i : request.getId_imageSet()) {
+            Image image = iImageRepository.findById(i).get();
+            //fix
+            image.setComment(c);
+            iImageRepository.save(image);
+        }
     }
 }
 
