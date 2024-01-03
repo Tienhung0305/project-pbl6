@@ -292,7 +292,7 @@ public class BillController {
     @PutMapping("/confirm-buy/{buy}")
     private ResponseEntity<?> confirmBuy(@RequestBody(required = true) Integer id_bill,
                                          @PathVariable(value = "buy", required = true) Boolean buy) {
-        if (false) {
+        if (!buy) {
             if (billService.findById(id_bill).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("id bill not found");
             }
@@ -497,8 +497,6 @@ public class BillController {
                             setStatistic.add(statistic);
                             billCountAll += billCountMonth;
                             billTotalAll += billTotalMonth;
-
-
                         }
                     }
                 }
