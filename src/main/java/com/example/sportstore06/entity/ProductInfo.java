@@ -56,7 +56,7 @@ public class ProductInfo {
     @JsonManagedReference
     private Set<Category> categorySet = new HashSet<>();
 
-    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();
 
