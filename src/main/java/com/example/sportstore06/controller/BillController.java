@@ -493,9 +493,12 @@ public class BillController {
                             long billCountMonth = billService.getAllCountBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
                             long billTotalMonth = billService.getAllTotalBusiness(dateStart, dateEnd, state.orElse(null), idBusiness.get());
                             Statistic statistic = new Statistic(year, month, billCountMonth, billTotalMonth);
+
                             setStatistic.add(statistic);
                             billCountAll += billCountMonth;
                             billTotalAll += billTotalMonth;
+
+
                         }
                     }
                 }

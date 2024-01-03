@@ -79,9 +79,9 @@ public class ProductInfoController {
             Page<ProductInfo> byPage;
             if (state.isPresent() && state.get() >= 0 && state.get() <= 3) {
                 if (state_business.isEmpty()) {
-                    byPage = productInfoService.SearchByName(pageable, "Áo", state.get());
+                    byPage = productInfoService.SearchByName(pageable, name, state.get());
                 } else {
-                    byPage = productInfoService.SearchByName(pageable, "Áo", state.get(), state_business.get());
+                    byPage = productInfoService.SearchByName(pageable, name, state.get(), state_business.get());
                 }
             } else {
                 byPage = productInfoService.SearchByName(pageable, name);

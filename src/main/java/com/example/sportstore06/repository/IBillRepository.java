@@ -43,7 +43,7 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     Long getAllTotal();
 
     @Query("SELECT COALESCE(SUM(b.total), 0) FROM Bill b " +
-            "WHERE b.updated_at >= :startDate AND b.updated_at <= :endDate")
+            "WHERE DATE(b.updated_at) >= :startDate AND DATE(b.updated_at) <= :endDate")
     Long getAllTotal(
             @Param("startDate") Timestamp startDate,
             @Param("endDate") Timestamp endDate);
@@ -52,7 +52,7 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     Long getAllCount();
 
     @Query("SELECT COUNT(b) FROM Bill b " +
-            "WHERE b.updated_at >= :startDate AND b.updated_at <= :endDate")
+            "WHERE DATE(b.updated_at) >= :startDate AND DATE(b.updated_at) <= :endDate")
     Long getAllCount(@Param("startDate") Timestamp startDate,
                        @Param("endDate") Timestamp endDate);
 
@@ -62,7 +62,7 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     Long getAllTotal(@Param("state") Integer state);
 
     @Query("SELECT COALESCE(SUM(b.total), 0) FROM Bill b " +
-            "WHERE b.updated_at >= :startDate AND b.updated_at <= :endDate AND b.state =:state")
+            "WHERE DATE(b.updated_at) >= :startDate AND DATE(b.updated_at) <= :endDate AND b.state =:state")
     Long getAllTotal(
             @Param("startDate") Timestamp startDate,
             @Param("endDate") Timestamp endDate,
@@ -72,7 +72,7 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     Long getAllCount(@Param("state") Integer state);
 
     @Query("SELECT COUNT(b) FROM Bill b " +
-            "WHERE b.updated_at >= :startDate AND b.updated_at <= :endDate AND b.state =:state")
+            "WHERE DATE(b.updated_at) >= :startDate AND DATE(b.updated_at) <= :endDate AND b.state =:state")
     Long getAllCount(@Param("startDate") Timestamp startDate,
                        @Param("endDate") Timestamp endDate,
                        @Param("state") Integer state);
@@ -83,7 +83,7 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     Long getAllTotalBusiness(@Param("idBusiness") Integer idBusiness);
 
     @Query("SELECT COALESCE(SUM(b.total), 0) FROM Bill b " +
-            "WHERE b.updated_at >= :startDate AND b.updated_at <= :endDate AND b.id_business = :idBusiness")
+            "WHERE DATE(b.updated_at) >= :startDate AND DATE(b.updated_at) <= :endDate AND b.id_business = :idBusiness")
     Long getAllTotalBusiness(
             @Param("startDate") Timestamp startDate,
             @Param("endDate") Timestamp endDate,
@@ -93,7 +93,7 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
     Long getAllCountBusiness(@Param("idBusiness") Integer idBusiness);
 
     @Query("SELECT COUNT(b) FROM Bill b " +
-            "WHERE b.updated_at >= :startDate AND b.updated_at <= :endDate AND b.id_business = :idBusiness")
+            "WHERE DATE(b.updated_at) >= :startDate AND DATE(b.updated_at) <= :endDate AND b.id_business = :idBusiness")
     Long getAllCountBusiness(@Param("startDate") Timestamp startDate,
                        @Param("endDate") Timestamp endDate,
                        @Param("idBusiness") Integer idBusiness);
@@ -105,7 +105,7 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
                        @Param("idBusiness") Integer idBusiness);
 
     @Query("SELECT COALESCE(SUM(b.total), 0) FROM Bill b " +
-            "WHERE b.updated_at >= :startDate AND b.updated_at <= :endDate AND b.state =:state AND b.id_business = :idBusiness")
+            "WHERE DATE(b.updated_at) >= :startDate AND DATE(b.updated_at) <= :endDate AND b.state =:state AND b.id_business = :idBusiness")
     Long getAllTotalBusiness(
             @Param("startDate") Timestamp startDate,
             @Param("endDate") Timestamp endDate,
@@ -117,7 +117,7 @@ public interface IBillRepository extends JpaRepository<Bill, Integer> {
                        @Param("idBusiness") Integer idBusiness);
 
     @Query("SELECT COUNT(b) FROM Bill b " +
-            "WHERE b.updated_at >= :startDate AND b.updated_at <= :endDate AND b.state =:state and b.id_business = :idBusiness")
+            "WHERE DATE(b.updated_at) >= :startDate AND DATE(b.updated_at) <= :endDate AND b.state =:state and b.id_business = :idBusiness")
     Long getAllCountBusiness(@Param("startDate") Timestamp startDate,
                        @Param("endDate") Timestamp endDate,
                        @Param("state") Integer state,
