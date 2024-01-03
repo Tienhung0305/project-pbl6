@@ -28,7 +28,7 @@ public class BusinessService {
     }
 
     public Page<Business> SearchByName(Pageable pageable, String name) {
-        return businessRepository.SearchByName(pageable,name);
+        return businessRepository.SearchByName(pageable,name.toLowerCase());
     }
 
     public Page<Business> findByPage(Pageable pageable) {
@@ -36,7 +36,7 @@ public class BusinessService {
     }
 
     public Page<Business> SearchByName(Pageable pageable, String name, Integer state) {
-        return businessRepository.SearchByName(pageable,name,state);
+        return businessRepository.SearchByName(pageable,name.toLowerCase(),state);
     }
     public Page<Business> findByPage(Pageable pageable, Integer state) {
         return businessRepository.findByPage(pageable,state);

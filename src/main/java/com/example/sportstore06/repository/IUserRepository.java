@@ -15,9 +15,9 @@ public interface IUserRepository extends JpaRepository<User,Integer> {
     Optional<User> findByUsername(String userName);
     @Query("SELECT i FROM User i WHERE i.remember_token = :remember_token")
     Optional<User> getByRememberToken(String remember_token);
-    @Query("SELECT i FROM User i WHERE i.name LIKE %:Name%")
+    @Query("SELECT i FROM User i WHERE LOWER(i.name) LIKE %:Name%")
     Page<User> SearchByName(Pageable pageable, String Name);
-    @Query("SELECT i FROM User i WHERE i.name LIKE %:Name% AND i.state = :state")
+    @Query("SELECT i FROM User i WHERE LOWER(i.name) LIKE %:Name% AND i.state = :state")
     Page<User> SearchByName(Pageable pageable, String Name, Integer state);
     Optional<User> findByEmail(String email);
     Optional<User> findByPhone(String phone);

@@ -1,7 +1,6 @@
 package com.example.sportstore06.dao.response;
 
 import com.example.sportstore06.entity.Comment;
-import com.example.sportstore06.entity.Image;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +27,7 @@ public class CommentResponse {
     private int id_bill;
     private Timestamp created_at;
     private Timestamp updated_at;
-    private Set<Image> imageSet = new HashSet<>();
+    private Set<ImageResponse> imageSet = new HashSet<>();
 
     public CommentResponse(Comment comment, List<Comment> commentList) {
         this.id = comment.getId();
@@ -42,6 +41,9 @@ public class CommentResponse {
         this.SetReply = commentList.stream()
                 .map(c -> c != null ? c.getId() : null)
                 .collect(Collectors.toSet());
-        this.imageSet = comment.getImageSet();
+        this.imageSet = comment.getImageSet()
+                .stream()
+                .map(image -> image != null ? new ImageResponse(image) : null)
+                .collect(Collectors.toSet());
     }
 }

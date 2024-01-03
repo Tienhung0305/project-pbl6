@@ -51,7 +51,7 @@ public class Comment {
     @JsonBackReference
     private Bill bill;
 
-    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Image> imageSet = new HashSet<>();
 

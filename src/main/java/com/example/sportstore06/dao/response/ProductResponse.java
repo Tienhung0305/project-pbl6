@@ -27,14 +27,16 @@ public class ProductResponse {
         this.id = product.getId();
         this.id_product_information = product.getProductInfo() != null ? product.getProductInfo().getId() : null;
         this.name_product_information = product.getProductInfo() != null ? product.getProductInfo().getName() : null;
-        this.image_product_information = "";
+        this.image_product_information = null;
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
         this.size = product.getSize();
         List<Image> list = product.getProductInfo().getImageSet().stream().toList();
         for (Image image : list) {
-            if (image.getIs_main()) {
-                this.image_product_information = image.getUrl();
+            if (image.getIs_main() != null) {
+                if (image.getIs_main()) {
+                    this.image_product_information = image.getUrl();
+                }
             }
         }
         this.sale = product.getProductInfo().getSale() != null ? new SaleResponse(product.getProductInfo().getSale()) : null;

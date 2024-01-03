@@ -54,7 +54,7 @@ public class ProductInfo {
             inverseJoinColumns = @JoinColumn(name = "id_category")
     )
     @JsonManagedReference
-    Set<Category> categorySet = new HashSet<>();
+    private Set<Category> categorySet = new HashSet<>();
 
     @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonManagedReference

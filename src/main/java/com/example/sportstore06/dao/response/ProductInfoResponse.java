@@ -25,14 +25,14 @@ public class ProductInfoResponse {
     private Set<CategoryResponse> categorySet;
     private Timestamp created_at;
     private Timestamp updated_at;
-    private Set<ImageResponse> imageSet;
+    private Set<ImageResponse> imageSet = new TreeSet<>(Comparator.comparing(ImageResponse::getId));
     private Integer state;
     private Long price_min;
     private Integer number_buy;
     private Integer number_like;
     private Integer number_dislike;
     private Integer number_comment;
-    private Set<ProductResponse> productSet;
+    private Set<ProductResponse> productSet = new TreeSet<>(Comparator.comparing(ProductResponse::getSize));
 
     public ProductInfoResponse(ProductInfo productInfo) {
 

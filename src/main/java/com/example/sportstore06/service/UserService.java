@@ -57,11 +57,11 @@ public class UserService {
     }
 
     public Page<User> SearchByName(Pageable pageable, String name) {
-        return userRepository.SearchByName(pageable, name);
+        return userRepository.SearchByName(pageable, name.toLowerCase());
     }
 
     public Page<User> SearchByName(Pageable pageable, String name, Integer state) {
-        return userRepository.SearchByName(pageable, name, state);
+        return userRepository.SearchByName(pageable, name.toLowerCase(), state);
     }
 
     public boolean deleteById(int id) {

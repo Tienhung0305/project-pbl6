@@ -41,7 +41,7 @@ public class UserController {
 
     // 0 : tài khoản bình thường
     // 1 : tài khoản đang xem xét (cho business)
-    // 2 : tài khoản bị khóa
+    // 2 : tài khoản bị xóa mềm
 
     @GetMapping("/get-count")
     public ResponseEntity<?> getCount() {

@@ -88,35 +88,35 @@ public class ProductInfoService {
     }
 
     public Page<ProductInfo> SearchByName(Pageable pageable, String name) {
-        return productInfoRepository.SearchByName(pageable, name);
+        return productInfoRepository.SearchByName(pageable, name.toLowerCase());
     }
 
     public Page<ProductInfo> SearchByName(Pageable pageable, String name, Integer state) {
-        return productInfoRepository.SearchByName(pageable, name, state);
+        return productInfoRepository.SearchByName(pageable, name.toLowerCase(), state);
     }
 
     public Page<ProductInfo> SearchByName(Pageable pageable, String name, Integer state, Integer state_business) {
-        return productInfoRepository.SearchByName(pageable, name, state, state_business);
+        return productInfoRepository.SearchByName(pageable, name.toLowerCase(), state, state_business);
     }
 
     public Page<ProductInfo> SearchByNameAndBusiness(Pageable pageable, String name, Integer id_business) {
-        return productInfoRepository.SearchByNameAndBusiness(pageable, name, id_business);
+        return productInfoRepository.SearchByNameAndBusiness(pageable, name.toLowerCase(), id_business);
     }
 
     public Page<ProductInfo> SearchByNameAndBusiness(Pageable pageable, String name, Integer state, Integer id_business) {
-        return productInfoRepository.SearchByNameAndBusiness(pageable, name, state, id_business);
+        return productInfoRepository.SearchByNameAndBusiness(pageable, name.toLowerCase(), state, id_business);
     }
 
     public Page<ProductInfo> SearchByNameAndSale(Pageable pageable, String name, Integer id_sale) {
-        return productInfoRepository.SearchByNameAndSale(pageable, name, id_sale);
+        return productInfoRepository.SearchByNameAndSale(pageable, name.toLowerCase(), id_sale);
     }
 
     public Page<ProductInfo> SearchByNameAndSale(Pageable pageable, String name, Integer state, Integer id_sale) {
-        return productInfoRepository.SearchByNameAndSale(pageable, name, state, id_sale);
+        return productInfoRepository.SearchByNameAndSale(pageable, name.toLowerCase(), state, id_sale);
     }
 
     public Page<ProductInfo> SearchByNameAndSale(Pageable pageable, String name, Integer state, Integer id_sale, Integer state_business) {
-        return productInfoRepository.SearchByNameAndSale(pageable, name, state, id_sale, state_business);
+        return productInfoRepository.SearchByNameAndSale(pageable, name.toLowerCase(), state, id_sale, state_business);
     }
 
     public boolean deleteById(int id) {
