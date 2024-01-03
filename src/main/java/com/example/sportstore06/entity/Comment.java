@@ -47,7 +47,7 @@ public class Comment {
     private User user;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_bill", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "id_bill", nullable = false, unique = false ,referencedColumnName = "id")
     @JsonBackReference
     private Bill bill;
 
