@@ -46,8 +46,8 @@ public class Comment {
     @JsonBackReference
     private User user;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_bill", nullable = false, referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_bill", nullable = false, unique = false ,referencedColumnName = "id")
     @JsonBackReference
     private Bill bill;
 

@@ -21,7 +21,8 @@ public interface IProductInfoRepository extends JpaRepository<ProductInfo,Intege
     Page<ProductInfo> findByCategory(Pageable pageable, List<Integer> categoryIds);
     @Query("SELECT i FROM ProductInfo i JOIN i.categorySet c WHERE i.state = :state AND c.id IN (:categoryIds)")
     Page<ProductInfo> findByCategory(Pageable pageable, Integer state, List<Integer> categoryIds);
-    @Query("SELECT i FROM ProductInfo i JOIN i.categorySet c WHERE c.id IN (:categoryIds) AND i.business.user.state = :state_business")
+
+    @Query("SELECT i FROM ProductInfo i JOIN i.categorySet c WHERE i.state = :state AND c.id IN (:categoryIds) AND i.business.user.state = :state_business")
     Page<ProductInfo> findByCategory(Pageable pageable, Integer state, List<Integer> categoryIds, Integer state_business);
     @Query("SELECT i FROM ProductInfo i WHERE i.state = :state AND i.business.id = :id_business")
     Page<ProductInfo> findByBusiness(Pageable pageable, Integer state, Integer id_business);
@@ -31,14 +32,15 @@ public interface IProductInfoRepository extends JpaRepository<ProductInfo,Intege
     Page<ProductInfo> findBySale(Pageable pageable, Integer state, Integer id_sale);
     @Query("SELECT i FROM ProductInfo i WHERE i.sale.id = :id_sale")
     Page<ProductInfo> findBySale(Pageable pageable, Integer id_sale);
-    @Query("SELECT i FROM ProductInfo i WHERE i.sale.id = :id_sale AND i.business.user.state = :state_business")
+
+    @Query("SELECT i FROM ProductInfo i WHERE i.sale.id = :id_sale AND i.state = :state AND i.business.user.state = :state_business")
     Page<ProductInfo> findBySale(Pageable pageable, Integer id_sale, Integer state, Integer state_business);
 
     @Query("SELECT i FROM ProductInfo i WHERE i.sale.discount = :discount")
     Page<ProductInfo> findBySaleDiscount(Pageable pageable, Long discount);
     @Query("SELECT i FROM ProductInfo i WHERE i.state = :state AND i.sale.discount = :discount")
     Page<ProductInfo> findBySaleDiscount(Pageable pageable, Integer state, Long discount);
-    @Query("SELECT i FROM ProductInfo i WHERE i.sale.discount = :discount AND i.business.user.state = :state_business")
+    @Query("SELECT i FROM ProductInfo i WHERE i.state = :state AND i.sale.discount = :discount AND i.business.user.state = :state_business")
     Page<ProductInfo> findBySaleDiscount(Pageable pageable, Integer state, Long discount, Integer state_business);
     @Query("SELECT i FROM ProductInfo i WHERE LOWER(i.name) LIKE %:Name%")
     Page<ProductInfo>SearchByName(Pageable pageable, String Name);

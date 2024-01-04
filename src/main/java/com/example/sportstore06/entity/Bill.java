@@ -47,8 +47,8 @@ public class Bill {
     @JsonManagedReference
     private Set<BillDetail> bill_detailSet = new HashSet<>();
 
-    @OneToOne(mappedBy = "bill",cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "bill",cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JsonManagedReference
-    private Comment comment;
+    private Set<Comment> commentSet;
 
 }
