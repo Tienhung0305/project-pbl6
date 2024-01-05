@@ -27,6 +27,7 @@ public class CommentRequest {
     private Integer id_user;
     private Timestamp created_at;
     private Timestamp updated_at;
+    @NotNull(message = "is like must not be null")
     private Boolean is_like;
     private int id_bill;
     private Set<Integer> id_imageSet = new HashSet<>();

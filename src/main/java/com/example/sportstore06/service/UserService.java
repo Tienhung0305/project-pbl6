@@ -11,6 +11,7 @@ import com.example.sportstore06.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -24,7 +25,8 @@ import java.util.Set;
 public class UserService {
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
-    private final IImageRepository iImageRepository;
+    private final PasswordEncoder passwordEncoder;
+
     public Long getCount() {
         return userRepository.count();
     }
@@ -123,7 +125,6 @@ public class UserService {
             updated_at = created_at;
         }
 
-        System.out.println("check");
         User user = userRepository.findById(id).get();
 
         var u = User.builder().
@@ -135,7 +136,7 @@ public class UserService {
                 cic(request.getCic()).
                 address(request.getAddress()).
                 username(user.getUsername()).
-                password(user.getPassword()).
+                password(passwordEncoder.encode(user.getPassword())).
                 remember_token(user.getRemember_token()).
                 revoked_token(user.getRevoked_token()).
                 state(user.getState()).

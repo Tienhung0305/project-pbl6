@@ -151,7 +151,7 @@ public class ProductInfoService {
             Optional<Category> Ob = categoryRepository.findById(i);
             categories.add(Ob.get());
         }
-        Integer state = 1;
+        Integer state = 0;
         Integer state_before = null;
         if (id != 0) {
             state = productInfoRepository.findById(id).get().getState();

@@ -30,6 +30,7 @@ public class Comment {
     private String content;
     @NotNull
     private Boolean report;
+    @NotNull
     private Boolean is_like;
     private Integer reply;
     //private int id_user;

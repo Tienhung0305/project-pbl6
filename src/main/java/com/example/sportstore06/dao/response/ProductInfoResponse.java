@@ -90,8 +90,10 @@ public class ProductInfoResponse {
         Integer number_buy = 0;
         for (Product product : productInfo.getProductSet()) {
             for (BillDetail billDetail : product.getBillDetailSet()) {
-                if (billDetail.getProduct().getProductInfo().getId() == id) {
-                    number_buy += billDetail.getQuantity();
+                if (billDetail.getBill().getState() == 0 || billDetail.getBill().getState() == 1) {
+                    if (billDetail.getProduct().getProductInfo().getId() == id) {
+                        number_buy += billDetail.getQuantity();
+                    }
                 }
             }
         }
