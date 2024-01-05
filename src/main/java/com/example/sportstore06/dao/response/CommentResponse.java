@@ -23,6 +23,8 @@ public class CommentResponse {
     private Boolean report;
     private Set<Integer> SetReply;
     private Integer id_user;
+    private String name_user;
+    private String url_user;
     private Boolean is_like;
     private int id_bill;
     private Timestamp created_at;
@@ -35,7 +37,9 @@ public class CommentResponse {
         this.content = comment.getContent();
         this.report = comment.getReport();
         this.is_like = comment.getIs_like();
-        this.id_user = comment.getUser().getId();
+        this.id_user = comment.getUser() != null ? comment.getUser().getId() : null;
+        this.name_user = comment.getUser() != null ? comment.getUser().getName() : null;
+        this.url_user = comment.getUser() != null ? comment.getUser().getImage_url() : null;
         this.created_at = comment.getCreated_at();
         this.updated_at = comment.getUpdated_at();
         this.SetReply = commentList.stream()
