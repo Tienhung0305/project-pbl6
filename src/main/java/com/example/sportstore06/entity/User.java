@@ -55,6 +55,7 @@ public class User implements UserDetails {
     @Size(min = 1, max = 100)
     private String password;
     private String remember_token;
+    @Column(columnDefinition = "boolean")
     public Boolean revoked_token;
     private String image_url;
     private Timestamp created_at;

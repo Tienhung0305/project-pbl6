@@ -28,8 +28,10 @@ public class Comment {
     @NotBlank
     @Length(min = 1, max = 200)
     private String content;
+    @Column(columnDefinition = "boolean")
     @NotNull
     private Boolean report;
+    @Column(columnDefinition = "boolean")
     @NotNull
     private Boolean is_like;
     private Integer reply;
