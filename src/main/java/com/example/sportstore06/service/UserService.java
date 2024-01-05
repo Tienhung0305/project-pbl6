@@ -5,7 +5,6 @@ import com.example.sportstore06.dao.request.UserPutRequest;
 import com.example.sportstore06.dao.request.UserRequest;
 import com.example.sportstore06.entity.Role;
 import com.example.sportstore06.entity.User;
-import com.example.sportstore06.repository.IImageRepository;
 import com.example.sportstore06.repository.IRoleRepository;
 import com.example.sportstore06.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +74,9 @@ public class UserService {
         }
     }
 
+    public void save(User user) {
+        userRepository.save(user);
+    }
     public void save(int id, UserRequest request) {
         Timestamp created_at;
         Timestamp updated_at;
