@@ -56,7 +56,7 @@ public interface IProductInfoRepository extends JpaRepository<ProductInfo,Intege
     @Query("SELECT i FROM ProductInfo i WHERE LOWER(i.name) LIKE %:Name% AND i.state = :state AND i.sale.id = :id_sale AND i.business.user.state = :state_business")
     Page<ProductInfo>SearchByNameAndSale(Pageable pageable, String Name, Integer state, Integer id_sale, Integer state_business);
 
-    @Query("SELECT DISTINCT pi FROM ProductInfo pi JOIN pi.comm entSet c WHERE c.isLike = true ORDER BY SIZE(pi.commentSet) DESC")
-    List<ProductInfo> findProductsWithLikesOrderByLikes();
+//    @Query("SELECT DISTINCT pi FROM ProductInfo pi JOIN pi.comm entSet c WHERE c.isLike = true ORDER BY SIZE(pi.commentSet) DESC")
+//    List<ProductInfo> findProductsWithLikesOrderByLikes();
 
 }

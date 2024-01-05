@@ -29,9 +29,9 @@ public class Comment {
     @Length(min = 1, max = 200)
     private String content;
     @NotNull
-    private boolean report;
+    private Boolean report;
     @NotNull
-    private boolean is_like;
+    private Boolean is_like;
     private Integer reply;
     //private int id_user;
     private Timestamp created_at;
