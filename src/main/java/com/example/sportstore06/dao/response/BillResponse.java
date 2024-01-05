@@ -49,9 +49,9 @@ public class BillResponse {
         this.id_business = bill.getId_business();
         this.transaction = bill.getTransaction() != null ? new TransactionResponse(bill.getTransaction()) : null;
         if (bill.getCommentSet() != null) {
-            this.is_rating = false;
-        } else {
             this.is_rating = true;
+        } else {
+            this.is_rating = false;
         }
     }
 }
