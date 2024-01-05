@@ -21,6 +21,10 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+<<<<<<< HEAD
+=======
+    @Column(columnDefinition = "boolean default false")
+>>>>>>> cc691a0a6f175c61790dc0263343e61bee503bca
     private Boolean is_main;
     private Timestamp created_at;
     private Timestamp updated_at;
