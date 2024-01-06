@@ -77,8 +77,9 @@ public class ImageService {
             for (Image i : imageSet) {
                 if (i.equals(image)) {
                     i.setIs_main(true);
+                }else {
+                    i.setIs_main(false);
                 }
-                i.setIs_main(false);
                 iImageRepository.save(i);
             }
         }
