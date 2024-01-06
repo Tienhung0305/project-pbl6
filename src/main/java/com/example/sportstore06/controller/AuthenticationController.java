@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,7 +91,8 @@ public class AuthenticationController {
             @RequestParam(value = "username", required = true) String username) {
         User user = userService.findByUsername(username).get();
         if (user.getPassword().equals(old_password)) {
-            user.setPassword(passwordEncoder.encode(new_password));
+            String pass = passwordEncoder.encode(new_password);
+            user.setPassword(pass);
             userService.save(user);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Successful");
         }
