@@ -64,7 +64,7 @@ public class ProductInfoResponse {
                 .collect(Collectors.toSet());
         this.productSet = productInfo.getProductSet()
                 .stream()
-                .sorted(Comparator.comparing(Product::getSize))
+                .sorted(Comparator.comparing(Product::getId))
                 .map(product -> product != null ? new ProductResponse(product) : null)
                 .collect(Collectors.toSet());
 

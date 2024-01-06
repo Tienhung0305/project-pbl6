@@ -3,7 +3,6 @@ package com.example.sportstore06.controller;
 
 import com.example.sportstore06.dao.request.UserPutRequest;
 import com.example.sportstore06.dao.request.UserRequest;
-
 import com.example.sportstore06.dao.response.UserResponse;
 import com.example.sportstore06.entity.Role;
 import com.example.sportstore06.entity.User;
@@ -24,8 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.*;
+import java.util.Optional;
 
 
 @RestController
@@ -53,7 +51,7 @@ public class UserController {
             @RequestParam(value = "old_password", required = true) String old_password,
             @RequestParam(value = "new_password", required = true) String new_password,
             @AuthenticationPrincipal User user) {
-        if (user.getPassword().equals(old_password)) {
+        if (passwordEncoder.matches(old_password, user.getPassword())) {
             user.setPassword(passwordEncoder.encode(new_password));
             userService.save(user);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Successful");
