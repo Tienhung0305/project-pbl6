@@ -74,14 +74,13 @@ public class ImageService {
         if (Ob.isPresent()) {
             Image image = Ob.get();
             Set<Image> imageSet = image.getProductInfo().getImageSet();
-            imageSet.forEach(im -> {
-                if (im.getId() == id) {
-                    im.setIs_main(true);
+            for (Image i : imageSet) {
+                if (i.equals(image)) {
+                    i.setIs_main(true);
                 }
-                im.setIs_main(false);
-                iImageRepository.save(im);
-            });
+                i.setIs_main(false);
+                iImageRepository.save(i);
+            }
         }
-
     }
 }
