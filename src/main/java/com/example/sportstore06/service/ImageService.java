@@ -69,6 +69,7 @@ public class ImageService {
         }
     }
 
+    public void change_is_main(Integer id) {
         Optional<Image> Ob = iImageRepository.findById(id);
         if (Ob.isPresent()) {
             Image image = Ob.get();
@@ -81,4 +82,6 @@ public class ImageService {
                 iImageRepository.save(im);
             });
         }
+
+    }
 }
