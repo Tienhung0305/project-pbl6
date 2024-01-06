@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthorizationController {
     @GetMapping
     public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("Hi Visiter");
+        return ResponseEntity.ok("Hi Visiter!");
     }
 
     @GetMapping("/admin")
