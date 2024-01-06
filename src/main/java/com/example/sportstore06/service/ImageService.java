@@ -69,19 +69,16 @@ public class ImageService {
         }
     }
 
-    public void change_is_main(Integer id) {
         Optional<Image> Ob = iImageRepository.findById(id);
         if (Ob.isPresent()) {
             Image image = Ob.get();
             Set<Image> imageSet = image.getProductInfo().getImageSet();
             imageSet.forEach(im -> {
-                if (im.getId().equals(image.getId())) {
+                if (im.getId() == id) {
                     im.setIs_main(true);
                 }
                 im.setIs_main(false);
                 iImageRepository.save(im);
             });
         }
-
-    }
 }
