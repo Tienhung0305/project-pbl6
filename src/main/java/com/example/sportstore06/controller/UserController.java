@@ -46,7 +46,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCount());
     }
 
-    @PutMapping("/change-password")
+  @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(
             @RequestParam(value = "old_password", required = true) String old_password,
             @RequestParam(value = "new_password", required = true) String new_password,
