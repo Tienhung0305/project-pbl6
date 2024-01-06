@@ -48,12 +48,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCount());
     }
 
-    @PutMapping("/change-password")
+  @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(
             @RequestParam(value = "old_password", required = true) String old_password,
             @RequestParam(value = "new_password", required = true) String new_password,
             @AuthenticationPrincipal User user) {
-        if (user.getPassword().equals(old_password)) {
+        if (passwordEncoder.matches(old_password, user.getPassword())) {
             user.setPassword(passwordEncoder.encode(new_password));
             userService.save(user);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Successful");
